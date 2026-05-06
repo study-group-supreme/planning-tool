@@ -54,7 +54,7 @@ public class ProjectRepository {
                 task.parent_task_id
                 FROM task
                 LEFT JOIN project
-                ON task.project_id = project.project_id
+                ON task.project_id = project.id
                 WHERE task_id.project_id = ?
                 """;
         return jdbc.query(sql, taskRowmapper, id);
