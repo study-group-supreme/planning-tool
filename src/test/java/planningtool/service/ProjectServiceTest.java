@@ -44,7 +44,8 @@ public class ProjectServiceTest {
     @Test
     void createProject_ThrowsBadRequestException_IfDeadlineIsBeforeToday(){
         Project project = new Project();
-        project.setDeadline(LocalDate.of(2028, 5, 6));
+        project.setTitle("test");
+        project.setDeadline(LocalDate.of(2020, 5, 6));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
 }
