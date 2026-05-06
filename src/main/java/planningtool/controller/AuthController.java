@@ -3,5 +3,5 @@ package planningtool.controller;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class PlanningToolController {
+public class AuthController {
 }

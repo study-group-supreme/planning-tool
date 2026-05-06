@@ -3,5 +3,5 @@ package planningtool.service;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlanningToolService {
+public class ProjectService {
 }
