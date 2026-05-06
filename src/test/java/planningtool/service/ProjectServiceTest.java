@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import planningtool.model.Project;
 import planningtool.repository.ProjectRepository;
-import planningtool.Exeption.BadRequestException;
+import planningtool.exception.BadRequestException;
 
 import java.time.LocalDate;
 

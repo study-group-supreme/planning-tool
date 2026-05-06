@@ -32,6 +32,8 @@ public class ProjectService {
         }if (project.getDeadline().isBefore(LocalDate.now())){
             throw new BadRequestException("Deadline must be in the future");
         }//if(project.getDeadline == null) Throw new BadRequestException("...")
+        project.setTimeOfCreation(LocalDate.now());
+        project.setActive(true);
         return projectRepository.insertProject(project);
     }
 

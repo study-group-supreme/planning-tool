@@ -33,6 +33,8 @@ public class ProjectController {
     //Needs to have session included and needs a /projects Page
     @PostMapping("/save")
     public String createProject(@ModelAttribute Project project, HttpSession session) {
+        Integer projectManagerId = (Integer) session.getAttribute("employeeId");
+        project.setProjectManagerId(projectManagerId);
         projectService.createProject(project);
         return "redirect:";
     }
