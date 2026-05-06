@@ -33,11 +33,12 @@ public class ProjectRepository {
         p.setDeadline((LocalDate) rs.getObject("deadline"));
         p.setProjectManagerId(rs.getInt("project_manager_id"));
         p.setTimeOfCreation((LocalDate) rs.getObject("time_of_creation"));
-        //Need both list with join table
+        p.setProjectMembers(findProjectMembersByProjectId(p.getId()));
+        p.setTasks(findTasksByProjectId(p.getId()));
         return p;
     });
 
-    public List<Employee> fetchProjectMembersByProjectId(int id) {
+    public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
                 SELECT employee.id, employee.name, employee.is_project_manager, employee.email, employee.password
                 FROM employee
@@ -48,10 +49,10 @@ public class ProjectRepository {
         return jdbc.query(sql, employeeRepository.getEmployeeRowMapper(), id);
     }
 
-    public List<Task> fetchTasksByProjectId(int id) {
+    public List<Task> findTasksByProjectId(int id) {
         String sql = """
-                SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority
-                task.parent_task_id
+                SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
+                task.parent_task_id, task.project_id
                 FROM task
                 JOIN project
                 ON task.project_id = project.id
