@@ -33,4 +33,10 @@ public class ProjectServiceTest {
         project.setDescription("A".repeat(1081));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
+    @Test
+    void createProject_ThrowsBadRequestException_WhenTitleIsOver255Characters(){
+        Project project = new Project();
+        project.setTitle("M".repeat(256));
+        assertThrows(BadRequestException.class, () -> projectService.createProject(project));
+    }
 }
