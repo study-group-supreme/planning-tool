@@ -22,8 +22,9 @@ public class EmployeeServiceTest {
     private EmployeeService employeeService;
 
     @Test
-    void login_ShouldThrowBadRequestIfEmailIsNotInDB(){
+    void login_ShouldThrowNotFoundExceptionIfEmailIsNotInDB(){
         when(employeeRepository.findEmployeeByEmail("turquoise@gmial.com")).thenThrow(new EmptyResultDataAccessException("Email not in the database",1));
         assertThrows(NotFoundException.class, () -> employeeService.login("turquoise@gmial.com", "notpw"));
     }
+
 }
