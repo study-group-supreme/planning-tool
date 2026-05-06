@@ -32,14 +32,14 @@ public class ProjectRepository {
         p.setActive(rs.getBoolean("active"));
         p.setDeadline((LocalDate) rs.getObject("deadline"));
         p.setProjectManagerId(rs.getInt("project_manager_id"));
-        p.setTimeOfCreation((LocalDate) rs.getObject("timeOfCreation"));
+        p.setTimeOfCreation((LocalDate) rs.getObject("time_Of_Creation"));
         //Need both list with join table
         return p;
     });
 
     public List<Employee> fetchProjectMembersByProjectId(int id) {
         String sql = """
-                SELECT employee.id, employee.name, employee.isProjectManger, employee.email, employee.password
+                SELECT employee.id, employee.name, employee.isprojectManager, employee.email, employee.password
                 FROM employee
                 LEFT JOIN project_member
                 ON employee.id = project_member.employee_id
