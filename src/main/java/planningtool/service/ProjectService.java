@@ -1,6 +1,7 @@
 package planningtool.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import planningtool.Exeption.BadRequestException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
@@ -16,7 +17,7 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
-
+@Transactional
     public Project createProject(Project project) {
         if (project.getTitle() == null || project.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
