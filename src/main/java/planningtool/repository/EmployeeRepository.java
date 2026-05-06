@@ -39,7 +39,7 @@ public class EmployeeRepository {
     }
 
     public List<Employee> findAllEmployees(){
-        String sql = "SELECT * FROM employee";
+        String sql = "SELECT * FROM employee ORDER BY id";
         return jdbc.query(sql,employeeRowMapper);
     }
 }

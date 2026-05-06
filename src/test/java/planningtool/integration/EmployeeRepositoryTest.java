@@ -7,6 +7,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -31,5 +34,15 @@ public class EmployeeRepositoryTest {
         assertThat(employee.getName()).isEqualTo("Andreas Jensen");
         assertThat(employee.getEmail()).isEqualTo("grey@email.com");
         assertThat(employee.isProjectManager()).isEqualTo(true);
+    }
+
+    @Test
+    void findAllEmployees_shouldFindAllEmployees(){
+        List<Employee> employees = employeeRepository.findAllEmployees();
+        assertThat(employees.size()).isEqualTo(4);
+        assertThat(employees.get(0).getName()).isEqualTo("Andreas Jensen");
+        assertThat(employees.get(1).getName()).isEqualTo("August Skipper");
+        assertThat(employees.get(2).getName()).isEqualTo("Daniella Norgren");
+        assertThat(employees.get(3).getName()).isEqualTo("Mads Svanholm");
     }
 }
