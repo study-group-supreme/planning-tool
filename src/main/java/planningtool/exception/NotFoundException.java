@@ -1,4 +1,4 @@
-package planningtool.Exceptions;
+package planningtool.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
