@@ -31,7 +31,7 @@ public class ProjectService {
             throw new BadRequestException("Description cannot be longer than 1080 characters");
         }if (project.getDeadline().isBefore(LocalDate.now())){
             throw new BadRequestException("Deadline must be in the future");
-        }
+        }//if(project.getDeadline == null) Throw new BadRequestException("...")
         return projectRepository.insertProject(project);
     }
 
