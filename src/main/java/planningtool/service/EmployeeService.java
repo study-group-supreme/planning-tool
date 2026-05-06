@@ -7,8 +7,8 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
-
 @Service
+
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
