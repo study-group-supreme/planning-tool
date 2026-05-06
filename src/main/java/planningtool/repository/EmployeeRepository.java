@@ -30,4 +30,9 @@ public class EmployeeRepository {
         String sql = "SELECT * FROM employee WHERE email = ?";
         return jdbc.queryForObject(sql, employeeRowMapper, email);
     }
+
+    public Employee findEmployeeById(int id){
+        String sql = "SELECT * FROM employee WHERE id = ?";
+        return jdbc.queryForObject(sql, employeeRowMapper, id);
+    }
 }
