@@ -17,10 +17,14 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
-@Transactional
+
+    @Transactional
     public Project createProject(Project project) {
         if (project.getTitle() == null || project.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
+        }
+        if (project.getTitle().length() > 255) {
+            throw new BadRequestException("Title cannot be longer than 255 characters");
         }
         if (project.getDescription().length() > 1080) {
             throw new BadRequestException("Description cannot be longer than 1080 characters");
