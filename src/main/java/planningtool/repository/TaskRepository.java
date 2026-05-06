@@ -1,19 +1,23 @@
 package planningtool.repository;
 
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import planningtool.model.Task;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+
 
 @Repository
 public class TaskRepository {
     private final JdbcTemplate jdbc;
-    private final RowMapper<Task> taskRowMapper = (rs, rowNum ) -> {
+    private final RowMapper<Task> taskRowMapper = (rs, rowNum) -> {
         Task task = new Task();
         task.setId(rs.getInt("id"));
         task.setProjectId(rs.getInt("project_id"));
-        task.setParentTaskId(rs.getInt("parent_task_id"));
+        task.setParentTaskId((Integer) rs.getObject("parent_task_id",Integer.class));
         task.setTitle(rs.getString("title"));
         task.setDescription(rs.getString("description"));
         task.setTimeEstimate(rs.getBigDecimal("time_estimate"));
@@ -21,19 +25,41 @@ public class TaskRepository {
         return task;
     };
 
-    public TaskRepository (JdbcTemplate jdbc) {
+    public TaskRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
-    }
-
-    public Task findTaskById(int taskId) {
-        String sql = """
-                        SELECT task.id, task.project_id, task.parent_task_id, task.title, task.description, task.time_estimate, task.is_high_priority
-                        FROM task
-                        WHERE id = ?""";
-        return jdbc.queryForObject(sql, taskRowMapper,taskId);
     }
 
     public RowMapper<Task> getTaskRowMapper() {
         return taskRowMapper;
     }
+    public Task insertTask(Task task) {
+        String sql = """
+                INSERT INTO task(project_id, parent_task_id, title, description, time_estimate, is_high_priority)
+                VALUES(?,?,?,?,?,?)
+                """;
+        KeyHolder keyholder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1,task.getProjectId());
+            ps.setInt(2,task.getParentTaskId());
+            ps.setString(3,task.getTitle());
+            ps.setString(4,task.getDescription());
+            ps.setBigDecimal(5,task.getTimeEstimate());
+            ps.setBoolean(6, task.isHighPriority());
+            return ps;
+        }, keyholder);
+        task.setId(keyholder.getKey().intValue());
+        return task;
+    }
+
+
+    public Task findTaskById(int taskId) {
+        String sql = """
+                SELECT *
+                FROM task
+                WHERE id = ?""";
+        return jdbc.queryForObject(sql, taskRowMapper, taskId);
+    }
+
+
 }

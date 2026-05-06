@@ -1,8 +1,7 @@
 package planningtool.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import planningtool.Exeption.BadRequestException;
+import planningtool.exception.BadRequestException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
