@@ -1,9 +1,13 @@
 package planningtool.repository;
 
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import planningtool.model.Task;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
 
 
 @Repository
@@ -28,6 +32,26 @@ public class TaskRepository {
     public RowMapper<Task> getTaskRowMapper() {
         return taskRowMapper;
     }
+    public Task insertTask(Task task) {
+        String sql = """
+                INSERT INTO task(project_id, parent_task_id, title, description, time_estimate, is_high_priority)
+                VALUES(?,?,?,?,?,?)
+                """;
+        KeyHolder keyholder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1,task.getProjectId());
+            ps.setInt(2,task.getParentTaskId());
+            ps.setString(3,task.getTitle());
+            ps.setString(4,task.getDescription());
+            ps.setBigDecimal(5,task.getTimeEstimate());
+            ps.setBoolean(6, task.isHighPriority());
+            return ps;
+        }, keyholder);
+        task.setId(keyholder.getKey().intValue());
+        return task;
+    }
+
 
     public Task findTaskById(int taskId) {
         String sql = """
