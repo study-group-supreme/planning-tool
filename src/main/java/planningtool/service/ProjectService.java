@@ -24,9 +24,9 @@ public class ProjectService {
         if (project.getDescription().length() > 1080) {
             throw new BadRequestException("Description cannot be longer than 1080 characters");
         }
-        if (project.getProjectManagerId() > 0) {
-            throw new BadRequestException("A project must have a valid project manager");
-        }
+//        if (project.getProjectManagerId() > 0) {
+//            throw new BadRequestException("A project must have a valid project manager");
+//        }
         return projectRepository.insertProject(project);
     }
 
