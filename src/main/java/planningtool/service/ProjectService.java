@@ -17,6 +17,8 @@ public class ProjectService {
     }
 
     public Project createProject(Project project) {
+        if(project.getTitle() == null || project.getTitle().isBlank());
+        //Throw new BadRequestExeption
         return projectRepository.insertProject(project);
     }
 
