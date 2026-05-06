@@ -9,7 +9,6 @@ import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
 @Service
 
-@Service
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
