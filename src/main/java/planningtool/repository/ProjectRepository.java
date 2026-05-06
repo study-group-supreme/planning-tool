@@ -32,7 +32,7 @@ public class ProjectRepository {
         p.setActive(rs.getBoolean("active"));
         p.setDeadline((LocalDate) rs.getObject("deadline"));
         p.setProjectManagerId(rs.getInt("project_manager_id"));
-        p.setTimeOfCreation((LocalDate) rs.getObject("time_Of_Creation"));
+        p.setTimeOfCreation((LocalDate) rs.getObject("time_of_creation"));
         //Need both list with join table
         return p;
     });
