@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.Employee;
 
+import java.util.List;
+
 @Repository
 public class EmployeeRepository {
     private final JdbcTemplate jdbc;
@@ -13,7 +15,7 @@ public class EmployeeRepository {
         employee.setId(rs.getInt("id"));
         employee.setName(rs.getString("name"));
         employee.setEmail(rs.getString("email"));
-        employee.setPassword("password");
+        employee.setPassword(rs.getString("password"));
         employee.setProjectManager(rs.getBoolean("is_project_manager"));
         return employee;
     };
@@ -29,5 +31,15 @@ public class EmployeeRepository {
     public Employee findEmployeeByEmail(String email){
         String sql = "SELECT * FROM employee WHERE email = ?";
         return jdbc.queryForObject(sql, employeeRowMapper, email);
+    }
+
+    public Employee findEmployeeById(int id){
+        String sql = "SELECT * FROM employee WHERE id = ?";
+        return jdbc.queryForObject(sql, employeeRowMapper, id);
+    }
+
+    public List<Employee> findAllEmployees(){
+        String sql = "SELECT * FROM employee ORDER BY id";
+        return jdbc.query(sql,employeeRowMapper);
     }
 }
