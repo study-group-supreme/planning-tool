@@ -77,4 +77,22 @@ public class ProjectServiceTest {
         assertThat(result.isActive()).isTrue();
 
     }
+    @Test
+    void createProject_shouldCreateAProject(){
+        Project project = new Project();
+        project.setTitle("test");
+        project.setDescription("test");
+        project.setDeadline(LocalDate.of(2028, 2, 1));
+        project.setProjectManagerId(1);
+
+        when(projectRepository.insertProject(project)).thenReturn(project);
+        Project createdProject = projectService.createProject(project);
+
+        assertThat(createdProject.getTitle()).isEqualTo("test");
+        assertThat(createdProject.getDescription()).isEqualTo("test");
+        assertThat(createdProject.getDeadline()).isEqualTo(LocalDate.of(2028, 2, 1));
+        assertThat(createdProject.getProjectManagerId()).isEqualTo(1);
+        assertThat(createdProject.getTimeOfCreation()).isEqualTo(LocalDate.now());
+        assertThat(createdProject.isActive()).isTrue();
+    }
 }
