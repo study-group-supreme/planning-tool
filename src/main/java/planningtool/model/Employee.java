@@ -1,4 +1,4 @@
-package model;
+package planningtool.model;
 
 public class Employee {
 

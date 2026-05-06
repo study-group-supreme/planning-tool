@@ -1,4 +1,4 @@
-package repository;
+package planningtool.repository;
 
 import org.springframework.stereotype.Repository;
 

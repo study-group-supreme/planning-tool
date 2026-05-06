@@ -1,4 +1,4 @@
-package service;
+package planningtool.service;
 
 import org.springframework.stereotype.Service;
 

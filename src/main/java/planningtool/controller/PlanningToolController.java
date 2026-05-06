@@ -1,4 +1,4 @@
-package controller;
+package planningtool.controller;
 
 import org.springframework.stereotype.Controller;
 
