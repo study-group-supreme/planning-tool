@@ -41,7 +41,7 @@ public class ProjectRepository {
         String sql = """
                 SELECT employee.id, employee.name, employee.is_project_manager, employee.email, employee.password
                 FROM employee
-                LEFT JOIN project_member
+                JOIN project_member
                 ON employee.id = project_member.employee_id
                 WHERE project_member.project_id = ?
                 """;
@@ -53,7 +53,7 @@ public class ProjectRepository {
                 SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority
                 task.parent_task_id
                 FROM task
-                LEFT JOIN project
+                JOIN project
                 ON task.project_id = project.id
                 WHERE task.project_id = ?
                 """;
