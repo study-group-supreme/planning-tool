@@ -8,6 +8,7 @@ import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.repository.ProjectRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,6 +29,8 @@ public class ProjectService {
         }
         if (project.getDescription().length() > 1080) {
             throw new BadRequestException("Description cannot be longer than 1080 characters");
+        }if (project.getDeadline().isBefore(LocalDate.now())){
+            throw new BadRequestException("Deadline must be in the future");
         }
         return projectRepository.insertProject(project);
     }

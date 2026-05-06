@@ -9,6 +9,8 @@ import planningtool.model.Project;
 import planningtool.repository.ProjectRepository;
 import planningtool.Exeption.BadRequestException;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +39,12 @@ public class ProjectServiceTest {
     void createProject_ThrowsBadRequestException_WhenTitleIsOver255Characters(){
         Project project = new Project();
         project.setTitle("M".repeat(256));
+        assertThrows(BadRequestException.class, () -> projectService.createProject(project));
+    }
+    @Test
+    void createProject_ThrowsBadRequestException_IfDeadlineIsBeforeToday(){
+        Project project = new Project();
+        project.setDeadline(LocalDate.of(2028, 5, 6));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
 }
