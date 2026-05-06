@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import planningtool.model.Project;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -36,25 +37,44 @@ public class ProjectServiceTest {
         project.setDescription("A".repeat(1081));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
+
     @Test
-    void createProject_ThrowsBadRequestException_WhenTitleIsOver255Characters(){
+    void createProject_ThrowsBadRequestException_WhenTitleIsOver255Characters() {
         Project project = new Project();
         project.setTitle("M".repeat(256));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
+
     @Test
-    void createProject_ThrowsBadRequestException_IfDeadlineIsBeforeToday(){
+    void createProject_ThrowsBadRequestException_IfDeadlineIsBeforeToday() {
         Project project = new Project();
         project.setTitle("test");
         project.setDeadline(LocalDate.of(2020, 5, 6));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
+
     @Test
-    void CreateProject_timeOfCreation_shouldSetTimeOfCreationToNow(){
+    void createProject_timeOfCreation_shouldSetTimeOfCreationToNow() {
         Project project = new Project();
         project.setTitle("test");
         project.setDeadline(LocalDate.of(2028, 5, 3));
-        project.setTimeOfCreation(LocalDate.now());
-        assertThat(project.getTimeOfCreation()).isEqualTo(LocalDate.now());
+
+        when(projectRepository.insertProject(project)).thenReturn(project);
+        Project result = projectService.createProject(project);
+        assertThat(result.getTimeOfCreation()).isEqualTo(LocalDate.now());
+    }
+
+    @Test
+    void createProject_isActive_shouldSetIsActiveToTrueOnCreating() {
+        Project project = new Project();
+        project.setTitle("test");
+        project.setDeadline(LocalDate.of(2028, 5, 5));
+
+        when(projectRepository.insertProject(project)).thenReturn(project);
+
+        Project result = projectService.createProject(project);
+
+        assertThat(result.isActive()).isTrue();
+
     }
 }
