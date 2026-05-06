@@ -54,6 +54,8 @@ public class ProjectRepositoryTest {
         assertThat(result.getDescription()).isEqualTo("tester");
         assertThat(result.getProjectManagerId()).isEqualTo(1);
         assertThat(result.isActive()).isEqualTo(true);
+        assertThat(result.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
+        assertThat(result.getTimeOfCreation()).isEqualTo(LocalDate.of(2026, 5, 6));
     }
 }
 
