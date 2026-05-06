@@ -1,10 +1,16 @@
 package planningtool.service;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import planningtool.model.Project;
 import planningtool.repository.ProjectRepository;
+import planningtool.Exeption.BadRequestException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
@@ -14,4 +20,17 @@ public class ProjectServiceTest {
 
     @InjectMocks
     private ProjectService projectService;
+
+    @Test
+    void createProject_ThrowsBadRequestException_WhenTitleIsEmpty() {
+        assertThrows(BadRequestException.class, () -> projectService.createProject(new Project()).getTitle().isEmpty());
+    }
+
+    @Test
+    void createProject_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
+        Project project = new Project();
+        project.setTitle("test");
+        project.setDescription("A".repeat(1081));
+        assertThrows(BadRequestException.class, () -> projectService.createProject(project));
+    }
 }
