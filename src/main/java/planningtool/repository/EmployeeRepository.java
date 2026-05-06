@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.Employee;
 
+import java.util.List;
+
 @Repository
 public class EmployeeRepository {
     private final JdbcTemplate jdbc;
@@ -34,5 +36,10 @@ public class EmployeeRepository {
     public Employee findEmployeeById(int id){
         String sql = "SELECT * FROM employee WHERE id = ?";
         return jdbc.queryForObject(sql, employeeRowMapper, id);
+    }
+
+    public List<Employee> findAllEmployees(){
+        String sql = "SELECT * FROM employee";
+        return jdbc.query(sql,employeeRowMapper);
     }
 }
