@@ -13,7 +13,7 @@ public class EmployeeRepository {
         employee.setId(rs.getInt("id"));
         employee.setName(rs.getString("name"));
         employee.setEmail(rs.getString("email"));
-        employee.setPassword("password");
+        employee.setPassword(rs.getString("password"));
         employee.setProjectManager(rs.getBoolean("is_project_manager"));
         return employee;
     };

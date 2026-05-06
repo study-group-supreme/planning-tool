@@ -14,14 +14,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql(scripts = "classpath:h2init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class EmployeeRepositoryTest {
 
-    // TODO: add this back in when employeeRepo contains something
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Test
-    void findEmployeeByEmail_findEmployeeWithCorrespondingEmail(){
+    void findEmployeeByEmail_shouldFindEmployeeWithCorrespondingEmail(){
         Employee employee = employeeRepository.findEmployeeByEmail("grey@email.com");
         assertThat(employee.getName()).isEqualTo("Andreas Jensen");
+        assertThat(employee.isProjectManager()).isEqualTo(true);
+        assertThat(employee.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void findEmployeeById_shouldFindEmployeeWithCorrespondingId(){
+        Employee employee = employeeRepository.findEmployeeById(1);
+        assertThat(employee.getName()).isEqualTo("Andreas Jensen");
+        assertThat(employee.getEmail()).isEqualTo("grey@email.com");
         assertThat(employee.isProjectManager()).isEqualTo(true);
     }
 }
