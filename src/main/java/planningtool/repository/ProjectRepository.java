@@ -45,7 +45,7 @@ public class ProjectRepository {
                 ON employee.id = project_member.employee_id
                 WHERE project_member.project_id = ?
                 """;
-        return jdbc.query(sql, EmployeeRepository.employeeRowmapper, id);
+        return jdbc.query(sql, employeeRepository.getEmployeeRowMapper(), id);
     }
 
     public List<Task> fetchTasksByProjectId(int id) {
@@ -57,6 +57,6 @@ public class ProjectRepository {
                 ON task.project_id = project.id
                 WHERE task.project_id = ?
                 """;
-        return jdbc.query(sql, taskRowmapper, id);
+        return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
     }
 }

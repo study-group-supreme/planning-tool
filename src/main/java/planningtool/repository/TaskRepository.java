@@ -33,6 +33,7 @@ public class TaskRepository {
         return jdbc.queryForObject(sql, taskRowMapper,taskId);
     }
 
-
-
+    public RowMapper<Task> getTaskRowMapper() {
+        return taskRowMapper;
+    }
 }
