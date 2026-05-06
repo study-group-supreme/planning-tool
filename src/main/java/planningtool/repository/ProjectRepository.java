@@ -39,7 +39,7 @@ public class ProjectRepository {
 
     public List<Employee> fetchProjectMembersByProjectId(int id) {
         String sql = """
-                SELECT employee.id, employee.name, employee.isprojectManager, employee.email, employee.password
+                SELECT employee.id, employee.name, employee.is_project_manager, employee.email, employee.password
                 FROM employee
                 LEFT JOIN project_member
                 ON employee.id = project_member.employee_id
@@ -54,7 +54,7 @@ public class ProjectRepository {
                 task.parent_task_id
                 FROM task
                 LEFT JOIN project
-                ON task.id = project_id
+                ON task.project_id = project.project_id
                 WHERE task_id.project_id = ?
                 """;
         return jdbc.query(sql, taskRowmapper, id);
