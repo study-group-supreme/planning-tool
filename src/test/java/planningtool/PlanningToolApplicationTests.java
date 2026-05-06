@@ -1,4 +1,4 @@
-package org.example.planningtool;
+package planningtool;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
