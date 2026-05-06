@@ -39,8 +39,8 @@ public class TaskRepositoryTest {
         Task newTask = new Task();
         newTask.setProjectId(1);
         newTask.setParentTaskId(2);
-        newTask.setTitle("Crack a funny joke during lunch break");
-        newTask.setDescription("Raunchy knock-knock joke");
+        newTask.setTitle("Stack blank papers in a neat pile");
+        newTask.setDescription("Extra focused on no corners poking out whatsoever");
         newTask.setTimeEstimate(new BigDecimal("0.25"));
         newTask.setHighPriority(true);
 
@@ -48,8 +48,8 @@ public class TaskRepositoryTest {
 
         assertThat(result.getProjectId()).isEqualTo(1);
         assertThat(result.getParentTaskId()).isEqualTo(2);
-        assertThat(result.getTitle()).isEqualTo("Crack a funny joke during lunch break");
-        assertThat(result.getDescription()).isEqualTo("Raunchy knock-knock joke");
+        assertThat(result.getTitle()).isEqualTo("Stack blank papers in a neat pile");
+        assertThat(result.getDescription()).isEqualTo("Extra focused on no corners poking out whatsoever");
         assertThat(result.getTimeEstimate()).isEqualByComparingTo("0.25");
         assertThat(result.isHighPriority()).isEqualTo(true);
 
