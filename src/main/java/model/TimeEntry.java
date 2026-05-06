@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class TimeEntry {
-int id;
-int employeeId;
-int taskId;
-LocalDateTime timeOfCreation;
-BigDecimal timeSpent;
+    int id;
+    int employeeId;
+    int taskId;
+    LocalDateTime timeOfCreation;
+    BigDecimal timeSpent;
 
     public TimeEntry(int id, int employeeId, int taskId, LocalDateTime timeOfCreation, BigDecimal timeSpent) {
         this.id = id;
@@ -17,7 +17,8 @@ BigDecimal timeSpent;
         this.timeOfCreation = timeOfCreation;
         this.timeSpent = timeSpent;
     }
-    public TimeEntry(){
+
+    public TimeEntry() {
 
     }
 
