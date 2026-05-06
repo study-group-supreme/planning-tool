@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import planningtool.model.Project;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
@@ -47,5 +48,13 @@ public class ProjectServiceTest {
         project.setTitle("test");
         project.setDeadline(LocalDate.of(2020, 5, 6));
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
+    }
+    @Test
+    void CreateProject_timeOfCreation_shouldSetTimeOfCreationToNow(){
+        Project project = new Project();
+        project.setTitle("test");
+        project.setDeadline(LocalDate.of(2028, 5, 3));
+        project.setTimeOfCreation(LocalDate.now());
+        assertThat(project.getTimeOfCreation()).isEqualTo(LocalDate.now());
     }
 }
