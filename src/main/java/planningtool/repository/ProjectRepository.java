@@ -2,11 +2,14 @@ package planningtool.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
 
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -59,5 +62,25 @@ public class ProjectRepository {
                 WHERE task.project_id = ?
                 """;
         return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
+    }
+
+    public Project insertProject(Project project) {
+        String sql = """
+                INSERT INTO project(title, description, time_of_creation, project_manager_id, deadline, active)
+                VALUES(?,?,?,?,?,?)
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, project.getTitle());
+            ps.setString(2, project.getDescription());
+            ps.setObject(3, project.getTimeOfCreation());
+            ps.setInt(4, project.getProjectManagerId());
+            ps.setObject(5, project.getDeadline());
+            ps.setBoolean(6, project.isActive());
+            return ps;
+        }, keyHolder);
+        project.setId(keyHolder.getKey().intValue());
+        return project;
     }
 }
