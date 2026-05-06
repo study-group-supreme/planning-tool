@@ -7,14 +7,14 @@ public class TimeEntry {
 int id;
 int employeeId;
 int taskId;
-LocalDateTime logginTime;
+LocalDateTime timeOfCreation;
 BigDecimal timeSpent;
 
-    public TimeEntry(int id, int employeeId, int taskId, LocalDateTime logginTime, BigDecimal timeSpent) {
+    public TimeEntry(int id, int employeeId, int taskId, LocalDateTime timeOfCreation, BigDecimal timeSpent) {
         this.id = id;
         this.employeeId = employeeId;
         this.taskId = taskId;
-        this.logginTime = logginTime;
+        this.timeOfCreation = timeOfCreation;
         this.timeSpent = timeSpent;
     }
     public TimeEntry(){
@@ -45,12 +45,12 @@ BigDecimal timeSpent;
         this.taskId = taskId;
     }
 
-    public LocalDateTime getLogginTime() {
-        return logginTime;
+    public LocalDateTime getTimeOfCreation() {
+        return timeOfCreation;
     }
 
-    public void setLogginTime(LocalDateTime logginTime) {
-        this.logginTime = logginTime;
+    public void setTimeOfCreation(LocalDateTime timeOfCreation) {
+        this.timeOfCreation = timeOfCreation;
     }
 
     public BigDecimal getTimeSpent() {
