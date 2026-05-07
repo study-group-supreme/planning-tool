@@ -5,13 +5,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import planningtool.model.Employee;
 import planningtool.model.Project;
+import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Member;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -24,6 +28,8 @@ public class ProjectServiceTest {
 
     @InjectMocks
     private ProjectService projectService;
+    @Mock
+    EmployeeRepository employeeRepository;
 
     @Test
     void createProject_ThrowsBadRequestException_WhenTitleIsEmpty() {
@@ -77,8 +83,9 @@ public class ProjectServiceTest {
         assertThat(result.isActive()).isTrue();
 
     }
+
     @Test
-    void createProject_shouldCreateAProject(){
+    void createProject_shouldCreateAProject() {
         Project project = new Project();
         project.setTitle("test");
         project.setDescription("test");
@@ -94,5 +101,32 @@ public class ProjectServiceTest {
         assertThat(createdProject.getProjectManagerId()).isEqualTo(1);
         assertThat(createdProject.getTimeOfCreation()).isEqualTo(LocalDate.now());
         assertThat(createdProject.isActive()).isTrue();
+    }
+
+    @Test
+    void getProjectMembersByProjectId_shouldShowAllProjectMembersConnectedToAProject() {
+        Employee employee = new Employee();
+        employee.setName("Hans");
+        employee.setEmail("hans@email.com");
+        employee.setId(1);
+        employee.setPassword("123");
+        employee.setProjectManager(true);
+
+        Employee employee1 = new Employee();
+        employee1.setName("Fin");
+        employee1.setId(2);
+        employee1.setProjectManager(false);
+        employee1.setPassword("123");
+        employee1.setEmail("fin@email.com");
+
+        List<Employee> members = List.of(employee, employee1);
+
+        when(projectRepository.findProjectMembersByProjectId(1)).thenReturn(members);
+
+        List<Employee> result = projectService.getProjectMembersByProjectId(1);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getName()).isEqualTo("Hans");
+        assertThat(result.get(1).getName()).isEqualTo("Fin");
     }
 }
