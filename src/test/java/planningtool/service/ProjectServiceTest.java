@@ -28,8 +28,6 @@ public class ProjectServiceTest {
 
     @InjectMocks
     private ProjectService projectService;
-    @Mock
-    EmployeeRepository employeeRepository;
 
     @Test
     void createProject_ThrowsBadRequestException_WhenTitleIsEmpty() {
