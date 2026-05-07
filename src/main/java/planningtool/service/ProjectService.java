@@ -56,6 +56,7 @@ public class ProjectService {
     public List<Project> getProjectsByEmployeeId(int employeeId){
         List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
         if (projects == null || projects.isEmpty()){
+            //Need help with good error message
             throw new NotFoundException("No projects found connected to");
         }
         return projects;
