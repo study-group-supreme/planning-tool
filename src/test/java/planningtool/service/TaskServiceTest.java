@@ -28,7 +28,7 @@ public class TaskServiceTest {
     void getTaskById_throwsBadRequest_whenIdInvalid() {
         assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
     }
-
+// TODO This test is a bit wonky and we need to write more tests!
     @Test
     void createTask_returnsCreatedTask() {
         Task task = new Task();
