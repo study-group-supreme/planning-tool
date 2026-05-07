@@ -6,6 +6,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
+import planningtool.exception.BadRequestException;
 import planningtool.model.Employee;
 import planningtool.service.EmployeeService;
 
@@ -58,6 +59,19 @@ public class AuthControllerTest {
         mockMvc.perform(get("/auth/logout"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/auth/login"));
+    }
+
+    @Test
+    void login_showsError_whenCredentialsInvalid() throws Exception {
+        when(employeeService.login("test@mail.com", "wrong"))
+                .thenThrow(new BadRequestException("Incorrect password"));
+
+        mockMvc.perform(post("/auth/login")
+                        .param("email", "test@mail.com")
+                        .param("password", "wrong"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("error", true))
+                .andExpect(view().name("auth/login"));
     }
 
 }
