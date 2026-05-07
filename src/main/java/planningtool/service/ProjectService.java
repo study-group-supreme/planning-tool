@@ -7,6 +7,7 @@ import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
+import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 
 import java.time.LocalDate;
@@ -53,6 +54,10 @@ public class ProjectService {
         return members;
     }
     public List<Project> getProjectsByEmployeeId(int employeeId){
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
+        if (projects == null || projects.isEmpty()){
+            throw new NotFoundException("No projects found connected to");
+        }
         return projectRepository.findProjectsByEmployeeId(employeeId);
     }
 }
