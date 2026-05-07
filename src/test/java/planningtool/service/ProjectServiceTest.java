@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.repository.EmployeeRepository;
@@ -126,5 +127,11 @@ public class ProjectServiceTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getName()).isEqualTo("Hans");
         assertThat(result.get(1).getName()).isEqualTo("Fin");
+    }
+
+    @Test
+    void getProjectMembersByProjectId_ThrowsNotFoundException_WhenNoMembersAreAssignedToAProject() {
+        when(projectRepository.findProjectMembersByProjectId(1)).thenReturn(List.of());
+        assertThrows(NotFoundException.class, () -> projectService.getProjectMembersByProjectId(1));
     }
 }
