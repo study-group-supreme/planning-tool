@@ -38,8 +38,7 @@ public class TaskService {
     @Transactional
     public Task createTask(Task task) {
         try {
-            taskRepository.insertTask(task);
-            return taskRepository.findTaskById(task.getId());
+            return taskRepository.insertTask(task);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseOperationException("Task creation failed", e);
         }
