@@ -3,6 +3,7 @@ package planningtool.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Employee;
@@ -63,7 +64,11 @@ public class ProjectRepositoryTest {
         Project found = projectRepository.findProjectById(1);
         assertThat(found.getId()).isEqualTo(1);
         assertThat(found.getTitle()).isEqualTo("Exam Project");
-
+        assertThat(found.getDescription()).isEqualTo("Our very first project!");
+        assertThat(found.getTimeOfCreation()).isEqualTo(LocalDate.of(2026, 5, 4));
+        assertThat(found.getProjectManagerId()).isEqualTo(1);
+        assertThat(found.getDeadline()).isEqualTo(LocalDate.of(2026, 5, 26));
+        assertThat(found.isActive()).isTrue();
     }
 
     @Test
