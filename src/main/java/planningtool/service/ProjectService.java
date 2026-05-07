@@ -52,5 +52,8 @@ public class ProjectService {
         }
         return members;
     }
+    public List<Project> getProjectsByEmployeeId(int employeeId){
+        return projectRepository.findProjectsByEmployeeId(employeeId);
+    }
 }
 
