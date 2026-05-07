@@ -139,4 +139,24 @@ public class ProjectServiceTest {
         when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(List.of());
         assertThrows(NotFoundException.class, () -> projectService.getProjectsByEmployeeId(1));
     }
+    @Test
+    void getProjectsByEmployeeId_shouldReturnListOfAllProjectsConnectedToAEmployeeId(){
+        Employee employee = new Employee();
+        employee.setId(1);
+
+        Project project = new Project();
+        project.setTitle("test");
+        project.setId(1);
+        project.setDeadline(LocalDate.of(2028, 2, 2));
+
+        Project project1 = new Project();
+        project1.setTitle("test2");
+        project1.setId(2);
+        project1.setDeadline(LocalDate.of(2029, 2, 2));
+
+        List<Project> allProjects = List.of(project, project1);
+        when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(allProjects);
+
+
+    }
 }
