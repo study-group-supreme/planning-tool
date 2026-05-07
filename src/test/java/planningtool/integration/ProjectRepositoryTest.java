@@ -57,6 +57,19 @@ public class ProjectRepositoryTest {
         assertThat(result.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
         assertThat(result.getTimeOfCreation()).isEqualTo(LocalDate.of(2026, 5, 6));
     }
+
+    @Test
+    void findProjectById_ShouldFindProjectWithCorrespondingId(){
+        Project found = projectRepository.findProjectById(1);
+        assertThat(found.getId()).isEqualTo(1);
+        assertThat(found.getTitle()).isEqualTo("Exam Project");
+
+    }
+
+    @Test
+    void updateProject_ShouldUpdateProject_Title_Description_Deadline(){
+
+    }
 }
 
 

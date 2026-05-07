@@ -33,9 +33,9 @@ public class ProjectRepository {
         p.setTitle(rs.getString("title"));
         p.setDescription(rs.getString("description"));
         p.setActive(rs.getBoolean("active"));
-        p.setDeadline((LocalDate) rs.getObject("deadline"));
+        p.setDeadline(rs.getDate("deadline").toLocalDate());
         p.setProjectManagerId(rs.getInt("project_manager_id"));
-        p.setTimeOfCreation((LocalDate) rs.getObject("time_of_creation"));
+        p.setTimeOfCreation(rs.getDate("time_of_creation").toLocalDate());
         p.setProjectMembers(findProjectMembersByProjectId(p.getId()));
         p.setTasks(findTasksByProjectId(p.getId()));
         return p;
@@ -83,4 +83,19 @@ public class ProjectRepository {
         project.setId(keyHolder.getKey().intValue());
         return project;
     }
+
+    public void updateProject(Project project){
+        String sql = """
+                UPDATE project
+                SET title = ?, description = ?, deadline = ?
+                WHERE id = ?
+                """;
+        jdbc.update(sql, project.getTitle(), project.getDescription(), project.getDeadline());
+    }
+
+    public Project findProjectById(int id){
+        String sql = "SELECT * FROM project WHERE id = ?";
+        return jdbc.queryForObject(sql,projectRowMapper, id);
+    }
+
 }
