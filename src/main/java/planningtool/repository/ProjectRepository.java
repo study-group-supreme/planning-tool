@@ -90,7 +90,7 @@ public class ProjectRepository {
                 SET title = ?, description = ?, deadline = ?
                 WHERE id = ?
                 """;
-        jdbc.update(sql, project.getTitle(), project.getDescription(), project.getDeadline());
+        jdbc.update(sql, project.getTitle(), project.getDescription(), project.getDeadline(), project.getId());
     }
 
     public Project findProjectById(int id){

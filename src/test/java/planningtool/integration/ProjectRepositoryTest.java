@@ -73,7 +73,18 @@ public class ProjectRepositoryTest {
 
     @Test
     void updateProject_ShouldUpdateProject_Title_Description_Deadline(){
+        Project projectToUpdate = projectRepository.findProjectById(1);
+        projectToUpdate.setTitle("Complex Project");
+        projectToUpdate.setDescription("Very difficult");
+        projectToUpdate.setDeadline(LocalDate.of(2027, 5, 6));
 
+        projectRepository.updateProject(projectToUpdate);
+
+        Project projectAfterUpdate = projectRepository.findProjectById(1);
+
+        assertThat(projectAfterUpdate.getTitle()).isEqualTo("Complex Project");
+        assertThat(projectAfterUpdate.getDescription()).isEqualTo("Very difficult");
+        assertThat(projectAfterUpdate.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
     }
 }
 
