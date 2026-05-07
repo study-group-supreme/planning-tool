@@ -36,6 +36,6 @@ public class ProjectController {
         Integer projectManagerId = (Integer) session.getAttribute("employeeId");
         project.setProjectManagerId(projectManagerId);
         projectService.createProject(project);
-        return "redirect:";
+        return "redirect:/projects";
     }
 }
