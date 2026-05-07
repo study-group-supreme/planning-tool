@@ -3,6 +3,7 @@ package planningtool.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
@@ -27,9 +28,10 @@ public class ProjectService {
         if (project.getTitle().length() > 255) {
             throw new BadRequestException("Title cannot be longer than 255 characters");
         }
-        if (project.getDescription()!= null && project.getDescription().length() > 1080) {
+        if (project.getDescription() != null && project.getDescription().length() > 1080) {
             throw new BadRequestException("Description cannot be longer than 1080 characters");
-        }if (project.getDeadline().isBefore(LocalDate.now())){
+        }
+        if (project.getDeadline().isBefore(LocalDate.now())) {
             throw new BadRequestException("Deadline must be in the future");
         }//if(project.getDeadline == null) Throw new BadRequestException("...")
         project.setTimeOfCreation(LocalDate.now());
@@ -43,7 +45,12 @@ public class ProjectService {
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
-        return projectRepository.findProjectMembersByProjectId(id);
+        List<Employee> members = projectRepository.findProjectMembersByProjectId(id);
+        if (members == null || members.isEmpty()) {
+            //Need method to findProjectsById so we can call it insted of id in error message
+            throw new NotFoundException("No project members found for this project" + id);
+        }
+        return members;
     }
 }
 
