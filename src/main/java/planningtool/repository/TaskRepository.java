@@ -17,7 +17,7 @@ public class TaskRepository {
         Task task = new Task();
         task.setId(rs.getInt("id"));
         task.setProjectId(rs.getInt("project_id"));
-        task.setParentTaskId((Integer) rs.getObject("parent_task_id",Integer.class));
+        task.setParentTaskId((Integer) rs.getObject("parent_task_id", Integer.class));
         task.setTitle(rs.getString("title"));
         task.setDescription(rs.getString("description"));
         task.setTimeEstimate(rs.getBigDecimal("time_estimate"));
@@ -32,6 +32,7 @@ public class TaskRepository {
     public RowMapper<Task> getTaskRowMapper() {
         return taskRowMapper;
     }
+
     public Task insertTask(Task task) {
         String sql = """
                 INSERT INTO task(project_id, parent_task_id, title, description, time_estimate, is_high_priority)
@@ -40,11 +41,11 @@ public class TaskRepository {
         KeyHolder keyholder = new GeneratedKeyHolder();
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setInt(1,task.getProjectId());
-            ps.setInt(2,task.getParentTaskId());
-            ps.setString(3,task.getTitle());
-            ps.setString(4,task.getDescription());
-            ps.setBigDecimal(5,task.getTimeEstimate());
+            ps.setInt(1, task.getProjectId());
+            ps.setInt(2, task.getParentTaskId());
+            ps.setString(3, task.getTitle());
+            ps.setString(4, task.getDescription());
+            ps.setBigDecimal(5, task.getTimeEstimate());
             ps.setBoolean(6, task.isHighPriority());
             return ps;
         }, keyholder);
