@@ -28,7 +28,7 @@ public class AuthController {
         model.addAttribute("error", false);
         return "auth/login";}
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String loginFormHandler(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
@@ -40,7 +40,7 @@ public class AuthController {
             Employee employee = employeeService.login(email, password);
             session.setAttribute("employeeId", employee.getId());
             session.setAttribute("employeeName", employee.getName());
-            return "redirect:/project/list"; // TODO just make it be the project overview when we have it
+            return "redirect:/projects";
         } catch (NotFoundException | BadRequestException e) {
             model.addAttribute("error", true);
             model.addAttribute("message", e.getMessage());
