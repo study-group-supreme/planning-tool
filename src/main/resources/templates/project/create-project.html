@@ -5,7 +5,7 @@
     <title>Create Project</title>
 </head>
 <body>
-<form th:action="@{/projects/save}" th:object="${project}" method="post">
+<form th:action="@{/projects/add}" th:object="${project}" method="post">
     <p>
         <label>Title</label><br>
         <input type="text" th:field="*{title}"/>
