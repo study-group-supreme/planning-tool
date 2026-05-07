@@ -134,13 +134,15 @@ public class ProjectServiceTest {
         when(projectRepository.findProjectMembersByProjectId(1)).thenReturn(List.of());
         assertThrows(NotFoundException.class, () -> projectService.getProjectMembersByProjectId(1));
     }
+
     @Test
-    void getProjectsByEmployeeId_ThrowsNotFoundException_WhenNoProjectsAreFoundConnectedToAnEmployeeId(){
+    void getProjectsByEmployeeId_ThrowsNotFoundException_WhenNoProjectsAreFoundConnectedToAnEmployeeId() {
         when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(List.of());
         assertThrows(NotFoundException.class, () -> projectService.getProjectsByEmployeeId(1));
     }
+
     @Test
-    void getProjectsByEmployeeId_shouldReturnListOfAllProjectsConnectedToAEmployeeId(){
+    void getProjectsByEmployeeId_shouldReturnListOfAllProjectsConnectedToAEmployeeId() {
         Employee employee = new Employee();
         employee.setId(1);
 
@@ -156,7 +158,10 @@ public class ProjectServiceTest {
 
         List<Project> allProjects = List.of(project, project1);
         when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(allProjects);
-
+        List<Project> result = projectService.getProjectsByEmployeeId(1);
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getTitle()).isEqualTo("test");
+        assertThat(result.get(1).getTitle()).isEqualTo("test2");
 
     }
 }
