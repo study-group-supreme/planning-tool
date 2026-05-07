@@ -25,13 +25,13 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/new")
+    @GetMapping("/add")
     public String createProject(Model model) {
         model.addAttribute("project", new Project());
         return "project/create-project";
     }
     //Needs to have session included and needs a /projects Page
-    @PostMapping("/save")
+    @PostMapping("/add")
     public String createProject(@ModelAttribute Project project, HttpSession session) {
         Integer projectManagerId = (Integer) session.getAttribute("employeeId");
         project.setProjectManagerId(projectManagerId);
