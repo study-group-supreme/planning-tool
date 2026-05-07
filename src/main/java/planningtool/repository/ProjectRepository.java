@@ -97,7 +97,7 @@ public class ProjectRepository {
         String sql = "SELECT * FROM project WHERE id = ?";
         return jdbc.queryForObject(sql,projectRowMapper, id);
     }
-    public List<Project> findProjectsByEmployeeId(int id){
+    public List<Project> findProjectsByEmployeeId(int employeeId){
         String sql = """
                 SELECT project.id, project.title, project.description, project.time_of_creation, project.project_manager_id, project.deadline, project.active
                 FROM project
@@ -105,7 +105,7 @@ public class ProjectRepository {
                 ON project_member.project_id = project.id
                 WHERE project_member.employee_id = ? 
                 """;
-        return jdbc.query(sql, projectRowMapper, id);
+        return jdbc.query(sql, projectRowMapper, employeeId);
     }
 
 }
