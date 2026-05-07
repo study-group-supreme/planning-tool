@@ -32,7 +32,14 @@ public class ProjectControllerTest {
             .andExpect(status().isOk()).
             andExpect(view().name("project/create-project"))
             .andExpect(model().attributeExists("project"));
-
 }
-
+@Test
+    void createProject_shouldPostCreateFormAndRedirectToProjects() throws Exception{
+    mockMvc.perform(post("/projects/add").sessionAttr("employeeId", 1).
+            param("title", "title")
+                    .param("description", "description")
+                    .param("deadline", "2028-02-02"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/projects"));
+}
 }
