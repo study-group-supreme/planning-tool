@@ -87,7 +87,7 @@ public class ProjectRepositoryTest {
         assertThat(projectAfterUpdate.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
     }
     @Test
-    void findProjectByEmployeeId_ShouldFindAllProjectsConnectedToAnEmployee(){
+    void findProjectsByEmployeeId_ShouldFindAllProjectsConnectedToAnEmployee(){
         List<Project> projects = projectRepository.findProjectsByEmployeeId(4);
         assertThat(projects.get(0).getTitle()).isEqualTo("Exam Project");
         assertThat(projects.get(1).getTitle()).isEqualTo("Sample Project");
