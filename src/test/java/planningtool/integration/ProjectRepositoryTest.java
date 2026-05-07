@@ -3,6 +3,7 @@ package planningtool.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Employee;
@@ -56,6 +57,34 @@ public class ProjectRepositoryTest {
         assertThat(result.isActive()).isEqualTo(true);
         assertThat(result.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
         assertThat(result.getTimeOfCreation()).isEqualTo(LocalDate.of(2026, 5, 6));
+    }
+
+    @Test
+    void findProjectById_ShouldFindProjectWithCorrespondingId(){
+        Project found = projectRepository.findProjectById(1);
+        assertThat(found.getId()).isEqualTo(1);
+        assertThat(found.getTitle()).isEqualTo("Exam Project");
+        assertThat(found.getDescription()).isEqualTo("Our very first project!");
+        assertThat(found.getTimeOfCreation()).isEqualTo(LocalDate.of(2026, 5, 4));
+        assertThat(found.getProjectManagerId()).isEqualTo(1);
+        assertThat(found.getDeadline()).isEqualTo(LocalDate.of(2026, 5, 26));
+        assertThat(found.isActive()).isTrue();
+    }
+
+    @Test
+    void updateProject_ShouldUpdateProject_Title_Description_Deadline(){
+        Project projectToUpdate = projectRepository.findProjectById(1);
+        projectToUpdate.setTitle("Complex Project");
+        projectToUpdate.setDescription("Very difficult");
+        projectToUpdate.setDeadline(LocalDate.of(2027, 5, 6));
+
+        projectRepository.updateProject(projectToUpdate);
+
+        Project projectAfterUpdate = projectRepository.findProjectById(1);
+
+        assertThat(projectAfterUpdate.getTitle()).isEqualTo("Complex Project");
+        assertThat(projectAfterUpdate.getDescription()).isEqualTo("Very difficult");
+        assertThat(projectAfterUpdate.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
     }
 }
 
