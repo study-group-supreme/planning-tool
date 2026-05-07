@@ -83,10 +83,4 @@ public class ProjectRepository {
         project.setId(keyHolder.getKey().intValue());
         return project;
     }
-    public Project findProjectsByEmployeeId(int id){
-        String sql = """
-                SELECT * FROM employee
-                
-                """
-    }
 }
