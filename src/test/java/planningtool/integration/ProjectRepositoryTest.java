@@ -88,7 +88,7 @@ public class ProjectRepositoryTest {
     }
     @Test
     void findProjectByEmployeeId_ShouldFindAllProjectsConnectedToAnEmployee(){
-        List<Project> projects = projectRepository.findProjectByEmployeeId(4);
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(4);
         assertThat(projects.get(0).getTitle()).isEqualTo("Exam Project");
         assertThat(projects.get(1).getTitle()).isEqualTo("Sample Project");
     }
