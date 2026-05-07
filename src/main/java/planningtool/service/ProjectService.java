@@ -58,7 +58,7 @@ public class ProjectService {
         if (projects == null || projects.isEmpty()){
             throw new NotFoundException("No projects found connected to");
         }
-        return projectRepository.findProjectsByEmployeeId(employeeId);
+        return projects;
     }
 }
 

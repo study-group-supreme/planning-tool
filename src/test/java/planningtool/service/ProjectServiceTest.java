@@ -134,4 +134,9 @@ public class ProjectServiceTest {
         when(projectRepository.findProjectMembersByProjectId(1)).thenReturn(List.of());
         assertThrows(NotFoundException.class, () -> projectService.getProjectMembersByProjectId(1));
     }
+    @Test
+    void getProjectsByEmployeeId_ThrowsNotFoundException_WhenNoProjectsAreFoundConnectedToAnEmployeeId(){
+        when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(List.of());
+        assertThrows(NotFoundException.class, () -> projectService.getProjectsByEmployeeId(1));
+    }
 }
