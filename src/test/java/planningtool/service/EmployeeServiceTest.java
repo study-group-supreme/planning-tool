@@ -40,4 +40,19 @@ public class EmployeeServiceTest {
         assertThrows(BadRequestException.class, () -> employeeService.login("grey@email.com", "5678"));
     }
 
+    @Test
+    void login_ShouldSucceedWithRightCredentials(){
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("Andreas Jensen");
+        employee.setEmail("grey@email.com");
+        employee.setPassword("1234");
+        employee.setProjectManager(true);
+        when(employeeRepository.findEmployeeByEmail("grey@email.com")).thenReturn(employee);
+
+        Employee result = employeeService.login("grey@email.com", "1234");
+        assertEquals(1, result.getId());
+        assertEquals("Andreas Jensen", result.getName());
+    }
+
 }
