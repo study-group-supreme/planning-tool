@@ -38,4 +38,12 @@ public class ProjectController {
         projectService.createProject(project);
         return "redirect:/projects";
     }
+    @GetMapping()
+    public String ShowAllProjectsByEmployeeId(Model model, HttpSession session){
+        int employeeId = (Integer) session.getAttribute("employeeId");
+        model.addAttribute("projects", projectService.getProjectsByEmployeeId(employeeId));
+
+        return "project/list-projects";
+    }
+
 }
