@@ -9,7 +9,7 @@ public class Project {
     private String description;
     private LocalDate timeOfCreation;
     private LocalDate deadline;
-    private int projectManagerId;
+    private int projectCreatorId;
     private boolean isActive;
     private List<Employee> projectMembers;
     private List<Task> tasks;
@@ -56,12 +56,12 @@ public class Project {
         this.deadline = deadline;
     }
 
-    public int getProjectManagerId() {
-        return projectManagerId;
+    public int getProjectCreatorId() {
+        return projectCreatorId;
     }
 
-    public void setProjectManagerId(int projectManagerId) {
-        this.projectManagerId = projectManagerId;
+    public void setProjectCreatorId(int projectCreatorId) {
+        this.projectCreatorId = projectCreatorId;
     }
 
     public boolean isActive() {

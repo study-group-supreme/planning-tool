@@ -14,7 +14,6 @@ import planningtool.exception.BadRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -91,7 +90,7 @@ public class ProjectServiceTest {
         project.setTitle("test");
         project.setDescription("test");
         project.setDeadline(LocalDate.of(2028, 2, 1));
-        project.setProjectManagerId(1);
+        project.setProjectCreatorId(1);
 
         when(projectRepository.insertProject(project)).thenReturn(project);
         Project createdProject = projectService.createProject(project);
@@ -99,7 +98,7 @@ public class ProjectServiceTest {
         assertThat(createdProject.getTitle()).isEqualTo("test");
         assertThat(createdProject.getDescription()).isEqualTo("test");
         assertThat(createdProject.getDeadline()).isEqualTo(LocalDate.of(2028, 2, 1));
-        assertThat(createdProject.getProjectManagerId()).isEqualTo(1);
+        assertThat(createdProject.getProjectCreatorId()).isEqualTo(1);
         assertThat(createdProject.getTimeOfCreation()).isEqualTo(LocalDate.now());
         assertThat(createdProject.isActive()).isTrue();
     }

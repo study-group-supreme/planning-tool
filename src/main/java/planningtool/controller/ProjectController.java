@@ -34,7 +34,7 @@ public class ProjectController {
     @PostMapping("/add")
     public String createProject(@ModelAttribute Project project, HttpSession session) {
         Integer projectManagerId = (Integer) session.getAttribute("employeeId");
-        project.setProjectManagerId(projectManagerId);
+        project.setProjectCreatorId(projectManagerId);
         projectService.createProject(project);
         return "redirect:/projects";
     }

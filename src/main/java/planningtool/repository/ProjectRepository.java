@@ -10,7 +10,6 @@ import planningtool.model.Project;
 import planningtool.model.Task;
 
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -34,7 +33,7 @@ public class ProjectRepository {
         p.setDescription(rs.getString("description"));
         p.setActive(rs.getBoolean("active"));
         p.setDeadline(rs.getDate("deadline").toLocalDate());
-        p.setProjectManagerId(rs.getInt("project_manager_id"));
+        p.setProjectCreatorId(rs.getInt("project_creator_id"));
         p.setTimeOfCreation(rs.getDate("time_of_creation").toLocalDate());
         p.setProjectMembers(findProjectMembersByProjectId(p.getId()));
         p.setTasks(findTasksByProjectId(p.getId()));
@@ -43,7 +42,7 @@ public class ProjectRepository {
 
     public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
-                SELECT employee.id, employee.name, employee.is_project_manager, employee.email, employee.password
+                SELECT employee.id, employee.name, employee.role_id, employee.email, employee.password
                 FROM employee
                 JOIN project_member
                 ON employee.id = project_member.employee_id
@@ -55,7 +54,7 @@ public class ProjectRepository {
     public List<Task> findTasksByProjectId(int id) {
         String sql = """
                 SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
-                task.parent_task_id, task.project_id
+                task.parent_task_id, task.project_id, assigned_member_id
                 FROM task
                 JOIN project
                 ON task.project_id = project.id
@@ -66,7 +65,7 @@ public class ProjectRepository {
 
     public Project insertProject(Project project) {
         String sql = """
-                INSERT INTO project(title, description, time_of_creation, project_manager_id, deadline, active)
+                INSERT INTO project(title, description, time_of_creation, project_creator_id, deadline, active)
                 VALUES(?,?,?,?,?,?)
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -75,7 +74,7 @@ public class ProjectRepository {
             ps.setString(1, project.getTitle());
             ps.setString(2, project.getDescription());
             ps.setObject(3, project.getTimeOfCreation());
-            ps.setInt(4, project.getProjectManagerId());
+            ps.setInt(4, project.getProjectCreatorId());
             ps.setObject(5, project.getDeadline());
             ps.setBoolean(6, project.isActive());
             return ps;
@@ -99,7 +98,7 @@ public class ProjectRepository {
     }
     public List<Project> findProjectsByEmployeeId(int employeeId){
         String sql = """
-                SELECT project.id, project.title, project.description, project.time_of_creation, project.project_manager_id, project.deadline, project.active
+                SELECT project.id, project.title, project.description, project.time_of_creation, project.project_creator_id, project.deadline, project.active
                 FROM project
                 JOIN project_member
                 ON project_member.project_id = project.id
