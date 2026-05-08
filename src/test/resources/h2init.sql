@@ -45,6 +45,7 @@ create table task
     description        varchar(1080),
     time_estimate      decimal(6, 2),
     is_high_priority   boolean,
+    is_done            boolean,
     foreign key (project_id) references project (id) ON DELETE CASCADE,
     foreign key (parent_task_id) references task (id) ON DELETE CASCADE,
     foreign key (assigned_member_id) references employee (id) ON DELETE CASCADE
@@ -96,11 +97,11 @@ VALUES (1, 1),
        (3, 1),
        (4, 1);
 
-INSERT INTO task (project_id, parent_task_id, assigned_member_id, title, description, time_estimate, is_high_priority)
-VALUES (1, null, 2, 'Brew coffee', null, '0.5', true),
-       (1, 1, 3, 'Grind the beans', null, '0.25', true),
-       (1, 1, 1, 'Pour boiling water', null, '0.25', true),
-       (2, null, 4, 'Motivational speech', null, '1', false);
+INSERT INTO task (project_id, parent_task_id, assigned_member_id, title, description, time_estimate, is_high_priority, is_done)
+VALUES (1, null, 2, 'Brew coffee', null, '0.5', true, false),
+       (1, 1, 3, 'Grind the beans', null, '0.25', true,false),
+       (1, 1, 1, 'Pour boiling water', null, '0.25', true,false),
+       (2, null, 4, 'Motivational speech', null, '1', false,false);
 
 INSERT INTO time_entry (employee_id, task_id, time_spent)
 VALUES (1, 2, '0.25'),
