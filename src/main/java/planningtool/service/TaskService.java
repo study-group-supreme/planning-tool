@@ -12,6 +12,7 @@ import planningtool.model.Task;
 import planningtool.repository.TaskRepository;
 
 import javax.xml.crypto.Data;
+import java.math.BigDecimal;
 
 @Service
 public class TaskService {
@@ -34,9 +35,23 @@ public class TaskService {
             throw new DatabaseOperationException("Database error while loading task", e);
         }
     }
-// TODO We need to create some error handling here!
+
+    // TODO We need to validation test these in the TaskServiceTest class!
     @Transactional
     public Task createTask(Task task) {
+        if (task.getTitle() == null || task.getTitle().isBlank()) {
+            throw new BadRequestException("Title cannot be empty");
+        }
+        if (task.getTitle().length() > 255) {
+            throw new BadRequestException("Task title cannot exceed 255 characters");
+        }
+        if (task.getDescription().length() > 1080) {
+            throw new BadRequestException("Task description cannot exceed 1080 characters");
+        }
+        if (task.getTimeEstimate() != null && task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0) {
+            throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
+        }
+
         try {
             return taskRepository.insertTask(task);
         } catch (DataIntegrityViolationException e) {
