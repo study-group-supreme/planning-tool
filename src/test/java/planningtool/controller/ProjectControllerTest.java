@@ -3,6 +3,7 @@ package planningtool.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import planningtool.service.EmployeeService;
@@ -46,6 +47,8 @@ public class ProjectControllerTest {
 
     @Test
     void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));
