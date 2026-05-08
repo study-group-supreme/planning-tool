@@ -23,6 +23,7 @@ public class TaskRepository {
         task.setDescription(rs.getString("description"));
         task.setTimeEstimate(rs.getBigDecimal("time_estimate"));
         task.setHighPriority(rs.getBoolean("is_high_priority"));
+        task.setDone(rs.getBoolean("is_done"));
         return task;
     };
 
