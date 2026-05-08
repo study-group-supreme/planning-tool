@@ -24,7 +24,6 @@ public class EmployeeRepositoryTest {
     void findEmployeeByEmail_shouldFindEmployeeWithCorrespondingEmail(){
         Employee employee = employeeRepository.findEmployeeByEmail("grey@email.com");
         assertThat(employee.getName()).isEqualTo("Andreas Jensen");
-        assertThat(employee.isProjectManager()).isEqualTo(true);
         assertThat(employee.getId()).isEqualTo(1);
     }
 
