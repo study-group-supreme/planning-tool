@@ -13,6 +13,7 @@ public class Task {
     private BigDecimal timeEstimate;
     private List<TimeEntry> timeEntries;
     private boolean isHighPriority;
+    private boolean isDone;
 
     public Task(){}
 
@@ -86,5 +87,13 @@ public class Task {
 
     public void setAssignedMemberId(int assignedMemberId) {
         this.assignedMemberId = assignedMemberId;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }
