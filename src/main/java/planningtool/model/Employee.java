@@ -3,7 +3,7 @@ package planningtool.model;
 public class Employee {
 
     private int id;
-    private int roleID;
+    private int roleId;
     private String name;
     private String email;
     private String password;
@@ -51,11 +51,11 @@ public class Employee {
         isProjectManager = projectManager;
     }
 
-    public int getRoleID() {
-        return roleID;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

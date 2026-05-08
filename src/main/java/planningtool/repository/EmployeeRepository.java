@@ -12,7 +12,7 @@ public class EmployeeRepository {
     private final RowMapper<Employee> employeeRowMapper = (rs, rowNum) -> {
         Employee employee = new Employee();
         employee.setId(rs.getInt("id"));
-        employee.setRoleID(rs.getInt("role_id"));
+        employee.setRoleId(rs.getInt("role_id"));
         employee.setName(rs.getString("name"));
         employee.setEmail(rs.getString("email"));
         employee.setPassword(rs.getString("password"));
