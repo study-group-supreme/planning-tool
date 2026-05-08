@@ -3,6 +3,7 @@ package planningtool.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import planningtool.service.EmployeeService;
@@ -26,20 +27,30 @@ public class ProjectControllerTest {
     @MockitoBean
     EmployeeService employeeService;
 
-@Test
-    void createProject_shouldShowCreateProjectForm() throws Exception{
-    mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
-            .andExpect(status().isOk()).
-            andExpect(view().name("project/create-project"))
-            .andExpect(model().attributeExists("project"));
-}
-@Test
-    void createProject_shouldPostCreateFormAndRedirectToProjects() throws Exception{
-    mockMvc.perform(post("/projects/add").sessionAttr("employeeId", 1).
-            param("title", "title")
-                    .param("description", "description")
-                    .param("deadline", "2028-02-02"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/projects"));
-}
+    @Test
+    void createProject_shouldShowCreateProjectForm() throws Exception {
+        mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk()).
+                andExpect(view().name("project/create-project"))
+                .andExpect(model().attributeExists("project"));
+    }
+
+    @Test
+    void createProject_shouldPostCreateFormAndRedirectToProjects() throws Exception {
+        mockMvc.perform(post("/projects/add").sessionAttr("employeeId", 1).
+                        param("title", "title")
+                        .param("description", "description")
+                        .param("deadline", "2028-02-02"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("project/list-projects"));
+    }
 }
