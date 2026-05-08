@@ -40,7 +40,7 @@ public class AuthControllerTest {
         employee.setName("Andreas Jensen");
         employee.setEmail("grey@email.com");
         employee.setPassword("1234");
-        employee.setProjectManager(true);
+        employee.setRoleID(2);
 
         when(employeeService.login("grey@email.com", "1234")).thenReturn(employee);
 
