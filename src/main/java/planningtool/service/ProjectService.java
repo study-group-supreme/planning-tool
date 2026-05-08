@@ -7,6 +7,7 @@ import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
+import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 
 import java.time.LocalDate;
@@ -15,9 +16,11 @@ import java.util.List;
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
         this.projectRepository = projectRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
@@ -51,6 +54,17 @@ public class ProjectService {
             throw new NotFoundException("No project members found for this project" + id);
         }
         return members;
+    }
+
+    public List<Project> getProjectsByEmployeeId(int employeeId) {
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
+        Employee employee = employeeRepository.findEmployeeById(employeeId);
+        if (projects == null || projects.isEmpty()) {
+            //Need help with good error message
+            throw new NotFoundException("No projects found connected to " + employee.getName());
+
+        }
+        return projects;
     }
 }
 
