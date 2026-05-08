@@ -8,7 +8,7 @@ create table role
 (
     id    int primary key AUTO_INCREMENT,
     title varchar(225) UNIQUE NOT NULL,
-    price_per_hour double(6,2)NOT NULL
+    price_per_hour DECIMAL(6,2)NOT NULL
 );
 create table employee
 (
