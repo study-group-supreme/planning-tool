@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Task;
+import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
 
 import java.math.BigDecimal;
@@ -58,5 +59,20 @@ public class TaskRepositoryTest {
         assertThat(result.getTimeEstimate()).isEqualByComparingTo("0.25");
         assertThat(result.isHighPriority()).isEqualTo(true);
         assertThat(result.isDone()).isFalse();
+    }
+
+    @Test
+    void insertTimeEntry_shouldCreateNewTimeEntry(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(2);
+        entry.setTimeSpent(new BigDecimal("1.5"));
+
+        TimeEntry saved = taskRepository.insertTimeEntry(entry);
+
+        assertThat(saved.getId()).isGreaterThan(0);
+        assertThat(saved.getEmployeeId()).isEqualTo(1);
+        assertThat(saved.getTaskId()).isEqualTo(2);
+        assertThat(saved.getTimeSpent()).isEqualByComparingTo("1.5");
     }
 }

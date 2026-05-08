@@ -75,7 +75,7 @@ public class TaskRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setInt(1, timeEntry.getEmployeeId());
             ps.setInt(2, timeEntry.getTaskId());
             ps.setBigDecimal(3, timeEntry.getTimeSpent());
