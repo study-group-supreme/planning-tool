@@ -35,7 +35,7 @@ public class EmployeeServiceTest {
         employee.setName("Andreas Jensen");
         employee.setEmail("grey@email.com");
         employee.setPassword("1234");
-        employee.setProjectManager(true);
+        employee.setRoleId(2);
         when(employeeRepository.findEmployeeByEmail("grey@email.com")).thenReturn(employee);
         assertThrows(BadRequestException.class, () -> employeeService.login("grey@email.com", "5678"));
     }
@@ -47,7 +47,7 @@ public class EmployeeServiceTest {
         employee.setName("Andreas Jensen");
         employee.setEmail("grey@email.com");
         employee.setPassword("1234");
-        employee.setProjectManager(true);
+        employee.setRoleId(2);
         when(employeeRepository.findEmployeeByEmail("grey@email.com")).thenReturn(employee);
 
         Employee result = employeeService.login("grey@email.com", "1234");
