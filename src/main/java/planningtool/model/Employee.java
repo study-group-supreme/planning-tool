@@ -7,7 +7,6 @@ public class Employee {
     private String name;
     private String email;
     private String password;
-    private boolean isProjectManager;
 
     public Employee(){}
 
@@ -41,14 +40,6 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isProjectManager() {
-        return isProjectManager;
-    }
-
-    public void setProjectManager(boolean projectManager) {
-        isProjectManager = projectManager;
     }
 
     public int getRoleId() {
