@@ -45,6 +45,7 @@ create table task
     description        varchar(1080),
     time_estimate      decimal(6, 2),
     is_high_priority   boolean,
+    is_done            boolean,
     foreign key (project_id) references project (id) ON DELETE CASCADE,
     foreign key (parent_task_id) references task (id) ON DELETE CASCADE,
     foreign key (assigned_member_id) references employee (id) ON DELETE CASCADE
