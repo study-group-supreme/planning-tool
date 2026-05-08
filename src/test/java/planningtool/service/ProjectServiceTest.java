@@ -26,6 +26,8 @@ public class ProjectServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+    @Mock
+    private  EmployeeRepository employeeRepository;
 
     @InjectMocks
     private ProjectService projectService;
