@@ -26,6 +26,8 @@ public class ProjectServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+    @Mock
+    private  EmployeeRepository employeeRepository;
 
     @InjectMocks
     private ProjectService projectService;
@@ -137,7 +139,10 @@ public class ProjectServiceTest {
 
     @Test
     void getProjectsByEmployeeId_ThrowsNotFoundException_WhenNoProjectsAreFoundConnectedToAnEmployeeId() {
+        Employee employee = new Employee();
+        employee.setId(1);
         when(projectRepository.findProjectsByEmployeeId(1)).thenReturn(List.of());
+        when(employeeRepository.findEmployeeById(1)).thenReturn(employee);
         assertThrows(NotFoundException.class, () -> projectService.getProjectsByEmployeeId(1));
     }
 
