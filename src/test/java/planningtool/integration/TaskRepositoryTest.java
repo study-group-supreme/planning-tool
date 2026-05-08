@@ -27,6 +27,7 @@ public class TaskRepositoryTest {
 
         assertThat(task.getTitle()).isEqualTo("Brew coffee");
         assertThat(task.isHighPriority()).isEqualTo(true);
+        assertThat(task.getAssignedMemberId()).isEqualTo(2);
         assertThat(task.getTimeEstimate()).isEqualByComparingTo("0.5");
         assertThat(task.getProjectId()).isEqualTo(1);
         assertThat(task.getParentTaskId()).isNull();
