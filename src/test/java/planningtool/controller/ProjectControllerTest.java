@@ -42,4 +42,9 @@ public class ProjectControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/projects"));
 }
+@Test
+    void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+    mockMvc.perform(get("/projects").sessionAttr("employeeId", 1)).andExpect(status().isOk()
+            ).andExpect(view().name("project/list-projects"));
+}
 }
