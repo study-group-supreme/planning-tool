@@ -40,6 +40,7 @@ public class TaskRepositoryTest {
         Task newTask = new Task();
         newTask.setProjectId(1);
         newTask.setParentTaskId(2);
+        newTask.setAssignedMemberId(1);
         newTask.setTitle("Stack blank papers in a neat pile");
         newTask.setDescription("Extra focused on no corners poking out whatsoever");
         newTask.setTimeEstimate(new BigDecimal("0.25"));
@@ -49,6 +50,7 @@ public class TaskRepositoryTest {
 
         assertThat(result.getProjectId()).isEqualTo(1);
         assertThat(result.getParentTaskId()).isEqualTo(2);
+        assertThat(result.getAssignedMemberId()).isEqualTo(1);
         assertThat(result.getTitle()).isEqualTo("Stack blank papers in a neat pile");
         assertThat(result.getDescription()).isEqualTo("Extra focused on no corners poking out whatsoever");
         assertThat(result.getTimeEstimate()).isEqualByComparingTo("0.25");
