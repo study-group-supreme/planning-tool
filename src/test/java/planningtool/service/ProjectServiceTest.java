@@ -110,12 +110,12 @@ public class ProjectServiceTest {
         employee.setEmail("hans@email.com");
         employee.setId(1);
         employee.setPassword("123");
-        employee.setProjectManager(true);
+        employee.setRoleId(1);
 
         Employee employee1 = new Employee();
         employee1.setName("Fin");
         employee1.setId(2);
-        employee1.setProjectManager(false);
+        employee1.setRoleId(2);
         employee1.setPassword("123");
         employee1.setEmail("fin@email.com");
 
