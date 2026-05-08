@@ -26,7 +26,7 @@ public class ProjectController {
     }
 
     @GetMapping()
-    public String ShowAllProjectsByEmployeeId(Model model, HttpSession session) {
+    public String ShowListOfProjectsByEmployeeId(Model model, HttpSession session) {
         int employeeId = (Integer) session.getAttribute("employeeId");
         model.addAttribute("projects", projectService.getProjectsByEmployeeId(employeeId));
 
