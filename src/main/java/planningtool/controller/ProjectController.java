@@ -25,11 +25,20 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
+    @GetMapping()
+    public String ShowListOfProjectsByEmployeeId(Model model, HttpSession session) {
+        int employeeId = (Integer) session.getAttribute("employeeId");
+        model.addAttribute("projects", projectService.getProjectsByEmployeeId(employeeId));
+
+        return "project/list-projects";
+    }
+
     @GetMapping("/add")
     public String createProject(Model model) {
         model.addAttribute("project", new Project());
         return "project/create-project";
     }
+
     //Needs to have session included and needs a /projects Page
     @PostMapping("/add")
     public String createProject(@ModelAttribute Project project, HttpSession session) {
@@ -38,4 +47,5 @@ public class ProjectController {
         projectService.createProject(project);
         return "redirect:/projects";
     }
+
 }
