@@ -32,6 +32,7 @@ public class TaskRepositoryTest {
         assertThat(task.getProjectId()).isEqualTo(1);
         assertThat(task.getParentTaskId()).isNull();
         assertThat(task.getDescription()).isNull();
+        assertThat(task.isDone()).isFalse();
         ;
     }
 
@@ -55,6 +56,5 @@ public class TaskRepositoryTest {
         assertThat(result.getDescription()).isEqualTo("Extra focused on no corners poking out whatsoever");
         assertThat(result.getTimeEstimate()).isEqualByComparingTo("0.25");
         assertThat(result.isHighPriority()).isEqualTo(true);
-
     }
 }
