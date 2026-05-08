@@ -54,7 +54,7 @@ public class ProjectRepository {
     public List<Task> findTasksByProjectId(int id) {
         String sql = """
                 SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
-                task.parent_task_id, task.project_id, assigned_member_id
+                task.parent_task_id, task.project_id, task.assigned_member_id
                 FROM task
                 JOIN project
                 ON task.project_id = project.id
