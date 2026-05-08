@@ -37,8 +37,8 @@ public class TaskRepository {
 
     public Task insertTask(Task task) {
         String sql = """
-                INSERT INTO task(project_id, parent_task_id, assigned_member_id, title, description, time_estimate, is_high_priority)
-                VALUES(?,?,?,?,?,?,?)
+                INSERT INTO task(project_id, parent_task_id, assigned_member_id, title, description, time_estimate, is_high_priority, is_done)
+                VALUES(?,?,?,?,?,?,?,?)
                 """;
         KeyHolder keyholder = new GeneratedKeyHolder();
         jdbc.update(con -> {
@@ -50,6 +50,7 @@ public class TaskRepository {
             ps.setString(5, task.getDescription());
             ps.setBigDecimal(6, task.getTimeEstimate());
             ps.setBoolean(7, task.isHighPriority());
+            ps.setBoolean(8, task.isDone());
             return ps;
         }, keyholder);
         task.setId(keyholder.getKey().intValue());
