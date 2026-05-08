@@ -32,6 +32,7 @@ public class TaskRepositoryTest {
         assertThat(task.getProjectId()).isEqualTo(1);
         assertThat(task.getParentTaskId()).isNull();
         assertThat(task.getDescription()).isNull();
+        assertThat(task.isDone()).isFalse();
         ;
     }
 
@@ -45,6 +46,7 @@ public class TaskRepositoryTest {
         newTask.setDescription("Extra focused on no corners poking out whatsoever");
         newTask.setTimeEstimate(new BigDecimal("0.25"));
         newTask.setHighPriority(true);
+        newTask.setDone(false);
 
         Task result = taskRepository.insertTask(newTask);
 
@@ -55,6 +57,6 @@ public class TaskRepositoryTest {
         assertThat(result.getDescription()).isEqualTo("Extra focused on no corners poking out whatsoever");
         assertThat(result.getTimeEstimate()).isEqualByComparingTo("0.25");
         assertThat(result.isHighPriority()).isEqualTo(true);
-
+        assertThat(result.isDone()).isFalse();
     }
 }
