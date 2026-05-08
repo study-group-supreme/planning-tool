@@ -16,11 +16,9 @@ import java.util.List;
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final EmployeeRepository employeeRepository;
 
-    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
+    public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
-        this.employeeRepository=employeeRepository;
     }
 
     @Transactional
