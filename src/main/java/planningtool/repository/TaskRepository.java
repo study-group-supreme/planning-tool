@@ -6,6 +6,7 @@ import planningtool.model.Task;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import planningtool.model.TimeEntry;
 
 import java.sql.PreparedStatement;
 
@@ -64,6 +65,24 @@ public class TaskRepository {
                 FROM task
                 WHERE id = ?""";
         return jdbc.queryForObject(sql, taskRowMapper, taskId);
+    }
+
+    public TimeEntry insertTimeEntry(TimeEntry timeEntry) {
+        String sql = """
+                INSERT INTO time_entry(employee_id, task_id, time_spent) 
+                VALUES (?,?,?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, timeEntry.getEmployeeId());
+            ps.setInt(2, timeEntry.getTaskId());
+            ps.setBigDecimal(3, timeEntry.getTimeSpent());
+            return ps;
+        }, keyHolder);
+        timeEntry.setId(keyHolder.getKey().intValue());
+        return timeEntry;
     }
 
 
