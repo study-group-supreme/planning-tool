@@ -50,8 +50,7 @@ public class ProjectService {
     public List<Employee> getProjectMembersByProjectId(int id) {
         List<Employee> members = projectRepository.findProjectMembersByProjectId(id);
         if (members == null || members.isEmpty()) {
-            //Need method to findProjectsById so we can call it insted of id in error message
-            throw new NotFoundException("No project members found for this project" + id);
+            throw new NotFoundException("No project members found for this project " + projectRepository.findProjectById(id).getTitle());
         }
         return members;
     }
