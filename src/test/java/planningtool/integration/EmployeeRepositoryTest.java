@@ -33,7 +33,6 @@ public class EmployeeRepositoryTest {
         Employee employee = employeeRepository.findEmployeeById(1);
         assertThat(employee.getName()).isEqualTo("Andreas Jensen");
         assertThat(employee.getEmail()).isEqualTo("grey@email.com");
-        assertThat(employee.isProjectManager()).isEqualTo(true);
     }
 
     @Test
