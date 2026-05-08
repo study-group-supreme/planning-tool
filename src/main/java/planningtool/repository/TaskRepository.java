@@ -18,6 +18,7 @@ public class TaskRepository {
         task.setId(rs.getInt("id"));
         task.setProjectId(rs.getInt("project_id"));
         task.setParentTaskId((Integer) rs.getObject("parent_task_id", Integer.class));
+        task.setAssignedMemberId(rs.getInt("assigned_member_id"));
         task.setTitle(rs.getString("title"));
         task.setDescription(rs.getString("description"));
         task.setTimeEstimate(rs.getBigDecimal("time_estimate"));
