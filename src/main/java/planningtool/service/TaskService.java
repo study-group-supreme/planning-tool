@@ -61,7 +61,7 @@ public class TaskService {
             throw new BadRequestException("Time spent must be a positive number");
         }
 
-        // TODO: Optionally, task-exists-check like try/catch block on line 31 above + a similar check for employee-exists additionally (employeeRepo would need to be imported tho)
+        // TODO: Optionally, a task-exists-check like the try/catch block on line 31 above + a similar check for employee-exists (employeeRepo would need to be imported tho)
 //        try {
 //            taskRepository.findTaskById(timeEntry.getTaskId());
 //        } catch (EmptyResultDataAccessException e) {
