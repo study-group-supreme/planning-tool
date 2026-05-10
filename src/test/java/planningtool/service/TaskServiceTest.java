@@ -78,4 +78,74 @@ public class TaskServiceTest {
         verify(taskRepository).insertTimeEntry(entry);
     }
 
+    @Test
+    void createTimeEntry_throwsBadRequest_whenNullEntry(){
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> taskService.createTimeEntry(null)
+        );
+        assertThat(ex.getMessage()).contains("cannot be null");
+    }
+
+    @Test
+    void createTimeEntry_throwsBadRequest_whenInvalidTaskId(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+        entry.setTaskId(0); // invalid
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("Invalid task id");
+    }
+
+    @Test
+    void createTimeEntry_throwsBadRequest_whenTimeSpentNull(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(2);
+        entry.setTimeSpent(null); // invalid
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("positive number");
+    }
+
+    @Test
+    void createTimeEntry_throwsBadRequest_whenTimeSpentZero(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(2);
+        entry.setTimeSpent(BigDecimal.ZERO);
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("must be a positive number");
+    }
+
+    @Test
+    void createTimeEntry_throwsBadRequest_whenTimeSpentNegative() {
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(2);
+        entry.setTimeSpent(new BigDecimal("-1.0"));
+
+        BadRequestException ex = assertThrows(
+                BadRequestException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("positive number");
+    }
+
+
 }
