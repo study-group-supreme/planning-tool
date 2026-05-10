@@ -5,7 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
@@ -147,5 +149,22 @@ public class TaskServiceTest {
         assertThat(ex.getMessage()).contains("positive number");
     }
 
+    @Test
+    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFails(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(2);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+
+        when(taskRepository.insertTimeEntry(entry))
+                .thenThrow(new DataIntegrityViolationException("DB error"));
+
+        DatabaseOperationException ex = assertThrows(
+                DatabaseOperationException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("Failed to create time entry");
+    }
 
 }
