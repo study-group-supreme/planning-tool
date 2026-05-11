@@ -50,5 +50,32 @@ public class TaskServiceTest {
         assertFalse(createdTask.isHighPriority());
         assertThat(createdTask.getTimeEstimate()).isEqualByComparingTo("0.25");
     }
+    @Test
+    void createTask_ThrowsBadRequestException_WhenTitleIsEmpty() {
+        assertThrows(BadRequestException.class, () -> taskService.createTask(new Task()).getTitle().isEmpty());
+    }
+
+    @Test
+    void createTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
+        Task task = new Task();
+        task.setTitle("testTask");
+        task.setDescription("B".repeat(1081));
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+
+    @Test
+    void createTask_ThrowsBadRequestException_WhenTitleIsOver255Characters() {
+        Task task = new Task();
+        task.setTitle("A".repeat(256));
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+
+    @Test
+    void createTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit () {
+        Task task = new Task();
+        task.setTimeEstimate(new BigDecimal("10000.99"));
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+
 
 }
