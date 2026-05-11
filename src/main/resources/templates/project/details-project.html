@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Project</title>
+</head>
+<body>
+<div class="-details">
+    <h1 th:text="${project.title}"></h1>
+    <p th:text="${project.description}"></p>
+</div>
+<div class="dates">
+    <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
+    <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
+</div>
+<table class="member-list">
+    <tr>
+        <td><strong>Project Members</strong></td>
+    </tr>
+    <tr th:each="member : ${project.getProjectMembers()}">
+        <td th:text="${member.name}"></td>
+    </tr>
+</table>
+<table class="task-list">
+    <tr>
+        <th>
+            <strong>Tasks</strong>
+        </th>
+        <th>
+            <p>Parent Task</p>
+        </th>
+    </tr>
+    <tr th:each="task : ${project.getTasks()}">
+        <td th:text="${task.title}"></td>
+        <td th:if="${task.getParentTaskId()} != null">
+            <span th:each="subTask : ${project.getTasks()}">
+                <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">
+                    <span th:text="${subTask.title}"></span>
+                </span>
+            </span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

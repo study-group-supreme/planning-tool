@@ -53,7 +53,7 @@ public class ProjectService {
     }
 
 
-    public List<Task> getTaskByProjectId(int id) {
+    public List<Task> getTasksByProjectId(int id) {
         return projectRepository.findTasksByProjectId(id);
     }
 
