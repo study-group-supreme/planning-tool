@@ -6,7 +6,7 @@
 </head>
 <body>
 <form th:action="@{/tasks/add}" th:object="${task}" method="post">
-    <input type="hidden" th:field="*{projectId}" th:value="${projectId}">
+    <input type="hidden" th:field="*{projectId}">
     <label>
         Title: <input type="text" th:field="*{title}" maxlength="225">
     </label>

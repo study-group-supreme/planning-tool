@@ -23,9 +23,11 @@ public class TaskController {
 
     @GetMapping("/add")
     public String showAddTaskForm(Model model, @RequestParam int projectId){
+        Task task = new Task();
+        task.setProjectId(projectId);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
         model.addAttribute("projectId", projectId);
-        model.addAttribute("task", new Task());
+        model.addAttribute("task", task);
         return "task/create-task";
     }
 
