@@ -3,6 +3,7 @@ package planningtool.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Task;
@@ -21,6 +22,9 @@ public class TaskRepositoryTest {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private JdbcTemplate jdbc;
 
     @Test
     void findTaskById_returnsCorrectTask() {
@@ -74,5 +78,23 @@ public class TaskRepositoryTest {
         assertThat(saved.getEmployeeId()).isEqualTo(1);
         assertThat(saved.getTaskId()).isEqualTo(2);
         assertThat(saved.getTimeSpent()).isEqualByComparingTo("1.5");
+    }
+
+    @Test
+    void deleteTimeEntryById_removesExistingEntry() {
+        // verify entry id=1 exists in h2init
+        Integer before = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM time_entry WHERE id = 1",
+                Integer.class
+        );
+        assertThat(before).isEqualTo(1);
+
+        taskRepository.deleteTimeEntryById(1);
+
+        Integer after = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM time_entry WHERE id = 1",
+                Integer.class
+        );
+        assertThat(after).isEqualTo(0);
     }
 }
