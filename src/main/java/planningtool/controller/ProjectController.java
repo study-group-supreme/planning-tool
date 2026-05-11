@@ -47,7 +47,8 @@ public class ProjectController {
 
     @GetMapping("/{projectId}")
     public String showSpecificProject(@PathVariable int projectId, Model model){
-        model.addAttribute("project", projectService)
+        model.addAttribute("project", projectService.getProjectById(projectId));
+        return "project/details-project";
     }
 
 }
