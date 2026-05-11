@@ -49,7 +49,7 @@ public class TaskService {
     @Transactional
     public TimeEntry createTimeEntry(TimeEntry timeEntry) {
         if (timeEntry == null) {
-            throw new BadRequestException("Time entry cannot be null");
+            throw new BadRequestException("Time entry cannot be empty");
         }
         if (timeEntry.getTaskId() <= 0) {
             throw new BadRequestException("Invalid task id");
@@ -61,14 +61,13 @@ public class TaskService {
             throw new BadRequestException("Time spent must be a positive number");
         }
 
-        // TODO: Optionally, a task-exists-check like the try/catch block on line 31 above + a similar check for employee-exists (employeeRepo would need to be imported tho)
-//        try {
-//            taskRepository.findTaskById(timeEntry.getTaskId());
-//        } catch (EmptyResultDataAccessException e) {
-//            throw new NotFoundException("Nothing to show for task with id:" + timeEntry.getTaskId());
-//        } catch (DataAccessException e) {
-//            throw new DatabaseOperationException("Database error while loading task", e);
-//        }
+        try {
+            taskRepository.findTaskById(timeEntry.getTaskId());
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Nothing to show for task with id:" + timeEntry.getTaskId());
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Database error while loading task", e);
+        }
 
 
         try {

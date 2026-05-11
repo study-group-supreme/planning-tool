@@ -5,9 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
@@ -55,7 +58,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_shouldCllRepositoryWhenValid() {
+    void createTimeEntry_shouldCallRepositoryWhenValid() {
         // A TimeEntry populated with valid fields
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
@@ -86,7 +89,7 @@ public class TaskServiceTest {
                 BadRequestException.class,
                 () -> taskService.createTimeEntry(null)
         );
-        assertThat(ex.getMessage()).contains("cannot be null");
+        assertThat(ex.getMessage()).contains("cannot be empty");
     }
 
     @Test
@@ -165,6 +168,45 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Failed to create time entry");
+    }
+
+    @Test
+    void createTimeEntry_throwsNotFound_whenTaskIdNotFoundInRepository(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(99);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+
+        // Simulate repository not finding the task
+        when(taskRepository.findTaskById(99))
+                .thenThrow(new EmptyResultDataAccessException(1));
+
+        NotFoundException ex = assertThrows(
+                NotFoundException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("Nothing to show");
+    }
+
+    @Test
+    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFailsForFetchingTaskId(){
+        TimeEntry entry = new TimeEntry();
+        entry.setEmployeeId(1);
+        entry.setTaskId(99);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+
+        // Simulate database failure unrelated to "not found"
+        when(taskRepository.findTaskById(99))
+                .thenThrow(new DataAccessException("DB failure") {});
+
+        DatabaseOperationException ex = assertThrows(
+                DatabaseOperationException.class,
+                () -> taskService.createTimeEntry(entry)
+        );
+
+        assertThat(ex.getMessage()).contains("Database error");
+
     }
 
 }
