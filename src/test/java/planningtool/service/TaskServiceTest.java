@@ -70,9 +70,9 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTask_ThrowsBadRequestException_WhenTitleIsOver255Characters() {
+    void createTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
         Task task = new Task();
-        task.setTitle("A".repeat(256));
+        task.setTitle("A".repeat(226));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
     }
 
