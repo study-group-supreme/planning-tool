@@ -6,8 +6,10 @@ import planningtool.model.Task;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import planningtool.model.TimeEntry;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 
 @Repository
@@ -27,6 +29,16 @@ public class TaskRepository {
         return task;
     };
 
+    private final RowMapper<TimeEntry> timeEntryRowMapper = (rs, rowNum) -> {
+        TimeEntry entry = new TimeEntry();
+        entry.setId(rs.getInt("id"));
+        entry.setEmployeeId(rs.getInt("employee_id"));
+        entry.setTaskId(rs.getInt("task_id"));
+        entry.setTimeOfCreation(rs.getTimestamp("time_of_creation").toLocalDateTime());
+        entry.setTimeSpent(rs.getBigDecimal("time_spent"));
+        return entry;
+    };
+
     public TaskRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
@@ -34,6 +46,8 @@ public class TaskRepository {
     public RowMapper<Task> getTaskRowMapper() {
         return taskRowMapper;
     }
+
+    public RowMapper<TimeEntry> getTimeEntryRowMapper(){ return  timeEntryRowMapper; }
 
     public Task insertTask(Task task) {
         String sql = """
@@ -64,6 +78,39 @@ public class TaskRepository {
                 FROM task
                 WHERE id = ?""";
         return jdbc.queryForObject(sql, taskRowMapper, taskId);
+    }
+
+    public TimeEntry insertTimeEntry(TimeEntry timeEntry) {
+        String sql = """
+                INSERT INTO time_entry(employee_id, task_id, time_spent) 
+                VALUES (?,?,?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
+            ps.setInt(1, timeEntry.getEmployeeId());
+            ps.setInt(2, timeEntry.getTaskId());
+            ps.setBigDecimal(3, timeEntry.getTimeSpent());
+            return ps;
+        }, keyHolder);
+        timeEntry.setId(keyHolder.getKey().intValue());
+        return timeEntry;
+    }
+
+    public List<TimeEntry> findTimeEntriesByTaskId(int taskId) {
+        String sql = """
+                SELECT id, employee_id, task_id, time_of_creation. time_spent
+                FROM time_entry
+                WHERE task_id = ?
+                ORDER BY time_of_creation ASC
+                """;
+        return jdbc.query(sql, timeEntryRowMapper, taskId);
+    }
+
+    public void deleteTimeEntryById(int id) {
+        String sql = "DELETE FROM time_entry WHERE id = ?";
+        jdbc.update(sql, id);
     }
 
 

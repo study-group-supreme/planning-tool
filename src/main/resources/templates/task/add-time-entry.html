@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Time Entry</title>
+</head>
+<body>
+
+<h2>Add Time Entry</h2>
+
+<form th:action="@{|/tasks/${timeEntry.taskId}/time-entry|}"
+      th:object="${timeEntry}"
+      method="post">
+
+    <p>
+        <label>Hours spent</label><br>
+        <input type="number" step="0.25" th:field="*{timeSpent}">
+    </p>
+
+    <button type="submit">Save</button>
+
+    <div th:if="${error}">
+        <p th:text="${error}" style="color:red"></p>
+    </div>
+
+</form>
+
+</body>
+</html>

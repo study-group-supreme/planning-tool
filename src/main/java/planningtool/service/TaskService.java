@@ -9,6 +9,7 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Task;
+import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
 
 import javax.xml.crypto.Data;
@@ -59,5 +60,36 @@ public class TaskService {
         }
     }
 
+    @Transactional
+    public TimeEntry createTimeEntry(TimeEntry timeEntry) {
+        if (timeEntry == null) {
+            // For future us: DIFFERENT EXCEPTION HERE!!!!!!!!
+            throw new RuntimeException("Error: Time Entry was null");
+        }
+        if (timeEntry.getTaskId() <= 0) {
+            throw new BadRequestException("Invalid task id");
+        }
+
+
+        BigDecimal timeSpent = timeEntry.getTimeSpent();
+        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <=0) {
+            throw new BadRequestException("Time spent must be a positive number");
+        }
+
+        try {
+            taskRepository.findTaskById(timeEntry.getTaskId());
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Nothing to show for task with id:" + timeEntry.getTaskId());
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Database error while loading task", e);
+        }
+
+
+        try {
+            return taskRepository.insertTimeEntry(timeEntry);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseOperationException("Failed to create time entry", e);
+        }
+    }
 
 }
