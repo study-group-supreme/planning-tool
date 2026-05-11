@@ -7,23 +7,17 @@
 <body>
 <table>
     <tr>
-<tr>Project</tr> <tr>Description</tr> <tr>Deadline</tr> <tr>Project Members </tr>
+        <th>Project</th>
+        <th>Description</th>
+        <th>Deadline</th>
     </tr>
     <tr th:each="project : ${projects}">
         <td th:text="${project.getTitle()}"></td>
         <td th:text="${project.getDescription()}"></td>
         <td th:text="${project.getDeadline()}"></td>
-        <td>
-            <span th:each="employee : ${project.getProjectMembers()}">
-                <span th:text="${employee.getName()}"></span>
-            </span>
-
-        </td>
-
     </tr>
 
 </table>
-
 
 
 </body>

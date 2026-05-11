@@ -3,10 +3,7 @@ package planningtool.controller;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import planningtool.model.Project;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
@@ -46,6 +43,12 @@ public class ProjectController {
         project.setProjectCreatorId(projectManagerId);
         projectService.createProject(project);
         return "redirect:/projects";
+    }
+
+    @GetMapping("/{projectId}")
+    public String showSpecificProject(@PathVariable int projectId, Model model){
+        model.addAttribute("project", projectService.getProjectById(projectId));
+        return "project/details-project";
     }
 
 }

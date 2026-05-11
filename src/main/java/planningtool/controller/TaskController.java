@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.model.Task;
 import planningtool.model.TimeEntry;
+import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
 @Controller
@@ -12,11 +14,28 @@ import planningtool.service.TaskService;
 public class TaskController {
 
     private final TaskService taskService;
+    private final ProjectService projectService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, ProjectService projectService) {
         this.taskService = taskService;
+        this.projectService = projectService;
     }
 
+    @GetMapping("/add")
+    public String showAddTaskForm(Model model, @RequestParam int projectId){
+        Task task = new Task();
+        task.setProjectId(projectId);
+        model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("task", task);
+        return "task/create-task";
+    }
+
+    @PostMapping("/add")
+    public String saveTask(@ModelAttribute Task task){
+        taskService.createTask(task);
+        return "redirect:/projects/" + task.getProjectId();
+    }
     // TODO: finish designing task overview and apply time entries as needed
     // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")
