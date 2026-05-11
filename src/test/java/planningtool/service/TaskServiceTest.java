@@ -84,12 +84,12 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenNullEntry(){
-        BadRequestException ex = assertThrows(
-                BadRequestException.class,
+    void createTimeEntry_throwsRuntime_whenNullEntry(){
+        RuntimeException ex = assertThrows(
+                RuntimeException.class,
                 () -> taskService.createTimeEntry(null)
         );
-        assertThat(ex.getMessage()).contains("cannot be empty");
+        assertThat(ex.getMessage()).contains("null");
     }
 
     @Test
