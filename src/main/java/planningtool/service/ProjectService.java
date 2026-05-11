@@ -1,5 +1,6 @@
 package planningtool.service;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
@@ -21,6 +22,15 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+    }
+
+    // TODO Might need more exception handling
+    public Project getProjectById(int id){
+        try{
+            return projectRepository.findProjectById(id);
+        } catch (EmptyResultDataAccessException e){
+            throw new NotFoundException("Project not found");
+        }
     }
 
     @Transactional
