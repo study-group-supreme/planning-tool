@@ -49,7 +49,7 @@ public class TaskService {
     @Transactional
     public TimeEntry createTimeEntry(TimeEntry timeEntry) {
         if (timeEntry == null) {
-            throw new BadRequestException("Time entry cannot be empty");
+            throw new BadRequestException("Error: Time Entry was null");
         }
         if (timeEntry.getTaskId() <= 0) {
             throw new BadRequestException("Invalid task id");
