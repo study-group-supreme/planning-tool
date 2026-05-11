@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.service.TaskService;
 
@@ -17,6 +18,11 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @GetMapping("/add")
+    public String createTask(Model model){
+        model.addAttribute("task", new Task());
+        return "task/create-task";
+    }
     // TODO: finish designing task overview and apply time entries as needed
     // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")
