@@ -66,7 +66,7 @@ public class TaskRepository {
         return jdbc.queryForObject(sql, taskRowMapper, taskId);
     }
 
-    public void editTask (Task task){
+    public void updateTask (Task task){
         String sql = """
                 UPDATE task
                 SET parent_task_id = ?, assigned_member_id = ?, title = ?, description = ?, time_estimate = ?, is_high_priority = ?, is_done = ?

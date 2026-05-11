@@ -44,5 +44,12 @@ public class TaskService {
         }
     }
 
-
+    public Task editTask(Task task){
+        try{
+            taskRepository.updateTask(task);
+            return taskRepository.findTaskById(task.getId());
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException(e.getMessage(), e.getCause());
+        }
+    }
 }
