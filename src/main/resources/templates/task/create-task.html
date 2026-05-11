@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+</head>
+<body>
+<form th:action="@{/tasks/add}" th:object="${task}" method="post">
+    <input type="hidden" th:field="*{projectId}" th:value="${projectId}">
+    <label>
+        Title: <input type="text" th:field="*{title}" maxlength="225">
+    </label>
+    <br>
+    <label>
+        Description: <textarea th:field="*{description}" maxlength="1080"></textarea>
+    </label>
+    <br>
+    <label>
+        Assign member: <select th:field="*{assignedMemberId}">
+        <option th:each="member : ${members}"
+                th:value="${member.id}"
+                th:text="${member.name}">
+        </option>
+    </select>
+    </label>
+    <br>
+    <label>
+        Estimated Time: <input type="number" th:field="*{timeEstimate}" min="1">
+    </label>
+    <br>
+    <label>
+        High Priority: <input type="checkbox" th:field="*{highPriority}">
+    </label>
+    <input type="hidden" th:field="*{done}" th:value="false">
+    <br>
+    <button type="submit">Add Task</button>
+</form>
+</body>
+</html>

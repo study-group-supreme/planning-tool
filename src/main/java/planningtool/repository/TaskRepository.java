@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import planningtool.model.TimeEntry;
 
 import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.util.List;
 
 
@@ -58,7 +59,7 @@ public class TaskRepository {
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, task.getProjectId());
-            ps.setInt(2, task.getParentTaskId());
+            ps.setObject(2, task.getParentTaskId(), Types.INTEGER);
             ps.setInt(3, task.getAssignedMemberId());
             ps.setString(4, task.getTitle());
             ps.setString(5, task.getDescription());
@@ -100,7 +101,7 @@ public class TaskRepository {
 
     public List<TimeEntry> findTimeEntriesByTaskId(int taskId) {
         String sql = """
-                SELECT id, employee_id, task_id, time_of_creation. time_spent
+                SELECT id, employee_id, task_id, time_of_creation, time_spent
                 FROM time_entry
                 WHERE task_id = ?
                 ORDER BY time_of_creation ASC
