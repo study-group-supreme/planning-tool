@@ -43,8 +43,8 @@ public class TaskService {
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
         }
-        if (task.getTitle().length() > 255) {
-            throw new BadRequestException("Task title cannot exceed 255 characters");
+        if (task.getTitle().length() > 225) {
+            throw new BadRequestException("Task title cannot exceed 225 characters");
         }
         if (task.getDescription().length() > 1080) {
             throw new BadRequestException("Task description cannot exceed 1080 characters");
