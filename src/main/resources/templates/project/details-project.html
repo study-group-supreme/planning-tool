@@ -36,6 +36,9 @@
             <span th:each="subTask : ${project.getTasks()}">
                 <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">
                     <span th:text="${subTask.title}"></span>
+
+                    <input type="checkbox" name="done" th:value="${task.done}">
+                    <button type="submit">Mark done</button>
                 </span>
             </span>
         </td>
