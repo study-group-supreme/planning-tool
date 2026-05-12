@@ -15,10 +15,11 @@ import planningtool.exception.BadRequestException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
@@ -162,5 +163,22 @@ public class ProjectServiceTest {
         assertThat(result.get(0).getTitle()).isEqualTo("test");
         assertThat(result.get(1).getTitle()).isEqualTo("test2");
 
+    }
+
+    @Test
+    void addProjectMemberToProject_ShouldAddProjectMemberByCallingRepoInsertMethod(){
+        Project project = new Project();
+        project.setId(1);
+        project.setProjectMembers(new ArrayList<>());
+
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("Test");
+
+        Employee addedEmployee = projectService.addProjectMemberToProject(employee, project);
+
+        assertThat(addedEmployee.getName()).isEqualTo("Test");
+
+        verify(projectRepository, times(1)).insertProjectMember(employee, project);
     }
 }

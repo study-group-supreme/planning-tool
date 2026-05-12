@@ -65,7 +65,7 @@ create table project_member
 (
     employee_id int,
     project_id  int,
-    primary key (employee_id, project_id),
+    primary key (employee_id, project_id) UNIQUE,
     foreign key (employee_id) references employee (id) ON DELETE CASCADE,
     foreign key (project_id) references project (id) ON DELETE CASCADE
 );
