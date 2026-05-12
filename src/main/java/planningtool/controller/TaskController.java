@@ -66,7 +66,7 @@ public class TaskController {
         }
         return "redirect:/projects/" + projectId;
     }
-    @PostMapping("/edit-status")
+    @PostMapping("/mark-done")
     public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId){
         taskService.editTaskIsDoneStatus(taskId);
         return "redirect:/projects/" + projectId;
