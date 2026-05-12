@@ -168,7 +168,7 @@ public class TaskServiceTest {
 
 
     @Test
-    void createTimeEntry_shouldCallRepositoryWhenValid() {
+    void createTimeEntry_ShouldCallRepositoryWhenValid() {
         // A TimeEntry populated with valid fields
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
@@ -194,7 +194,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsRuntime_whenNullEntry() {
+    void createTimeEntry_ThrowsRuntime_whenNullEntry() {
         RuntimeException ex = assertThrows(
                 RuntimeException.class,
                 () -> taskService.createTimeEntry(null)
@@ -203,7 +203,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenInvalidTaskId() {
+    void createTimeEntry_ThrowsBadRequest_whenInvalidTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTimeSpent(new BigDecimal("1.0"));
@@ -218,7 +218,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentNull() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentNull() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -233,7 +233,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentZero() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentZero() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -248,7 +248,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentNegative() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentNegative() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -263,7 +263,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFails() {
+    void createTimeEntry_ThrowsDatabaseOperation_WhenRepositoryFails() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -281,7 +281,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsNotFound_whenTaskIdNotFoundInRepository() {
+    void createTimeEntry_ThrowsNotFound_WhenTaskIdNotFoundInRepository() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
@@ -300,7 +300,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFailsForFetchingTaskId() {
+    void createTimeEntry_ThrowsDatabaseOperation_WhenRepositoryFailsForFetchingTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
