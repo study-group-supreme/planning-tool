@@ -136,24 +136,28 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("");
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsWhiteSpace() {
         Task task = new Task();
         task.setTitle("  ");
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
         task.setTitle(null);
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
         Task task = new Task();
         task.setTitle("T".repeat(226));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
@@ -161,6 +165,7 @@ public class TaskServiceTest {
         task.setTitle("test");
         task.setDescription("T".repeat(1081));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
@@ -169,6 +174,7 @@ public class TaskServiceTest {
         task.setDescription("test description");
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
 
 
