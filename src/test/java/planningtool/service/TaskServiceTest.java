@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.List;
 
 
@@ -36,8 +37,47 @@ public class TaskServiceTest {
     private TaskService taskService;
 
     @Test
+    void getTaskById_ReturnsTask(){
+        Task task = new Task();
+        task.setId(1);
+        task.setTitle("Brew coffee");
+
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+
+        Task result = taskService.getTaskById(1);
+
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getTitle()).isEqualTo("Brew coffee");
+        verify(taskRepository).findTaskById(1);
+    }
+
+    @Test
     void getTaskById_throwsBadRequest_whenIdInvalid() {
-        assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
+        assertThat(ex.getMessage().contains("Invalid task"));
+    }
+
+    @Test
+    void getTaskById_ThrowsNotFoundException_WhenTaskDoesNotExist() {
+        when(taskRepository.findTaskById(99))
+                .thenThrow(new EmptyResultDataAccessException(1));
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
+
+        assertThat(ex.getMessage().contains("Database error"));
+
+    }
+
+    @Test
+    void getTaskById_ThrowsDatabaseOperationException_OnDataAccessError(){
+        when(taskRepository.findTaskById(1))
+                .thenThrow(new DataAccessException("DB down") {});
+
+
+        DatabaseOperationException ex = assertThrows(DatabaseOperationException.class, () -> taskService.getTaskById(1));
+        assertThat(ex.getMessage()).contains("Database error");
+
     }
 
     // TODO This test is a bit wonky and we need to write more tests!
@@ -68,12 +108,14 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("");
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
     @Test
     void createTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
         task.setTitle(null);
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -82,6 +124,7 @@ public class TaskServiceTest {
         task.setTitle("testTask");
         task.setDescription("B".repeat(1081));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -89,6 +132,7 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("A".repeat(226));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -96,6 +140,23 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
+    void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails(){
+        Task task = new Task();
+        task.setTitle("Title");
+
+        when(taskRepository.insertTask(task))
+                .thenThrow(new DataIntegrityViolationException("constraint"));
+
+        DatabaseOperationException ex = assertThrows(
+                DatabaseOperationException.class,
+                () -> taskService.createTask(task)
+        );
+
+        assertThat(ex.getMessage()).contains("creation failed");
     }
 
     @Test
@@ -131,24 +192,28 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("");
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsWhiteSpace() {
         Task task = new Task();
         task.setTitle("  ");
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
         task.setTitle(null);
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
         Task task = new Task();
         task.setTitle("T".repeat(226));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
@@ -156,6 +221,7 @@ public class TaskServiceTest {
         task.setTitle("test");
         task.setDescription("T".repeat(1081));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
     @Test
     void editTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
@@ -164,11 +230,12 @@ public class TaskServiceTest {
         task.setDescription("test description");
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+        verify(taskRepository, never()).updateTask(any());
     }
 
 
     @Test
-    void createTimeEntry_shouldCallRepositoryWhenValid() {
+    void createTimeEntry_ShouldCallRepositoryWhenValid() {
         // A TimeEntry populated with valid fields
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
@@ -194,16 +261,17 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsRuntime_whenNullEntry() {
+    void createTimeEntry_ThrowsRuntime_whenNullEntry() {
         RuntimeException ex = assertThrows(
                 RuntimeException.class,
                 () -> taskService.createTimeEntry(null)
         );
         assertThat(ex.getMessage()).contains("null");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenInvalidTaskId() {
+    void createTimeEntry_ThrowsBadRequest_whenInvalidTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTimeSpent(new BigDecimal("1.0"));
@@ -215,10 +283,11 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Invalid task id");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentNull() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentNull() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -230,10 +299,11 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentZero() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentZero() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -245,10 +315,11 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("must be a positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentNegative() {
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentNegative() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -260,10 +331,11 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFails() {
+    void createTimeEntry_ThrowsDatabaseOperation_WhenRepositoryFails() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -281,7 +353,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsNotFound_whenTaskIdNotFoundInRepository() {
+    void createTimeEntry_ThrowsNotFound_WhenTaskIdNotFoundInRepository() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
@@ -297,10 +369,11 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Nothing to show");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFailsForFetchingTaskId() {
+    void createTimeEntry_ThrowsDatabaseOperation_WhenRepositoryFailsForFetchingTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
@@ -317,6 +390,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Database error");
+        verify(taskRepository, never()).insertTimeEntry(any());
 
     }
 
@@ -330,6 +404,25 @@ public class TaskServiceTest {
         taskService.removeTaskById(1);
         verify(taskRepository).deleteTaskById(1);
     }
+
+    @Test
+    void removeTaskById_ShouldSucceed_WhenAllSubTasksAreDone(){
+        Task mainTask = new Task();
+        mainTask.setId(1);
+        mainTask.setTitle("Main Task");
+
+        Task subTask = new Task();
+        subTask.setId(2);
+        subTask.setParentTaskId(1);
+        subTask.setDone(true);
+
+        when(taskRepository.findTaskById(1)).thenReturn(mainTask);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(subTask));
+
+        taskService.removeTaskById(1);
+        verify(taskRepository).deleteTaskById(1);
+    }
+
     @Test
     void removeTaskById_ThrowsBadRequestException_IfYouTryToDeleteMainTaskBeforeSubtasks(){
         Task task = new Task();
@@ -353,6 +446,28 @@ public class TaskServiceTest {
 
         assertThrows(BadRequestException.class, () -> taskService.removeTaskById(1));
 
+    }
+
+    @Test
+    void getTimeEntriesByTaskId_ReturnsListOfTimeEntries(){
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setId(1);
+        entry1.setTaskId(5);
+        entry1.setTimeSpent(new BigDecimal("1.5"));
+
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setId(2);
+        entry2.setTaskId(5);
+        entry2.setTimeSpent(new BigDecimal("2.5"));
+
+        when(taskRepository.findTimeEntriesByTaskId(5))
+                .thenReturn(List.of(entry1, entry2));
+
+        List<TimeEntry> result = taskService.getTimeEntriesByTaskId(5);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getTimeSpent()).isEqualByComparingTo("1.5");
+        verify(taskRepository).findTimeEntriesByTaskId(5);
     }
 
 }
