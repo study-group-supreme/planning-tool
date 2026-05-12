@@ -14,10 +14,13 @@ import planningtool.exception.NotFoundException;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
 import java.math.BigDecimal;
+
 import static org.mockito.Mockito.*;
 
 
@@ -34,7 +37,8 @@ public class TaskServiceTest {
     void getTaskById_throwsBadRequest_whenIdInvalid() {
         assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
     }
-// TODO This test is a bit wonky and we need to write more tests!
+
+    // TODO This test is a bit wonky and we need to write more tests!
     @Test
     void createTask_returnsCreatedTask() {
         Task task = new Task();
@@ -46,9 +50,9 @@ public class TaskServiceTest {
         task.setHighPriority(false);
         task.setTimeEstimate(new BigDecimal("0.25"));
 
-        when (taskRepository.insertTask(task)).thenReturn(task);
+        when(taskRepository.insertTask(task)).thenReturn(task);
         Task createdTask = taskService.createTask(task);
-        assertEquals(3,createdTask.getId());
+        assertEquals(3, createdTask.getId());
         assertEquals(2, createdTask.getProjectId());
         assertNull(createdTask.getParentTaskId());
         assertEquals("Sweep floors", createdTask.getTitle());
@@ -56,9 +60,18 @@ public class TaskServiceTest {
         assertFalse(createdTask.isHighPriority());
         assertThat(createdTask.getTimeEstimate()).isEqualByComparingTo("0.25");
     }
+
     @Test
     void createTask_ThrowsBadRequestException_WhenTitleIsEmpty() {
-        assertThrows(BadRequestException.class, () -> taskService.createTask(new Task()).getTitle().isEmpty());
+        Task task = new Task();
+        task.setTitle("");
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+    @Test
+    void createTask_ThrowsBadRequestException_WhenTitleIsNull() {
+        Task task = new Task();
+        task.setTitle(null);
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
     }
 
     @Test
@@ -82,6 +95,7 @@ public class TaskServiceTest {
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
     }
+
     @Test
     void editTask_ReturnsUpdatedTask() {
         Task originalTask = new Task();
@@ -108,6 +122,46 @@ public class TaskServiceTest {
         assertThat(result.getDescription()).isEqualTo("just a test, again");
         assertTrue(result.isHighPriority());
         assertThat(result.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1"));
+    }
+
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsEmpty() {
+        Task task = new Task();
+        task.setTitle("");
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsWhiteSpace() {
+        Task task = new Task();
+        task.setTitle("  ");
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsNull() {
+        Task task = new Task();
+        task.setTitle(null);
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
+        Task task = new Task();
+        task.setTitle("T".repeat(226));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
+        Task task = new Task();
+        task.setTitle("test");
+        task.setDescription("T".repeat(1081));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
+        Task task = new Task();
+        task.setTitle("test");
+        task.setDescription("test description");
+        task.setTimeEstimate(new BigDecimal("10000.99"));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
     }
 
 
@@ -138,7 +192,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsRuntime_whenNullEntry(){
+    void createTimeEntry_throwsRuntime_whenNullEntry() {
         RuntimeException ex = assertThrows(
                 RuntimeException.class,
                 () -> taskService.createTimeEntry(null)
@@ -147,7 +201,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenInvalidTaskId(){
+    void createTimeEntry_throwsBadRequest_whenInvalidTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTimeSpent(new BigDecimal("1.0"));
@@ -162,7 +216,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentNull(){
+    void createTimeEntry_throwsBadRequest_whenTimeSpentNull() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -177,7 +231,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsBadRequest_whenTimeSpentZero(){
+    void createTimeEntry_throwsBadRequest_whenTimeSpentZero() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -207,7 +261,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFails(){
+    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFails() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -225,7 +279,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsNotFound_whenTaskIdNotFoundInRepository(){
+    void createTimeEntry_throwsNotFound_whenTaskIdNotFoundInRepository() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
@@ -244,7 +298,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFailsForFetchingTaskId(){
+    void createTimeEntry_throwsDatabaseOperation_whenRepositoryFailsForFetchingTaskId() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(99);
@@ -252,7 +306,8 @@ public class TaskServiceTest {
 
         // Simulate database failure unrelated to "not found"
         when(taskRepository.findTaskById(99))
-                .thenThrow(new DataAccessException("DB failure") {});
+                .thenThrow(new DataAccessException("DB failure") {
+                });
 
         DatabaseOperationException ex = assertThrows(
                 DatabaseOperationException.class,
