@@ -62,6 +62,17 @@ public class TaskServiceTest {
         assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
     }
 
+    @Test
+    void getTaskById_ThrowsDatabaseOperationException_OnDataAccessError(){
+        when(taskRepository.findTaskById(1))
+                .thenThrow(new DataAccessException("DB down") {});
+
+
+        DatabaseOperationException ex = assertThrows(DatabaseOperationException.class, () -> taskService.getTaskById(1));
+        assertThat(ex.getMessage()).contains("Database error");
+
+    }
+
     // TODO This test is a bit wonky and we need to write more tests!
     @Test
     void createTask_returnsCreatedTask() {
