@@ -40,9 +40,10 @@ public class TaskController {
         }
 
         model.addAttribute("task", task);
-        model.addAttribute("employee", employee);
+        model.addAttribute("assignedEmployee", employee);
         model.addAttribute("parentTask", parentTask);
         model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
+        model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
         return "task/details-task";
     }
 

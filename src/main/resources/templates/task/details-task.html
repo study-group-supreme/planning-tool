@@ -37,8 +37,8 @@
 <div class="member-list">
     <p>
         <td><strong>Assigned Member:</strong>
-        <span th:if="${employee != null}" th:text="${employee.name}"></span>
-        <span th:if="${employee == null}">Unassigned</span>
+        <span th:if="${assignedEmployee != null}" th:text="${assignedEmployee.name}"></span>
+        <span th:if="${assignedEmployee == null}">Unassigned</span>
     </p>
 </div>
 
@@ -52,7 +52,12 @@
     </tr>
 
     <tr th:each="entry : ${timeEntries}">
-        <td th:text="${entry.employeeId}"></td> <!-- Can be replaced with employee name if it is fetched somehow -->
+        <td>
+        <span th:each="m : ${projectMembers}"
+              th:if="${m.id == entry.employeeId}"
+              th:text="${m.name}">
+        </span>
+        </td>
         <td th:text="${entry.timeSpent}"></td>
         <td th:text="${entry.timeOfCreation}"></td>
     </tr>
