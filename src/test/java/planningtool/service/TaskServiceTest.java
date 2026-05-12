@@ -143,6 +143,22 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails(){
+        Task task = new Task();
+        task.setTitle("Title");
+
+        when(taskRepository.insertTask(task))
+                .thenThrow(new DataIntegrityViolationException("constraint"));
+
+        DatabaseOperationException ex = assertThrows(
+                DatabaseOperationException.class,
+                () -> taskService.createTask(task)
+        );
+
+        assertThat(ex.getMessage()).contains("creation failed");
+    }
+
+    @Test
     void editTask_ReturnsUpdatedTask() {
         Task originalTask = new Task();
         originalTask.setId(1);
