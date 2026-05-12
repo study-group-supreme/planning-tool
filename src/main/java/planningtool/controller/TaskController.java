@@ -21,6 +21,21 @@ public class TaskController {
         this.projectService = projectService;
     }
 
+    @GetMapping("/{taskId}")
+    public String showSpecificTask(@PathVariable int taskId, Model model){
+        Task task = taskService.getTaskById(taskId);
+        Task parentTask = null;
+
+        if (task.getParentTaskId() != null) {
+            parentTask = taskService.getTaskById(task.getParentTaskId());
+        }
+        // get assigned person
+        model.addAttribute("task", task);
+        model.addAttribute("parentTask", parentTask);
+        model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId);
+        return "task/details-task";
+    }
+
     @GetMapping("/add")
     public String showAddTaskForm(Model model, @RequestParam int projectId){
         Task task = new Task();

@@ -2,13 +2,35 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Show Task</title>
+    <title th:text="'Task: ' + ${task.title}"></title>
 </head>
+
 <div class="-details">
     <h1 th:text="${task.title}"></h1>
-    <p th:text="${task.description}"></p>
+    <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
 </div>
 
+<table class="member-list">
+    <tr>
+        <td><strong>Assigned Member:</strong> </td>
+    </tr>
+    <tr>
+        <span th:if="${task.assignedMemberId != null}" th:text="${task.assignedMemberId}"></span>
+        <span th:if="${task.assignedMemberId == null}">Unassigned</span>
+    </tr>
+</table>
+
+<p><strong>Estimated Time:</strong>
+    <span th:text="${task.timeEstimate}"></span>
+</p>
+
+<p><strong>High Priority:</strong>
+    <span th:text="${task.highPriority}"></span>
+</p>
+
+<p><strong>Done:</strong>
+    <span th:text="${task.done}"></span>
+</p>
 
 <body>
 
