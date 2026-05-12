@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.exception.BadRequestException;
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -11,6 +12,7 @@ import planningtool.repository.EmployeeRepository;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
+
 
 @Controller
 @RequestMapping("/tasks")
@@ -49,7 +51,7 @@ public class TaskController {
     }
 
     @GetMapping("/add")
-    public String showAddTaskForm(Model model, @RequestParam int projectId){
+    public String showAddTaskForm(Model model, @RequestParam int projectId) {
         Task task = new Task();
         task.setProjectId(projectId);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
@@ -58,7 +60,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String saveTask(@ModelAttribute Task task){
+    public String saveTask(@ModelAttribute Task task) {
         taskService.createTask(task);
         return "redirect:/projects/" + task.getProjectId();
     }
@@ -75,10 +77,23 @@ public class TaskController {
 
         taskService.createTask(task);
 
-        return "redirect:/projects/"+projectId;
+        return "redirect:/projects/" + projectId;
     }
-    // TODO: finish designing task overview and apply time entries as needed
-    // use below for inspo
+
+    @PostMapping("/remove")
+    public String removeTask(@RequestParam int taskId, @RequestParam int projectId, Model model) {
+        try {
+            taskService.removeTaskById(taskId);
+        } catch (BadRequestException e) {
+            model.addAttribute("mainTask", true);
+            model.addAttribute("project", projectService.getProjectById(projectId));
+            model.addAttribute("message", e.getMessage());
+            return "project/details-project";
+
+        }
+        return "redirect:/projects/" + projectId;
+        // TODO: finish designing task overview and apply time entries as needed
+        // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")
 //    public String showTimeEntryForm(@PathVariable int taskId, Model model) {
 //        TimeEntry entry = new TimeEntry();
@@ -108,4 +123,5 @@ public class TaskController {
 //    }
 
 
+    }
 }

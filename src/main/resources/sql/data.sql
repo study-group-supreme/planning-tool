@@ -6,7 +6,8 @@ INSERT INTO employee (name, email, password, role_id)
 VALUES ('Andreas Jensen', 'grey@email.com', '1234', 2),
        ('August Skipper', 'beige@email.com', '5678', 1),
        ('Daniella Norgren', 'purple@email.com', 'pw', 2),
-       ('Mads Svanholm', 'green@email.com', '1234', 1);
+       ('Mads Svanholm', 'green@email.com', '1234', 1),
+       ('Mickey Mouse', 'red@email.com', '1234', 1);
 
 INSERT INTO project (title, description, time_of_creation, project_creator_id, deadline, active)
 VALUES ('Exam Project', 'Our very first project!', '2026-05-04', 1, '2026-05-26', true),

@@ -3,6 +3,7 @@ package planningtool.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -11,8 +12,12 @@ import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -65,7 +70,7 @@ public class TaskRepositoryTest {
     }
 
     @Test
-    void insertTimeEntry_shouldCreateNewTimeEntry(){
+    void insertTimeEntry_shouldCreateNewTimeEntry() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -95,5 +100,52 @@ public class TaskRepositoryTest {
                 Integer.class
         );
         assertThat(after).isEqualTo(0);
+    }
+
+    @Test
+    void updateTask_shouldUpdateTask() {
+        Task task = taskRepository.findTaskById(4);
+
+        task.setParentTaskId(1);
+        task.setAssignedMemberId(3);
+        task.setTitle("Tell funny joke");
+        task.setDescription("test");
+        task.setTimeEstimate(new BigDecimal("1.5"));
+        task.setHighPriority(true);
+        task.setDone(true);
+
+        taskRepository.updateTask(task);
+
+        Task updatedTask = taskRepository.findTaskById(4);
+
+        assertThat(updatedTask.getParentTaskId()).isEqualTo(1);
+        assertThat(updatedTask.getAssignedMemberId()).isEqualTo(3);
+        assertThat(updatedTask.getTitle()).isEqualTo("Tell funny joke");
+        assertThat(updatedTask.getDescription()).isEqualTo("test");
+        assertThat(updatedTask.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1.5"));
+        assertTrue(updatedTask.isHighPriority());
+        assertTrue(updatedTask.isDone());
+
+    }
+
+    @Test
+    void deleteTaskById_ShouldDeleteTaskById() {
+        Task task = new Task();
+        task.setId(1);
+        task.setProjectId(1);
+        task.setTitle("test");
+
+        taskRepository.deleteTaskById(1);
+
+        assertThatThrownBy(() -> taskRepository.findTaskById(1))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+    @Test
+    void findSubtasksByParentId_shouldReturnListOfTasksWithSameParrentId(){
+        List<Task> allSubTasks = taskRepository.findSubtasksByParentId(1);
+
+        assertThat(allSubTasks.size()).isEqualTo(2);
+        assertThat(allSubTasks.get(0).getTitle()).isEqualTo("Grind the beans");
+
     }
 }

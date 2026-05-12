@@ -5,20 +5,26 @@
     <title>Project Overview</title>
 </head>
 <body>
-<table>
-    <tr>
-        <th>Project</th>
-        <th>Description</th>
-        <th>Deadline</th>
-    </tr>
-    <tr th:each="project : ${projects}">
-        <td th:text="${project.getTitle()}"></td>
-        <td th:text="${project.getDescription()}"></td>
-        <td th:text="${project.getDeadline()}"></td>
-    </tr>
+<div class="empty-list" th:if="${emptyList}">
+    <p th:text="${message}"></p>
+    <button onclick="window.location.href='/projects/add'">Create Project</button>
+</div>
 
-</table>
+<div th:if="!${emptyList}">
+    <table>
+        <tr>
+            <th>Project</th>
+            <th>Description</th>
+            <th>Deadline</th>
+        </tr>
+        <tr th:each="project : ${projects}">
+            <td th:text="${project.getTitle()}"></td>
+            <td th:text="${project.getDescription()}"></td>
+            <td th:text="${project.getDeadline()}"></td>
+        </tr>
 
+    </table>
+</div>
 
 </body>
 </html>

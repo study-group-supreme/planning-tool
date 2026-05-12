@@ -112,6 +112,21 @@ public class TaskService {
         }
     }
 
+    //Properly need some validation here at some point
+    public void removeTaskById(int id) {
+        Task task = taskRepository.findTaskById(id);
+        if (task.getParentTaskId() == null) {
+            List<Task> tasks = taskRepository.findSubtasksByParentId(id);
+            for (Task t : tasks) {
+                if (!t.isDone()) {
+                    throw new BadRequestException("You cannot delete main task before deleting all subtask or marking them as done");
+                }
+            }
+        }
+        taskRepository.deleteTaskById(id);
+
+    }
+
     public List<TimeEntry> getTimeEntriesByTaskId(int taskId){
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
