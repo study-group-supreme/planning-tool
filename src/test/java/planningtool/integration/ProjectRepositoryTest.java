@@ -91,6 +91,19 @@ public class ProjectRepositoryTest {
         assertThat(projects.get(0).getTitle()).isEqualTo("Exam Project");
         assertThat(projects.get(1).getTitle()).isEqualTo("Sample Project");
     }
+    @Test
+    void insertProjectMember_ShouldInsertProjectMemberIntoDB(){
+        Employee employee = new Employee();
+        employee.setId(3);
+        Project project = new Project();
+        project.setId(3);
+
+        projectRepository.insertProjectMember(employee, project);
+
+        List<Employee> result = projectRepository.findProjectMembersByProjectId(3);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getName()).isEqualTo("Daniella Norgren");
+    }
 }
 
 
