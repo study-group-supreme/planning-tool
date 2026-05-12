@@ -59,7 +59,11 @@ public class TaskServiceTest {
     void getTaskById_ThrowsNotFoundException_WhenTaskDoesNotExist() {
         when(taskRepository.findTaskById(99))
                 .thenThrow(new EmptyResultDataAccessException(1));
-        assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
+
+        assertThat(ex.getMessage().contains("Database error"));
+
     }
 
     @Test
