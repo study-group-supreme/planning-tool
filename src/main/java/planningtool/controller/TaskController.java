@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.exception.BadRequestException;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.service.ProjectService;
@@ -53,12 +54,14 @@ public class TaskController {
 
     @PostMapping("/remove")
     public String removeTask(@RequestParam int taskId, @RequestParam int projectId) {
-        taskService.removeTaskById(taskId);
-
+        try {
+            taskService.removeTaskById(taskId);
+        } catch (BadRequestException e) {
+            return "redirect:/projects/" + projectId + "?error=notAllDone";
+        }
         return "redirect:/projects/" + projectId;
-    }
-    // TODO: finish designing task overview and apply time entries as needed
-    // use below for inspo
+        // TODO: finish designing task overview and apply time entries as needed
+        // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")
 //    public String showTimeEntryForm(@PathVariable int taskId, Model model) {
 //        TimeEntry entry = new TimeEntry();
@@ -88,4 +91,5 @@ public class TaskController {
 //    }
 
 
+    }
 }
