@@ -14,6 +14,7 @@ import planningtool.repository.TaskRepository;
 
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -109,5 +110,9 @@ public class TaskService {
         } catch (DataAccessException e) {
             throw new DatabaseOperationException(e.getMessage(), e.getCause());
         }
+    }
+
+    public List<TimeEntry> getTimeEntriesByTaskId(int taskId){
+        return taskRepository.findTimeEntriesByTaskId(taskId);
     }
 }
