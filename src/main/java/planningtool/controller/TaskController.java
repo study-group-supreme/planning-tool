@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
+import planningtool.repository.EmployeeRepository;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
@@ -15,24 +17,32 @@ public class TaskController {
 
     private final TaskService taskService;
     private final ProjectService projectService;
+    private final EmployeeRepository employeeRepository;
 
-    public TaskController(TaskService taskService, ProjectService projectService) {
+    public TaskController(TaskService taskService, ProjectService projectService, EmployeeRepository employeeRepository) {
         this.taskService = taskService;
         this.projectService = projectService;
+        this.employeeRepository = employeeRepository;
     }
 
     @GetMapping("/{taskId}")
     public String showSpecificTask(@PathVariable int taskId, Model model){
         Task task = taskService.getTaskById(taskId);
         Task parentTask = null;
+        Employee employee = null;
 
         if (task.getParentTaskId() != null) {
             parentTask = taskService.getTaskById(task.getParentTaskId());
         }
-        // get assigned person
+
+        if (task.getAssignedMemberId() != null) {
+            employee = employeeRepository.findEmployeeById(task.getAssignedMemberId());
+        }
+
         model.addAttribute("task", task);
+        model.addAttribute("employee", employee);
         model.addAttribute("parentTask", parentTask);
-        model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId);
+        model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
         return "task/details-task";
     }
 
