@@ -53,7 +53,7 @@ public class ProjectService {
         project.setActive(true);
         try {
             return projectRepository.insertProject(project);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseOperationException("Project couldn't be created", e.getCause());
         }
     }
@@ -76,6 +76,18 @@ public class ProjectService {
 
         }
         return projects;
+    }
+
+    public Employee addProjectMemberToProject(Employee employee, Project project) {
+        if (project.getProjectMembers().contains(employee)) {
+            throw new BadRequestException("Employee already assigned to project");
+        }
+        try {
+            projectRepository.insertProjectMember(employee, project);
+            return employee;
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseOperationException("Employee could not be added", e.getCause());
+        }
     }
 }
 

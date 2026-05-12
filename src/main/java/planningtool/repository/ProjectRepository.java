@@ -83,7 +83,7 @@ public class ProjectRepository {
         return project;
     }
 
-    public void updateProject(Project project){
+    public void updateProject(Project project) {
         String sql = """
                 UPDATE project
                 SET title = ?, description = ?, deadline = ?
@@ -92,11 +92,12 @@ public class ProjectRepository {
         jdbc.update(sql, project.getTitle(), project.getDescription(), project.getDeadline(), project.getId());
     }
 
-    public Project findProjectById(int id){
+    public Project findProjectById(int id) {
         String sql = "SELECT * FROM project WHERE id = ?";
-        return jdbc.queryForObject(sql,projectRowMapper, id);
+        return jdbc.queryForObject(sql, projectRowMapper, id);
     }
-    public List<Project> findProjectsByEmployeeId(int employeeId){
+
+    public List<Project> findProjectsByEmployeeId(int employeeId) {
         String sql = """
                 SELECT project.id, project.title, project.description, project.time_of_creation, project.project_creator_id, project.deadline, project.active
                 FROM project
@@ -106,5 +107,16 @@ public class ProjectRepository {
                 """;
         return jdbc.query(sql, projectRowMapper, employeeId);
     }
+
+    public void insertProjectMember(Employee employee, Project project) {
+        String sql = """
+                INSERT INTO project_member (employee_id, project_id)
+                VALUES(?, ?) 
+                """;
+        jdbc.update(sql,employee.getId(), project.getId());
+    }
+
+
+
 
 }
