@@ -54,7 +54,7 @@ public class TaskService {
         if (task.getTitle().length() > 225) {
             throw new BadRequestException("Task title cannot exceed 225 characters");
         }
-        if (task.getDescription() != null) {
+        if (task.getDescription() != null){
             if (task.getDescription().length() > 1080) {
                 throw new BadRequestException("Task description cannot exceed 1080 characters");
             }
@@ -83,7 +83,7 @@ public class TaskService {
 
 
         BigDecimal timeSpent = timeEntry.getTimeSpent();
-        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <= 0) {
+        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <=0) {
             throw new BadRequestException("Time spent must be a positive number");
         }
 
@@ -103,8 +103,8 @@ public class TaskService {
         }
     }
 
-    public Task editTask(Task task) {
-        try {
+    public Task editTask(Task task){
+        try{
             taskRepository.updateTask(task);
             return taskRepository.findTaskById(task.getId());
         } catch (DataAccessException e) {
@@ -125,5 +125,9 @@ public class TaskService {
         }
         taskRepository.deleteTaskById(id);
 
+    }
+
+    public List<TimeEntry> getTimeEntriesByTaskId(int taskId){
+        return taskRepository.findTimeEntriesByTaskId(taskId);
     }
 }

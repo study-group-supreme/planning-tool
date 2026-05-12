@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Task: ' + ${task.title}"></title>
+</head>
+
+<div class="-details">
+    <h1 th:text="${task.title}"></h1>
+    <p>
+        <strong>Description:</strong>
+        <span th:text="${task.description}"></span>
+    </p>
+
+    <p>
+        <strong>Parent Task:</strong>
+        <span th:if="${parentTask != null}" th:text="${parentTask.title}"></span>
+        <span th:if="${parentTask == null}">None</span>
+    </p>
+
+    <p>
+        <strong>Estimated Time:</strong>
+        <span th:text="${task.timeEstimate != null ? task.timeEstimate + ' hours' : 'Not estimated'}"></span>
+    </p>
+
+    <p>
+        <strong>High Priority:</strong>
+        <span th:text="${task.highPriority ? 'Yes' : 'No'}"></span>
+    </p>
+
+    <p>
+        <strong>Done:</strong>
+        <span th:text="${task.done ? 'Completed' : 'Not completed'}"></span>
+    </p>
+</div>
+
+<div class="member-list">
+    <p>
+        <td><strong>Assigned Member:</strong>
+        <span th:if="${assignedEmployee != null}" th:text="${assignedEmployee.name}"></span>
+        <span th:if="${assignedEmployee == null}">Unassigned</span>
+    </p>
+</div>
+
+<h2>Time Entries</h2>
+
+<table class="time-entries" th:if="${timeEntries != null and !timeEntries.isEmpty()}">
+    <tr>
+        <th>Employee</th>
+        <th>Hours</th>
+        <th>Created</th>
+    </tr>
+
+    <tr th:each="entry : ${timeEntries}">
+        <td>
+        <span th:each="m : ${projectMembers}"
+              th:if="${m.id == entry.employeeId}"
+              th:text="${m.name}">
+        </span>
+        </td>
+        <td th:text="${entry.timeSpent}"></td>
+        <td th:text="${entry.timeOfCreation}"></td>
+    </tr>
+
+    <p th:if="${timeEntries == null or timeEntries.isEmpty()}">
+        No time entries yet.
+    </p>
+</table>
+<form th:action="@{/projects/{id}(id=${task.getProjectId()})}" method="get">
+    <button type="submit">Back to Project</button>
+</form>
+<body>
+
+</body>
+</html>

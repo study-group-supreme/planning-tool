@@ -52,6 +52,9 @@
                 </form>
             </div>
         </td>
+        <td>
+            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+        </td>
         <td th:if="${task.getParentTaskId()} != null">
             <span th:each="subTask : ${project.getTasks()}">
                 <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">

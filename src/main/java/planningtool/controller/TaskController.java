@@ -5,8 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import planningtool.exception.BadRequestException;
+import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
+import planningtool.repository.EmployeeRepository;
+import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
@@ -17,10 +20,34 @@ public class TaskController {
 
     private final TaskService taskService;
     private final ProjectService projectService;
+    private final EmployeeService employeeService;
 
-    public TaskController(TaskService taskService, ProjectService projectService) {
+    public TaskController(TaskService taskService, ProjectService projectService, EmployeeService employeeService) {
         this.taskService = taskService;
         this.projectService = projectService;
+        this.employeeService = employeeService;
+    }
+
+    @GetMapping("/{taskId}")
+    public String showSpecificTask(@PathVariable int taskId, Model model){
+        Task task = taskService.getTaskById(taskId);
+        Task parentTask = null;
+        Employee employee = null;
+
+        if (task.getParentTaskId() != null) {
+            parentTask = taskService.getTaskById(task.getParentTaskId());
+        }
+
+        if (task.getAssignedMemberId() != null) {
+            employee = employeeService.getEmployeeById((task.getAssignedMemberId()));
+        }
+
+        model.addAttribute("task", task);
+        model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
+        model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
+        model.addAttribute("assignedEmployee", employee);
+        model.addAttribute("parentTask", parentTask);
+        return "task/details-task";
     }
 
     @GetMapping("/add")
