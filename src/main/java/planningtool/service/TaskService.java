@@ -112,7 +112,7 @@ public class TaskService {
         }
     }
 
-    //Properly need some validation here at some point
+
     public void removeTaskById(int id) {
         Task task = taskRepository.findTaskById(id);
         if (task.getParentTaskId() == null) {
@@ -124,6 +124,10 @@ public class TaskService {
             }
         }
         taskRepository.deleteTaskById(id);
+    }
+//Properly need some validation later
+    public Task editTaskIsDoneStatus(Task task) {
+        return taskRepository.updateIsDoneInTaskById(task);
 
     }
 }
