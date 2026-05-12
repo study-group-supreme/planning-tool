@@ -37,7 +37,6 @@ public class TaskService {
         }
     }
 
-    // TODO We need to validation test these in the TaskServiceTest class!
     @Transactional
     public Task createTask(Task task) {
         if (task.getTitle() == null || task.getTitle().isBlank()) {
@@ -72,7 +71,7 @@ public class TaskService {
 
 
         BigDecimal timeSpent = timeEntry.getTimeSpent();
-        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <=0) {
+        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Time spent must be a positive number");
         }
 
@@ -92,8 +91,9 @@ public class TaskService {
         }
     }
 
-    public Task editTask(Task task){
-        try{
+    public Task editTask(Task task) {
+
+        try {
             taskRepository.updateTask(task);
             return taskRepository.findTaskById(task.getId());
         } catch (DataAccessException e) {
