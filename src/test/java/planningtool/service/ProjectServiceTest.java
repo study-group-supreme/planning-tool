@@ -181,4 +181,20 @@ public class ProjectServiceTest {
 
         verify(projectRepository, times(1)).insertProjectMember(employee, project);
     }
+
+    @Test
+    void addProjectMemberToProject_ShouldThrowBadRequestException(){
+        Project project = new Project();
+        project.setId(1);
+
+        Employee employee = new Employee();
+        employee.setId(300);
+        employee.setName("Test");
+
+        project.setProjectMembers(new ArrayList<>(List.of(employee)));
+
+        assertThrows(BadRequestException.class, () -> projectService.addProjectMemberToProject(employee, project));
+
+        verify(projectRepository, never()).insertProjectMember(employee, project);
+    }
 }

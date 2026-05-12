@@ -79,14 +79,13 @@ public class ProjectService {
     }
 
     public Employee addProjectMemberToProject(Employee employee, Project project) {
+        if (project.getProjectMembers().contains(employee)) {
+            throw new BadRequestException("Employee already assigned to project");
+        }
         try {
             projectRepository.insertProjectMember(employee, project);
             return employee;
         } catch (DataIntegrityViolationException e) {
-            String message = e.getMostSpecificCause().getMessage();
-            if (message != null && message.contains("Duplicate entry")) {
-                throw new BadRequestException("Employee already assigned to project");
-            }
             throw new DatabaseOperationException("Employee could not be added", e.getCause());
         }
     }

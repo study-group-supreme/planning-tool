@@ -1,5 +1,7 @@
 package planningtool.model;
 
+import java.util.Objects;
+
 public class Employee {
 
     private int id;
@@ -48,5 +50,17 @@ public class Employee {
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id && roleId == employee.roleId && Objects.equals(name, employee.name) && Objects.equals(email, employee.email) && Objects.equals(password, employee.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, roleId, name, email, password);
     }
 }
