@@ -55,8 +55,6 @@ public class TaskService {
         if ((task.getDescription() != null) && (task.getDescription().length() > 1080)) {
             throw new BadRequestException("Task description cannot exceed 1080 characters");
         }
-
-
         if ((task.getTimeEstimate() != null) && (task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0)) {
             throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
         }
@@ -98,10 +96,18 @@ public class TaskService {
 
     public Task editTask(Task task) {
 
+        if (task.getTitle() == null || task.getTitle().isBlank()) {
+            throw new BadRequestException("Title cannot be empty");
+        }
+        if (task.getTitle().length() > 225) {
+            throw new BadRequestException("Task title cannot exceed 225 characters");
+        }
         if ((task.getDescription() != null) && (task.getDescription().length() > 1080)) {
             throw new BadRequestException("Task description cannot exceed 1080 characters");
         }
-
+        if ((task.getTimeEstimate() != null) && (task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0)) {
+            throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
+        }
 
         try {
             taskRepository.updateTask(task);
