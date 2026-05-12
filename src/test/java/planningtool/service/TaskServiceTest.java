@@ -403,6 +403,25 @@ public class TaskServiceTest {
         taskService.removeTaskById(1);
         verify(taskRepository).deleteTaskById(1);
     }
+
+    @Test
+    void removeTaskById_ShouldSucceed_WhenAllSubTasksAreDone(){
+        Task mainTask = new Task();
+        mainTask.setId(1);
+        mainTask.setTitle("Main Task");
+
+        Task subTask = new Task();
+        subTask.setId(2);
+        subTask.setParentTaskId(1);
+        subTask.setDone(true);
+
+        when(taskRepository.findTaskById(1)).thenReturn(mainTask);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(subTask));
+
+        taskService.removeTaskById(1);
+        verify(taskRepository).deleteTaskById(1);
+    }
+
     @Test
     void removeTaskById_ThrowsBadRequestException_IfYouTryToDeleteMainTaskBeforeSubtasks(){
         Task task = new Task();
@@ -427,5 +446,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.removeTaskById(1));
 
     }
+
+
 
 }
