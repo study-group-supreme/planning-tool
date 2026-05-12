@@ -7,7 +7,7 @@ public class Task {
     private int id;
     private int projectId;
     private Integer parentTaskId;
-    private int assignedMemberId;
+    private Integer assignedMemberId;
     private String title;
     private String description;
     private BigDecimal timeEstimate;
@@ -81,11 +81,11 @@ public class Task {
         isHighPriority = highPriority;
     }
 
-    public int getAssignedMemberId() {
+    public Integer getAssignedMemberId() {
         return assignedMemberId;
     }
 
-    public void setAssignedMemberId(int assignedMemberId) {
+    public void setAssignedMemberId(Integer assignedMemberId) {
         this.assignedMemberId = assignedMemberId;
     }
 
