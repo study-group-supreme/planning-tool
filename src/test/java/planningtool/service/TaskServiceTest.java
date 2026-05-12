@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 import static org.mockito.Mockito.*;
 
 
@@ -64,7 +65,15 @@ public class TaskServiceTest {
 
     @Test
     void createTask_ThrowsBadRequestException_WhenTitleIsEmpty() {
-        assertThrows(BadRequestException.class, () -> taskService.createTask(new Task()).getTitle().isEmpty());
+        Task task = new Task();
+        task.setTitle("");
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+    @Test
+    void createTask_ThrowsBadRequestException_WhenTitleIsNull() {
+        Task task = new Task();
+        task.setTitle(null);
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
     }
 
     @Test
@@ -87,6 +96,74 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+
+    @Test
+    void editTask_ReturnsUpdatedTask() {
+        Task originalTask = new Task();
+        originalTask.setId(1);
+        originalTask.setProjectId(1);
+        originalTask.setParentTaskId(1);
+        originalTask.setTitle("test");
+        originalTask.setDescription("just a test");
+        originalTask.setHighPriority(false);
+        originalTask.setTimeEstimate(new BigDecimal("0.5"));
+
+        when(taskRepository.findTaskById(1)).thenReturn(originalTask);
+
+        originalTask.setParentTaskId(2);
+        originalTask.setTitle("updated test");
+        originalTask.setDescription("just a test, again");
+        originalTask.setHighPriority(true);
+        originalTask.setTimeEstimate(new BigDecimal("1"));
+
+        Task result = taskService.editTask(originalTask);
+
+        assertThat(result.getParentTaskId()).isEqualTo(2);
+        assertThat(result.getTitle()).isEqualTo("updated test");
+        assertThat(result.getDescription()).isEqualTo("just a test, again");
+        assertTrue(result.isHighPriority());
+        assertThat(result.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1"));
+    }
+
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsEmpty() {
+        Task task = new Task();
+        task.setTitle("");
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsWhiteSpace() {
+        Task task = new Task();
+        task.setTitle("  ");
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsNull() {
+        Task task = new Task();
+        task.setTitle(null);
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
+        Task task = new Task();
+        task.setTitle("T".repeat(226));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
+        Task task = new Task();
+        task.setTitle("test");
+        task.setDescription("T".repeat(1081));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
+    }
+    @Test
+    void editTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
+        Task task = new Task();
+        task.setTitle("test");
+        task.setDescription("test description");
+        task.setTimeEstimate(new BigDecimal("10000.99"));
+        assertThrows(BadRequestException.class, () -> taskService.editTask(task));
     }
 
 
