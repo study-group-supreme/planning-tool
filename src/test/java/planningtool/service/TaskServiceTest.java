@@ -55,6 +55,13 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
     }
 
+    @Test
+    void getTaskById_ThrowsNotFoundException_WhenTaskDoesNotExist() {
+        when(taskRepository.findTaskById(99))
+                .thenThrow(new EmptyResultDataAccessException(1));
+        assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
+    }
+
     // TODO This test is a bit wonky and we need to write more tests!
     @Test
     void createTask_returnsCreatedTask() {
