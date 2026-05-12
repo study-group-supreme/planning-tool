@@ -3,6 +3,7 @@ package planningtool.integration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,6 +14,8 @@ import planningtool.repository.TaskRepository;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -123,15 +126,17 @@ public class TaskRepositoryTest {
         assertTrue(updatedTask.isDone());
 
     }
+
     @Test
-    void deleteTaskById_ShouldDeleteTaskById(){
-   Task task = new Task();
-   task.setId(1);
-   task.setProjectId(1);
-   task.setTitle("test");
+    void deleteTaskById_ShouldDeleteTaskById() {
+        Task task = new Task();
+        task.setId(1);
+        task.setProjectId(1);
+        task.setTitle("test");
 
-   taskRepository.deleteTaskById(1);
+        taskRepository.deleteTaskById(1);
 
-   assertThat(task.getId()).isEqualTo(1).
+        assertThatThrownBy(() -> taskRepository.findTaskById(1))
+                .isInstanceOf(EmptyResultDataAccessException.class);
     }
 }
