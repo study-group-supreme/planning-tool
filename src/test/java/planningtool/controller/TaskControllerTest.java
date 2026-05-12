@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
-import planningtool.repository.EmployeeRepository;
+import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
@@ -32,7 +32,7 @@ public class TaskControllerTest {
     private ProjectService projectService;
 
     @MockitoBean
-    private EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
 
     @Test
     void showSpecificTask_returnsDetailsPage() throws Exception{
@@ -62,7 +62,7 @@ public class TaskControllerTest {
 
         Mockito.when(taskService.getTaskById(10)).thenReturn(task);
         Mockito.when(taskService.getTaskById(5)).thenReturn(parent);
-        Mockito.when(employeeRepository.findEmployeeById(3)).thenReturn(assigned);
+        Mockito.when(employeeService.getEmployeeById(3)).thenReturn(assigned);
         Mockito.when(taskService.getTimeEntriesByTaskId(10)).thenReturn(List.of(entry));
         Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(projectMembers);
 
