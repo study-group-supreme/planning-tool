@@ -146,6 +146,19 @@ public class TaskRepositoryTest {
 
         assertThat(allSubTasks.size()).isEqualTo(2);
         assertThat(allSubTasks.get(0).getTitle()).isEqualTo("Grind the beans");
-
+    }
+    @Test
+    void updateIsDoneInTaskById_ShouldUpdateTaskToDoneStatus(){
+         Task task = taskRepository.findTaskById(1);
+         task.setDone(true);
+        Task updatedTask = taskRepository.updateIsDoneInTaskById(task);
+        assertThat(updatedTask.isDone()).isTrue();
+    }
+    @Test
+    void updateIsDoneInTaskById_ShouldUpdateTaskToNotDoneStatus(){
+        Task task = taskRepository.findTaskById(1);
+        task.setDone(false);
+        Task updatedTask = taskRepository.updateIsDoneInTaskById(task);
+        assertThat(updatedTask.isDone()).isFalse();
     }
 }
