@@ -58,7 +58,7 @@ public class TaskService {
             }
         }
 
-        if (task.getTimeEstimate() != null && task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0) {
+        if ((task.getTimeEstimate() != null) && (task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0)) {
             throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
         }
 
@@ -71,10 +71,6 @@ public class TaskService {
 
     @Transactional
     public TimeEntry createTimeEntry(TimeEntry timeEntry) {
-        if (timeEntry == null) {
-            // For future us: DIFFERENT EXCEPTION HERE!!!!!!!!
-            throw new RuntimeException("Error: Time Entry was null");
-        }
         if (timeEntry.getTaskId() <= 0) {
             throw new BadRequestException("Invalid task id");
         }
@@ -102,6 +98,10 @@ public class TaskService {
     }
 
     public Task editTask(Task task) {
+
+
+
+
 
         try {
             taskRepository.updateTask(task);
