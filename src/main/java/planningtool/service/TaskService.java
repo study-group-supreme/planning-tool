@@ -39,15 +39,25 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task) {
+        // If user set task to high priority in normal creation, it stays
+        if (!task.isHighPriority()) {
+            task.setHighPriority(false);
+        }
+        task.setDone(false);
+
+        // Previous validation rules
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
         }
         if (task.getTitle().length() > 225) {
             throw new BadRequestException("Task title cannot exceed 225 characters");
         }
-        if (task.getDescription().length() > 1080) {
-            throw new BadRequestException("Task description cannot exceed 1080 characters");
+        if (task.getDescription() != null){
+            if (task.getDescription().length() > 1080) {
+                throw new BadRequestException("Task description cannot exceed 1080 characters");
+            }
         }
+
         if (task.getTimeEstimate() != null && task.getTimeEstimate().compareTo(new BigDecimal("9999.99")) > 0) {
             throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
         }
