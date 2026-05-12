@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.List;
 
 
@@ -447,6 +448,26 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    void getTimeEntriesByTaskId_ReturnsListOfTimeEntries(){
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setId(1);
+        entry1.setTaskId(5);
+        entry1.setTimeSpent(new BigDecimal("1.5"));
 
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setId(2);
+        entry2.setTaskId(5);
+        entry2.setTimeSpent(new BigDecimal("2.5"));
+
+        when(taskRepository.findTimeEntriesByTaskId(5))
+                .thenReturn(List.of(entry1, entry2));
+
+        List<TimeEntry> result = taskService.getTimeEntriesByTaskId(5);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getTimeSpent()).isEqualByComparingTo("1.5");
+        verify(taskRepository).findTimeEntriesByTaskId(5);
+    }
 
 }
