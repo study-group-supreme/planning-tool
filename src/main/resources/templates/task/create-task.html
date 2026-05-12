@@ -8,7 +8,7 @@
 <form th:action="@{/tasks/add}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{projectId}">
     <label>
-        Title: <input type="text" th:field="*{title}" maxlength="225">
+        Title: <input type="text" th:field="*{title}" maxlength="225" required>
     </label>
     <br>
     <label>
