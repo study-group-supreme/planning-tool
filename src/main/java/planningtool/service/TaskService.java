@@ -40,11 +40,6 @@ public class TaskService {
     // TODO We need to validation test these in the TaskServiceTest class!
     @Transactional
     public Task createTask(Task task) {
-
-        // Quick-add: assign default values
-        if (task.getDescription() == null) {
-            task.setDescription("");
-        }
         // If user set task to high priority in normal creation, it stays
         if (!task.isHighPriority()) {
             task.setHighPriority(false);
