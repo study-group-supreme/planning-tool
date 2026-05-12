@@ -36,6 +36,21 @@ public class TaskServiceTest {
     private TaskService taskService;
 
     @Test
+    void getTaskById_ReturnsTask(){
+        Task task = new Task();
+        task.setId(1);
+        task.setTitle("Brew coffee");
+
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+
+        Task result = taskService.getTaskById(1);
+
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getTitle()).isEqualTo("Brew coffee");
+        verify(taskRepository).findTaskById(1);
+    }
+
+    @Test
     void getTaskById_throwsBadRequest_whenIdInvalid() {
         assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
     }
