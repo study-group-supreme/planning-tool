@@ -247,7 +247,9 @@ public class TaskServiceTest {
     void removeTaskById_ShouldRemoveTaskById() {
         Task task = new Task();
         task.setId(1);
+        task.setParentTaskId(1);
         task.setTitle("test");
+        when(taskRepository.findTaskById(1)).thenReturn(task);
         taskService.removeTaskById(1);
         verify(taskRepository).deleteTaskById(1);
     }
