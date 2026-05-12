@@ -52,7 +52,9 @@ public class TaskServiceTest {
 
     @Test
     void getTaskById_throwsBadRequest_whenIdInvalid() {
-        assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
+        assertThat(ex.getMessage().contains("Invalid task"));
     }
 
     @Test
