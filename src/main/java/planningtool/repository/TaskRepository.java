@@ -132,5 +132,11 @@ public class TaskRepository {
         jdbc.update(sql, id);
     }
 
+    public List<Task> findSubtasksByParentIt(int parent_task_id) {
+        String sql = """
+                SELECT * FROM task WHERE parent_task_id = ?
+                """;
+        return jdbc.query(sql, taskRowMapper, parent_task_id);
+    }
 
 }
