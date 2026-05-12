@@ -26,7 +26,6 @@ public class TaskController {
         Task task = new Task();
         task.setProjectId(projectId);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
-        model.addAttribute("projectId", projectId);
         model.addAttribute("task", task);
         return "task/create-task";
     }
