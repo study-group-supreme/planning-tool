@@ -21,7 +21,7 @@ public class TaskRepository {
         task.setId(rs.getInt("id"));
         task.setProjectId(rs.getInt("project_id"));
         task.setParentTaskId((Integer) rs.getObject("parent_task_id", Integer.class));
-        task.setAssignedMemberId(rs.getInt("assigned_member_id"));
+        task.setAssignedMemberId((Integer) rs.getObject("assigned_member_id", Integer.class));
         task.setTitle(rs.getString("title"));
         task.setDescription(rs.getString("description"));
         task.setTimeEstimate(rs.getBigDecimal("time_estimate"));
@@ -60,7 +60,7 @@ public class TaskRepository {
             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, task.getProjectId());
             ps.setObject(2, task.getParentTaskId(), Types.INTEGER);
-            ps.setInt(3, task.getAssignedMemberId());
+            ps.setObject(3, task.getAssignedMemberId(), Types.INTEGER);
             ps.setString(4, task.getTitle());
             ps.setString(5, task.getDescription());
             ps.setBigDecimal(6, task.getTimeEstimate());
