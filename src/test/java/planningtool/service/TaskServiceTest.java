@@ -68,12 +68,14 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("");
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
     @Test
     void createTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
         task.setTitle(null);
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -82,6 +84,7 @@ public class TaskServiceTest {
         task.setTitle("testTask");
         task.setDescription("B".repeat(1081));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -89,6 +92,7 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTitle("A".repeat(226));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
@@ -96,6 +100,7 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
     }
 
     @Test
