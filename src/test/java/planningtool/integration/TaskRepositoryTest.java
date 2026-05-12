@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -66,7 +67,7 @@ public class TaskRepositoryTest {
     }
 
     @Test
-    void insertTimeEntry_shouldCreateNewTimeEntry(){
+    void insertTimeEntry_shouldCreateNewTimeEntry() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
         entry.setTaskId(2);
@@ -96,5 +97,31 @@ public class TaskRepositoryTest {
                 Integer.class
         );
         assertThat(after).isEqualTo(0);
+    }
+
+    @Test
+    void updateTask_shouldUpdateTask() {
+        Task task = taskRepository.findTaskById(4);
+
+        task.setParentTaskId(1);
+        task.setAssignedMemberId(3);
+        task.setTitle("Tell funny joke");
+        task.setDescription("test");
+        task.setTimeEstimate(new BigDecimal("1.5"));
+        task.setHighPriority(true);
+        task.setDone(true);
+
+        taskRepository.updateTask(task);
+
+        Task updatedTask = taskRepository.findTaskById(4);
+
+        assertThat(updatedTask.getParentTaskId()).isEqualTo(1);
+        assertThat(updatedTask.getAssignedMemberId()).isEqualTo(3);
+        assertThat(updatedTask.getTitle()).isEqualTo("Tell funny joke");
+        assertThat(updatedTask.getDescription()).isEqualTo("test");
+        assertThat(updatedTask.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1.5"));
+        assertTrue(updatedTask.isHighPriority());
+        assertTrue(updatedTask.isDone());
+
     }
 }
