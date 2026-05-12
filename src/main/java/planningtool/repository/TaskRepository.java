@@ -48,7 +48,9 @@ public class TaskRepository {
         return taskRowMapper;
     }
 
-    public RowMapper<TimeEntry> getTimeEntryRowMapper(){ return  timeEntryRowMapper; }
+    public RowMapper<TimeEntry> getTimeEntryRowMapper() {
+        return timeEntryRowMapper;
+    }
 
     public Task insertTask(Task task) {
         String sql = """
@@ -114,13 +116,27 @@ public class TaskRepository {
         jdbc.update(sql, id);
     }
 
-    public void updateTask (Task task){
+    public void updateTask(Task task) {
         String sql = """
                 UPDATE task
                 SET parent_task_id = ?, assigned_member_id = ?, title = ?, description = ?, time_estimate = ?, is_high_priority = ?, is_done = ?
+                WHERE id = ?
                 """;
-        jdbc.update(sql, task.getParentTaskId(), task.getAssignedMemberId(), task.getTitle(), task.getDescription(), task.getTimeEstimate(), task.isHighPriority(), task.isDone());
+        jdbc.update(sql, task.getParentTaskId(), task.getAssignedMemberId(), task.getTitle(), task.getDescription(), task.getTimeEstimate(), task.isHighPriority(), task.isDone(), task.getId());
     }
 
+    public void deleteTaskById(int id) {
+        String sql = """
+                DELETE FROM task WHERE id = ?
+                """;
+        jdbc.update(sql, id);
+    }
+
+    public List<Task> findSubtasksByParentId(int parent_task_id) {
+        String sql = """
+                SELECT * FROM task WHERE parent_task_id = ?
+                """;
+        return jdbc.query(sql, taskRowMapper, parent_task_id);
+    }
 
 }

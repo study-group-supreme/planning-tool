@@ -14,6 +14,7 @@ import planningtool.repository.TaskRepository;
 
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -53,7 +54,7 @@ public class TaskService {
         if (task.getTitle().length() > 225) {
             throw new BadRequestException("Task title cannot exceed 225 characters");
         }
-        if (task.getDescription() != null){
+        if (task.getDescription() != null) {
             if (task.getDescription().length() > 1080) {
                 throw new BadRequestException("Task description cannot exceed 1080 characters");
             }
@@ -82,7 +83,7 @@ public class TaskService {
 
 
         BigDecimal timeSpent = timeEntry.getTimeSpent();
-        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <=0) {
+        if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Time spent must be a positive number");
         }
 
@@ -102,12 +103,27 @@ public class TaskService {
         }
     }
 
-    public Task editTask(Task task){
-        try{
+    public Task editTask(Task task) {
+        try {
             taskRepository.updateTask(task);
             return taskRepository.findTaskById(task.getId());
         } catch (DataAccessException e) {
             throw new DatabaseOperationException(e.getMessage(), e.getCause());
         }
+    }
+
+    //Properly need some validation here at some point
+    public void removeTaskById(int id) {
+        Task task = taskRepository.findTaskById(id);
+        if (task.getParentTaskId() == null) {
+            List<Task> tasks = taskRepository.findSubtasksByParentId(id);
+            for (Task t : tasks) {
+                if (!t.isDone()) {
+                    throw new BadRequestException("You cannot delete main task before deleting all subtask or marking them as done");
+                }
+            }
+        }
+        taskRepository.deleteTaskById(id);
+
     }
 }
