@@ -1,9 +1,11 @@
 package planningtool.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
@@ -25,10 +27,10 @@ public class ProjectService {
     }
 
     // TODO Might need more exception handling
-    public Project getProjectById(int id){
-        try{
+    public Project getProjectById(int id) {
+        try {
             return projectRepository.findProjectById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Project not found");
         }
     }
@@ -49,7 +51,11 @@ public class ProjectService {
         }
         project.setTimeOfCreation(LocalDate.now());
         project.setActive(true);
-        return projectRepository.insertProject(project);
+        try {
+            return projectRepository.insertProject(project);
+        } catch (DataIntegrityViolationException e){
+            throw new DatabaseOperationException("Project couldn't be created", e.getCause());
+        }
     }
 
 
@@ -58,11 +64,7 @@ public class ProjectService {
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
-        List<Employee> members = projectRepository.findProjectMembersByProjectId(id);
-        if (members == null || members.isEmpty()) {
-            throw new NotFoundException("No project members found for this project " + projectRepository.findProjectById(id).getTitle());
-        }
-        return members;
+        return projectRepository.findProjectMembersByProjectId(id);
     }
 
     public List<Project> getProjectsByEmployeeId(int employeeId) {
