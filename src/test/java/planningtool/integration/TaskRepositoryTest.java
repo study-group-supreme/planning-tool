@@ -12,6 +12,7 @@ import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -138,5 +139,13 @@ public class TaskRepositoryTest {
 
         assertThatThrownBy(() -> taskRepository.findTaskById(1))
                 .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+    @Test
+    void findSubtasksByParentId_shouldReturnListOfTasksWithSameParrentId(){
+        List<Task> allSubTasks = taskRepository.findSubtasksByParentIt(1);
+
+        assertThat(allSubTasks.size()).isEqualTo(2);
+        assertThat(allSubTasks.get(0).getTitle()).isEqualTo("Grind the beans");
+
     }
 }
