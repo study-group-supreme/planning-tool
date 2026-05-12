@@ -8,6 +8,7 @@ import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.EmployeeRepository;
+import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
@@ -17,33 +18,27 @@ public class TaskController {
 
     private final TaskService taskService;
     private final ProjectService projectService;
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public TaskController(TaskService taskService, ProjectService projectService, EmployeeRepository employeeRepository) {
+    public TaskController(TaskService taskService, ProjectService projectService, EmployeeService employeeService) {
         this.taskService = taskService;
         this.projectService = projectService;
-        this.employeeRepository = employeeRepository;
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/{taskId}")
     public String showSpecificTask(@PathVariable int taskId, Model model){
         Task task = taskService.getTaskById(taskId);
-        Task parentTask = null;
-        Employee employee = null;
 
-        if (task.getParentTaskId() != null) {
-            parentTask = taskService.getTaskById(task.getParentTaskId());
-        }
+        Task parentTask = taskService.getTaskById(task.getParentTaskId());
+        Employee employee = employeeService.getEmployeeById(task.getAssignedMemberId());
 
-        if (task.getAssignedMemberId() != null) {
-            employee = employeeRepository.findEmployeeById(task.getAssignedMemberId());
-        }
 
         model.addAttribute("task", task);
-        model.addAttribute("assignedEmployee", employee);
-        model.addAttribute("parentTask", parentTask);
         model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
         model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
+        model.addAttribute("assignedEmployee", employee);
+        model.addAttribute("parentTask", parentTask);
         return "task/details-task";
     }
 
