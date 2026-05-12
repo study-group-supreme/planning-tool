@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/index.css}">
     <meta charset="UTF-8">
     <title>Show Project</title>
 </head>
@@ -31,7 +32,7 @@
             <strong>Task status</strong>
         </th>
         <th>
-            <strong>Task details</strong>
+            Task details
         </th>
     </tr>
     <tr th:if="${task.getParentTaskId()== null}" th:each="task : ${project.getTasks()}">
@@ -41,7 +42,7 @@
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Delete task</button>
+                    <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
             <div th:if="${mainTask}">
@@ -49,7 +50,7 @@
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Delete task</button>
+                    <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
             <div th:if="${!task.done}">
@@ -57,7 +58,7 @@
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Mark done</button>
+                    <button class="mark-done-button" type="submit">Mark done</button>
                 </form>
             </div>
 
@@ -66,7 +67,7 @@
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
-                    <button type="submit">Mark not done</button>
+                    <button class="mark-not-button" type="submit">Mark not done</button>
                 </form>
             </div>
         </td>
@@ -91,7 +92,10 @@
             <strong>Task status</strong>
         </th>
         <th>
-            <strong>Parent task</strong>
+            Subtask details
+        </th>
+        <th>
+            Parent task
         </th>
     </tr>
     <tr th:if="${task.getParentTaskId()!= null}" th:each="task : ${project.getTasks()}">
@@ -101,7 +105,7 @@
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Delete task</button>
+                    <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
             <div th:if="${mainTask}">
@@ -109,15 +113,17 @@
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Delete task</button>
+                    <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
+
+
             <div th:if="${!task.done}">
                 <form th:action="@{/tasks/mark-done}" method="post">
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button type="submit">Mark done</button>
+                    <button class="mark-done-button" type="submit">Mark done</button>
                 </form>
             </div>
 
@@ -126,7 +132,7 @@
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
-                    <button type="submit">Mark not done</button>
+                    <button class="mark-not-button" type="submit">Mark not done</button>
                 </form>
             </div>
         </td>
@@ -144,7 +150,7 @@
 
 
 </table>
-<form th:action="@{/tasks/quick-add}" method="post">
+<form class="create-task" th:action="@{/tasks/quick-add}" method="post">
 
     <input type="hidden" name="projectId" th:value="${project.id}">
 
@@ -153,7 +159,7 @@
     <button type="submit">Add</button>
 </form>
 
-<form th:action="@{/tasks/add}" method="get">
+<form class="create-task" th:action="@{/tasks/add}" method="get">
     <input type="hidden" name="projectId" th:value="${project.id}">
     <button type="submit">Create task</button>
 </form>
