@@ -37,7 +37,7 @@
                 <input type="checkbox" name="done" th:value="${task.done}">
                 <input type="hidden" name="taskId" th:value="${task.id}">
                 <input type="hidden" name="projectId" th:value="${project.id}" >
-                <button type="submit">Mark done</button>
+                <button type="submit">Delete subtask</button>
             </form>
         </td>
         <td th:if="${task.getParentTaskId()} != null">
