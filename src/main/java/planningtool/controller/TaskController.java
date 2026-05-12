@@ -29,10 +29,16 @@ public class TaskController {
     @GetMapping("/{taskId}")
     public String showSpecificTask(@PathVariable int taskId, Model model){
         Task task = taskService.getTaskById(taskId);
+        Task parentTask = null;
+        Employee employee = null;
 
-        Task parentTask = taskService.getTaskById(task.getParentTaskId());
-        Employee employee = employeeService.getEmployeeById(task.getAssignedMemberId());
+        if (task.getParentTaskId() != null) {
+            parentTask = taskService.getTaskById(task.getParentTaskId());
+        }
 
+        if (task.getAssignedMemberId() != null) {
+            employee = employeeService.getEmployeeById((task.getAssignedMemberId()));
+        }
 
         model.addAttribute("task", task);
         model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
