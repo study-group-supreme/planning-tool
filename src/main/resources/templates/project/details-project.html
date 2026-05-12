@@ -50,7 +50,7 @@
                 </form>
             </div>
             <div th:if="${!task.done}">
-                <form th:action="@{/tasks/edit-status}" method="post">
+                <form th:action="@{/tasks/mark-done}" method="post">
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
@@ -59,7 +59,7 @@
             </div>
 
             <div th:if="${task.done}">
-                <form th:action="@{/tasks/edit-status}" method="post">
+                <form th:action="@{/tasks/mark-done}" method="post">
                     <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
