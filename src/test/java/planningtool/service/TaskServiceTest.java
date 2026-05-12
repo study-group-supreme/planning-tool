@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -247,9 +248,31 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setId(1);
         task.setTitle("test");
-
         taskService.removeTaskById(1);
         verify(taskRepository).deleteTaskById(1);
+    }
+    @Test
+    void removeTaskById_ThrowsBadRequestException_IfYouTryToDeleteMainTaskBeforeSubtasks(){
+        Task task = new Task();
+        task.setId(1);
+        task.setTitle("test");
+
+        Task subtask = new Task();
+        subtask.setId(2);
+        subtask.setTitle("test2");
+        subtask.setParentTaskId(1);
+
+        Task subtask2 = new Task();
+        subtask2.setId(3);
+        subtask2.setTitle("test3");
+        subtask2.setParentTaskId(1);
+
+        List<Task> subtasks = List.of(subtask, subtask2);
+
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(subtasks);
+
+        assertThrows(BadRequestException.class, () -> taskService.removeTaskById(1));
 
     }
 

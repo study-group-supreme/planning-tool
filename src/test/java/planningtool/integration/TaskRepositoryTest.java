@@ -142,7 +142,7 @@ public class TaskRepositoryTest {
     }
     @Test
     void findSubtasksByParentId_shouldReturnListOfTasksWithSameParrentId(){
-        List<Task> allSubTasks = taskRepository.findSubtasksByParentIt(1);
+        List<Task> allSubTasks = taskRepository.findSubtasksByParentId(1);
 
         assertThat(allSubTasks.size()).isEqualTo(2);
         assertThat(allSubTasks.get(0).getTitle()).isEqualTo("Grind the beans");
