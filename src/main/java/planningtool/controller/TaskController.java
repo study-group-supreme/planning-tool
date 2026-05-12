@@ -22,7 +22,7 @@ public class TaskController {
     }
 
     @GetMapping("/add")
-    public String showAddTaskForm(Model model, @RequestParam int projectId){
+    public String showAddTaskForm(Model model, @RequestParam int projectId) {
         Task task = new Task();
         task.setProjectId(projectId);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
@@ -31,7 +31,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String saveTask(@ModelAttribute Task task){
+    public String saveTask(@ModelAttribute Task task) {
         taskService.createTask(task);
         return "redirect:/projects/" + task.getProjectId();
     }
@@ -48,7 +48,14 @@ public class TaskController {
 
         taskService.createTask(task);
 
-        return "redirect:/projects/"+projectId;
+        return "redirect:/projects/" + projectId;
+    }
+
+    @PostMapping("/remove")
+    public String removeTask(@RequestParam int taskId) {
+        taskService.removeTaskById(taskId);
+
+        return "redirect:/projects";
     }
     // TODO: finish designing task overview and apply time entries as needed
     // use below for inspo
