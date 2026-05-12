@@ -36,21 +36,36 @@
         <td>
             <div th:if="${!mainTask}">
                 <form th:action="@{/tasks/remove}" method="post">
-                    <input type="checkbox" name="done" th:value="${task.done}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <button type="submit">Delete task</button>
                 </form>
             </div>
-            <div th:if="${mainTask}" >
+            <div th:if="${mainTask}">
 
                 <form th:action="@{/tasks/remove}" method="post">
-                    <input type="checkbox" name="done" th:value="${task.done}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <button type="submit">Delete task</button>
                 </form>
             </div>
+            <div th:if="${!task.done}">
+                <form th:action="@{/tasks/edit-status}" method="post">
+                    <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button type="submit">Mark done</button>
+                </form>
+            </div>
+
+            <div th:if="${task.done}">
+                <form th:action="@{/tasks/edit-status}" method="post">
+                    <input type="checkbox" th:checked="${task.done}" name="status" th:value="${task.done}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <button type="submit">Mark not done</button>
+                    </form>
+           </div>
         </td>
         <td th:if="${task.getParentTaskId()} != null">
             <span th:each="subTask : ${project.getTasks()}">

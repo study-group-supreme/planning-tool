@@ -65,6 +65,13 @@ public class TaskController {
 
         }
         return "redirect:/projects/" + projectId;
+    }
+    @PostMapping("/edit-status")
+    public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId){
+        taskService.editTaskIsDoneStatus(taskId);
+        return "redirect:/projects/" + projectId;
+
+
         // TODO: finish designing task overview and apply time entries as needed
         // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")

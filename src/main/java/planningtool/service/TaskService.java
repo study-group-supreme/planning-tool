@@ -126,7 +126,9 @@ public class TaskService {
         taskRepository.deleteTaskById(id);
     }
 //Properly need some validation later
-    public Task editTaskIsDoneStatus(Task task) {
+    public Task editTaskIsDoneStatus(int taskId) {
+        Task task = taskRepository.findTaskById(taskId);
+        task.setDone(!task.isDone());
         return taskRepository.updateIsDoneInTaskById(task);
 
     }
