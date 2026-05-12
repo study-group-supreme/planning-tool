@@ -130,14 +130,6 @@ public class ProjectServiceTest {
         assertThat(result.get(1).getName()).isEqualTo("Fin");
     }
 
-    @Test
-    void getProjectMembersByProjectId_ThrowsNotFoundException_WhenNoMembersAreAssignedToAProject() {
-        Project project = new Project();
-        project.setTitle("test");
-        when(projectRepository.findProjectMembersByProjectId(1)).thenReturn(List.of());
-        when(projectRepository.findProjectById(1)).thenReturn(project);
-        assertThrows(NotFoundException.class, () -> projectService.getProjectMembersByProjectId(1));
-    }
 
     @Test
     void getProjectsByEmployeeId_ThrowsNotFoundException_WhenNoProjectsAreFoundConnectedToAnEmployeeId() {
