@@ -120,8 +120,9 @@ public class TaskRepository {
         String sql = """
                 UPDATE task
                 SET parent_task_id = ?, assigned_member_id = ?, title = ?, description = ?, time_estimate = ?, is_high_priority = ?, is_done = ?
+                WHERE id = ?
                 """;
-        jdbc.update(sql, task.getParentTaskId(), task.getAssignedMemberId(), task.getTitle(), task.getDescription(), task.getTimeEstimate(), task.isHighPriority(), task.isDone());
+        jdbc.update(sql, task.getParentTaskId(), task.getAssignedMemberId(), task.getTitle(), task.getDescription(), task.getTimeEstimate(), task.isHighPriority(), task.isDone(), task.getId());
     }
 
     public void deleteTaskById(int id) {

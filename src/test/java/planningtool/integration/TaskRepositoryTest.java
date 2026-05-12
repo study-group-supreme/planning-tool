@@ -123,4 +123,15 @@ public class TaskRepositoryTest {
         assertTrue(updatedTask.isDone());
 
     }
+    @Test
+    void deleteTaskById_ShouldDeleteTaskById(){
+   Task task = new Task();
+   task.setId(1);
+   task.setProjectId(1);
+   task.setTitle("test");
+
+   taskRepository.deleteTaskById(1);
+
+   assertThat(task.getId()).isEqualTo(1).
+    }
 }
