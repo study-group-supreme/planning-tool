@@ -1,31 +1,31 @@
-# Planning Tool
+# 🛠️ Planning Tool
 
-## Project Description
-Planning Tool is a project calculation tool for the business Alpha Solutions.  
+## 📖 Project Description
+Planning Tool is a project calculation tool for the business **Alpha Solutions**.  
 The purpose of the tool is to calculate estimated prices for customers ordering tech stack solutions from Alpha Solutions.
 
-## Goal
+## 🎯 Goal
 The goal is to help Alpha Solutions provide better price estimates for customers by using our tool.
 
-## Features
+## ✨ Features
 Our project offers the ability to:
 
-- Create and manage projects
-- Add tasks and subtasks
-- Set time estimates
-- Set and track time spent
-- Assign employees to projects
-- Archive projects
+- 📁 Create and manage projects
+- ✅ Add tasks and subtasks
+- ⏱️ Set time estimates
+- 📊 Track time spent
+- 👨‍💻 Assign employees to projects
+- 🗄️ Archive projects
 
-## Technology Stack
-- Java 17+
-- Maven
-- Spring Boot
-- Spring Web
-- Database: MySQL
-- Deployment: Microsoft Azure
+## ⚙️ Technology Stack
+- ☕ Java 17+
+- 📦 Maven
+- 🚀 Spring Boot
+- 🌐 Spring Web
+- 🗄️ Database: MySQL
+- ☁️ Deployment: Microsoft Azure
 
-## Installation
+## 📥 Installation
 
 ```bash
 # Clone repository
@@ -41,7 +41,7 @@ cd planning-tool
 ./mvnw spring-boot:run
 ```
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```text
 ├── HELP.md
