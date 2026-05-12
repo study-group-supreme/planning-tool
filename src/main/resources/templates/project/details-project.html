@@ -21,6 +21,7 @@
         <td th:text="${member.name}"></td>
     </tr>
 </table>
+<p th:if="${message != null}" th:text="${message}"></p>
 <table class="task-list">
     <tr>
         <th>
@@ -32,6 +33,28 @@
     </tr>
     <tr th:each="task : ${project.getTasks()}">
         <td th:text="${task.title}"></td>
+        <td>
+            <div th:if="${!mainTask}">
+                <form th:action="@{/tasks/remove}" method="post">
+                    <input type="checkbox" name="done" th:value="${task.done}">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button type="submit">Delete task</button>
+                </form>
+            </div>
+            <div th:if="${mainTask}" >
+
+                <form th:action="@{/tasks/remove}" method="post">
+                    <input type="checkbox" name="done" th:value="${task.done}">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button type="submit">Delete task</button>
+                </form>
+            </div>
+        </td>
+        <td>
+            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+        </td>
         <td th:if="${task.getParentTaskId()} != null">
             <span th:each="subTask : ${project.getTasks()}">
                 <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">

@@ -57,6 +57,7 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public String showSpecificProject(@PathVariable int projectId, Model model) {
         model.addAttribute("project", projectService.getProjectById(projectId));
+        model.addAttribute("mainTask", false);
         return "project/details-project";
     }
 
