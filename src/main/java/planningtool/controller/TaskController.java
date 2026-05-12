@@ -52,10 +52,10 @@ public class TaskController {
     }
 
     @PostMapping("/remove")
-    public String removeTask(@RequestParam int taskId) {
+    public String removeTask(@RequestParam int taskId, @RequestParam int projectId) {
         taskService.removeTaskById(taskId);
 
-        return "redirect:/projects";
+        return "redirect:/projects/" + projectId;
     }
     // TODO: finish designing task overview and apply time entries as needed
     // use below for inspo
