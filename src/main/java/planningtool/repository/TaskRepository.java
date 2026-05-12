@@ -139,4 +139,12 @@ public class TaskRepository {
         return jdbc.query(sql, taskRowMapper, parent_task_id);
     }
 
+    public Task updateIsDoneInTaskById(Task task) {
+        String sql = """
+                UPDATE task SET is_done = ? WHERE id = ?
+                """;
+        jdbc.update(sql, task.isDone(), task.getId());
+        return findTaskById(task.getId());
+    }
+
 }
