@@ -4,10 +4,13 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Project;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
+
+import java.util.List;
 
 @RequestMapping("/projects")
 @Controller
@@ -25,9 +28,15 @@ public class ProjectController {
     @GetMapping()
     public String ShowListOfProjectsByEmployeeId(Model model, HttpSession session) {
         int employeeId = (Integer) session.getAttribute("employeeId");
-        model.addAttribute("projects", projectService.getProjectsByEmployeeId(employeeId));
-
-        return "project/list-projects";
+        try {
+            List<Project> employeeProjects = projectService.getProjectsByEmployeeId(employeeId);
+            model.addAttribute("projects", employeeProjects);
+            return "project/list-projects";
+        } catch(NotFoundException e){
+            model.addAttribute("emptyList", true);
+            model.addAttribute("message", e.getMessage());
+            return "project/list-projects";
+        }
     }
 
     @GetMapping("/add")
@@ -46,7 +55,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    public String showSpecificProject(@PathVariable int projectId, Model model){
+    public String showSpecificProject(@PathVariable int projectId, Model model) {
         model.addAttribute("project", projectService.getProjectById(projectId));
         return "project/details-project";
     }
