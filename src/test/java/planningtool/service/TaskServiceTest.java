@@ -77,10 +77,37 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit () {
+    void createTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
         Task task = new Task();
         task.setTimeEstimate(new BigDecimal("10000.99"));
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+    }
+    @Test
+    void editTask_ReturnsUpdatedTask() {
+        Task originalTask = new Task();
+        originalTask.setId(1);
+        originalTask.setProjectId(1);
+        originalTask.setParentTaskId(1);
+        originalTask.setTitle("test");
+        originalTask.setDescription("just a test");
+        originalTask.setHighPriority(false);
+        originalTask.setTimeEstimate(new BigDecimal("0.5"));
+
+        when(taskRepository.findTaskById(1)).thenReturn(originalTask);
+
+        originalTask.setParentTaskId(2);
+        originalTask.setTitle("updated test");
+        originalTask.setDescription("just a test, again");
+        originalTask.setHighPriority(true);
+        originalTask.setTimeEstimate(new BigDecimal("1"));
+
+        Task result = taskService.editTask(originalTask);
+
+        assertThat(result.getParentTaskId()).isEqualTo(2);
+        assertThat(result.getTitle()).isEqualTo("updated test");
+        assertThat(result.getDescription()).isEqualTo("just a test, again");
+        assertTrue(result.isHighPriority());
+        assertThat(result.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1"));
     }
 
 
