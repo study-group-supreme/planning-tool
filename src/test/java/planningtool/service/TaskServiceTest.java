@@ -211,6 +211,7 @@ public class TaskServiceTest {
                 () -> taskService.createTimeEntry(null)
         );
         assertThat(ex.getMessage()).contains("null");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -226,6 +227,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Invalid task id");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -241,6 +243,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -256,6 +259,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("must be a positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -271,6 +275,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("positive number");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -308,6 +313,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Nothing to show");
+        verify(taskRepository, never()).insertTimeEntry(any());
     }
 
     @Test
@@ -328,6 +334,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Database error");
+        verify(taskRepository, never()).insertTimeEntry(any());
 
     }
 
