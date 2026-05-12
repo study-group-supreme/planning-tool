@@ -10,6 +10,7 @@ import planningtool.model.TimeEntry;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
@@ -53,11 +54,15 @@ public class TaskController {
     }
 
     @PostMapping("/remove")
-    public String removeTask(@RequestParam int taskId, @RequestParam int projectId) {
+    public String removeTask(@RequestParam int taskId, @RequestParam int projectId, Model model) {
         try {
             taskService.removeTaskById(taskId);
         } catch (BadRequestException e) {
-            return "redirect:/projects/" + projectId + "?error=notAllDone";
+            model.addAttribute("mainTask", true);
+            model.addAttribute("project", projectService.getProjectById(projectId));
+            model.addAttribute("message", e.getMessage());
+            return "project/details-project";
+
         }
         return "redirect:/projects/" + projectId;
         // TODO: finish designing task overview and apply time entries as needed

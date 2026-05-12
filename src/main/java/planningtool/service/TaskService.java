@@ -119,7 +119,7 @@ public class TaskService {
             List<Task> tasks = taskRepository.findSubtasksByParentId(id);
             for (Task t : tasks) {
                 if (!t.isDone()) {
-                    throw new BadRequestException("...");
+                    throw new BadRequestException("You cannot delete main task before deleting all subtask or marking them as done");
                 }
             }
         }
