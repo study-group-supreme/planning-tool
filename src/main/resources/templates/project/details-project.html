@@ -41,10 +41,19 @@
         </td>
     </tr>
 </table>
+<form th:action="@{/tasks/quick-add}" method="post">
+
+    <input type="hidden" name="projectId" th:value="${project.id}">
+
+    <input type="text" name="title" placeholder="Quick add task…" required>
+
+    <button type="submit">Add</button>
+</form>
 
 <form th:action="@{/tasks/add}" method="get">
     <input type="hidden" name="projectId" th:value="${project.id}">
     <button type="submit">Create task</button>
 </form>
+
 </body>
 </html>

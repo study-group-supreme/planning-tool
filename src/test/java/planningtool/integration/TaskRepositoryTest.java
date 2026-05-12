@@ -12,7 +12,6 @@ import planningtool.repository.TaskRepository;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

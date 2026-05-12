@@ -35,6 +35,21 @@ public class TaskController {
         taskService.createTask(task);
         return "redirect:/projects/" + task.getProjectId();
     }
+
+    @PostMapping("/quick-add")
+    public String quickSaveTask(
+            @RequestParam int projectId,
+            @RequestParam String title,
+            HttpSession session) {
+
+        Task task = new Task();
+        task.setProjectId(projectId);
+        task.setTitle(title);
+
+        taskService.createTask(task);
+
+        return "redirect:/projects/"+projectId;
+    }
     // TODO: finish designing task overview and apply time entries as needed
     // use below for inspo
 //    @GetMapping("/{taskId}/time-entry")
