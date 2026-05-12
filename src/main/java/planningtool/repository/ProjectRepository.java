@@ -9,7 +9,9 @@ import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -32,7 +34,10 @@ public class ProjectRepository {
         p.setTitle(rs.getString("title"));
         p.setDescription(rs.getString("description"));
         p.setActive(rs.getBoolean("active"));
-        p.setDeadline(rs.getDate("deadline").toLocalDate());
+        Date sqlDeadline = rs.getDate("deadline");
+        if(sqlDeadline != null){
+            p.setDeadline(sqlDeadline.toLocalDate());
+        }
         p.setProjectCreatorId(rs.getInt("project_creator_id"));
         p.setTimeOfCreation(rs.getDate("time_of_creation").toLocalDate());
         p.setProjectMembers(findProjectMembersByProjectId(p.getId()));

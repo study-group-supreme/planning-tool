@@ -14,6 +14,7 @@ import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,8 +52,11 @@ public class ProjectService {
         }
         project.setTimeOfCreation(LocalDate.now());
         project.setActive(true);
+        project.setProjectMembers(new ArrayList<>());
         try {
-            return projectRepository.insertProject(project);
+            Project createdProject = projectRepository.insertProject(project);
+            addProjectMemberToProject(employeeRepository.findEmployeeById(project.getProjectCreatorId()), project);
+            return createdProject;
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseOperationException("Project couldn't be created", e.getCause());
         }
