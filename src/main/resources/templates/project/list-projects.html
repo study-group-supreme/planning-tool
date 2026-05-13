@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Project Overview</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
 <div class="empty-list" th:if="${emptyList}">
     <p th:text="${message}"></p>
-    <button onclick="window.location.href='/projects/add'">Create Project</button>
+    <button onclick="window.location.href='/projects/add'">Create project</button>
+</div>
+<div class="create-button">
+    <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>
 
 <div th:if="!${emptyList}">

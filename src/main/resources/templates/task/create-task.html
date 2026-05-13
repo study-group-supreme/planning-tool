@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Task</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
 <form th:action="@{/tasks/add}" th:object="${task}" method="post">

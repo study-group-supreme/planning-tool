@@ -1,15 +1,22 @@
 package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 import org.springframework.web.bind.annotation.RequestParam;
 import planningtool.model.Employee;
@@ -83,6 +90,62 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("projectMembers"));
     }
 
+    @Test
+    void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception {
+        Task task = new Task();
+        task.setId(1);
+        task.setProjectId(1);
+
+
+        mockMvc.perform(post("/tasks/remove")
+                        .param("taskId", "1")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+        verify(taskService).removeTaskById(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(1);
+    }
+
+    @Test
+    void editTaskIsDoneStatus_shouldEditIsDoneStatus_AndRedirect() throws Exception {
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setId(1);
+        task.setDone(false);
+
+
+        mockMvc.perform(post("/tasks/mark-done")
+                        .param("taskId", "1")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(taskService).editTaskIsDoneStatus(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(1);
+    }
+
+    @Test
+    void quickSaveTask_ShouldCreateTask() throws Exception {
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setId(1);
+
+        mockMvc.perform(post("/tasks/quick-add")
+                        .param("title", "test")
+                        .param("projectId", "1")
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskService).createTask(captor.capture());
+
+        Task createdTask = captor.getValue();
+      assertEquals("test", createdTask.getTitle());
+    }
     @Test
     void createTask_ShouldShowCreateTaskForm() throws Exception {
 

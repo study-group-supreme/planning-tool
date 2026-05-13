@@ -32,7 +32,7 @@ public class ProjectController {
             List<Project> employeeProjects = projectService.getProjectsByEmployeeId(employeeId);
             model.addAttribute("projects", employeeProjects);
             return "project/list-projects";
-        } catch(NotFoundException e){
+        } catch (NotFoundException e) {
             model.addAttribute("emptyList", true);
             model.addAttribute("message", e.getMessage());
             return "project/list-projects";
@@ -56,8 +56,12 @@ public class ProjectController {
 
     @GetMapping("/{projectId}")
     public String showSpecificProject(@PathVariable int projectId, Model model) {
-        model.addAttribute("project", projectService.getProjectById(projectId));
+        Project project = projectService.getProjectById(projectId);
+        model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
+        model.addAttribute("doneTasks", taskService.getDoneSubtasks(project.getTasks()));
+        model.addAttribute("allSubtasks", taskService.getTotalSubtasks(project.getTasks()));
+        model.addAttribute("allDone", taskService.getDoneSubtasks(project.getTasks()) == taskService.getTotalSubtasks(project.getTasks()));
         return "project/details-project";
     }
 
