@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import planningtool.model.Employee;
 import planningtool.model.Task;
@@ -86,7 +87,6 @@ public class TaskControllerTest {
 
     @Test
     void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception {
-        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         Task task = new Task();
         task.setId(1);
         task.setProjectId(1);
@@ -98,18 +98,17 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
 
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         verify(taskService).removeTaskById(captor.capture());
         assertThat(captor.getValue()).isEqualTo(1);
     }
 
     @Test
     void editTaskIsDoneStatus_shouldEditIsDoneStatus_AndRedirect() throws Exception {
-        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         Task task = new Task();
         task.setProjectId(1);
         task.setId(1);
         task.setDone(false);
-
 
 
         mockMvc.perform(post("/tasks/mark-done")
@@ -117,13 +116,31 @@ public class TaskControllerTest {
                         .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+
         verify(taskService).editTaskIsDoneStatus(captor.capture());
         assertThat(captor.getValue()).isEqualTo(1);
     }
 
-    //TODO showAddTaskForm() tests should be added
-    //TODO saveTask() tests should be made
-    //TODO quickSaveTask() tests should be made
+    @Test
+    void quickSaveTask_ShouldCreateTask() throws Exception {
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setId(1);
+
+        mockMvc.perform(post("/tasks/quick-add")
+                        .param("title", "test")
+                        .param("projectId", "1")
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskService).createTask(captor.capture());
+
+        Task createdTask = captor.getValue();
+      assertEquals("test", createdTask.getTitle());
+    }
 
 
 }
