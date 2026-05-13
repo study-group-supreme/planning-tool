@@ -136,7 +136,14 @@ public class TaskService {
     //Properly need some validation later
     public Task editTaskIsDoneStatus(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
-        task.setDone(!task.isDone());
+        boolean newStatus = !task.isDone();
+        if (task.getParentTaskId() == null){
+            List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
+            for (Task t : subtasks){
+                t.setDone(newStatus);
+                taskRepository.updateIsDoneInTaskById(t);
+            }}
+        task.setDone(newStatus);
         return taskRepository.updateIsDoneInTaskById(task);
 
     }
