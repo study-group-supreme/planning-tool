@@ -498,10 +498,26 @@ public class TaskServiceTest {
 
         List<Task> subtasks = List.of(task1, task, task2);
 
-        int result = taskService.getDoneTasks(subtasks);
+        int result = taskService.getDoneSubtasks(subtasks);
 
         assertThat(result).isEqualTo(2);
+    }
+    @Test
+    void getAllSubtasks_ShouldReturnAListOfAllSubtasks(){
+        Task task = new Task();
+        task.setDone(true);
+        task.setParentTaskId(1);
+        task.setId(1);
 
+        Task task1 = new Task();
+        task1.setDone(false);
+        task1.setId(2);
+        task1.setParentTaskId(1);
+
+        List<Task> subtasks = List.of(task, task1);
+        int result = taskService.getTotalSubtasks(subtasks);
+        assertThat(result).isEqualTo(2);
 
     }
+
 }

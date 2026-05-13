@@ -145,7 +145,7 @@ public class TaskService {
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
 
-    public int getDoneTasks(List<Task> tasks){
+    public int getDoneSubtasks(List<Task> tasks){
         int count = 0;
         for (Task t : tasks){
             if (t.isDone() == true && t.getParentTaskId() != null){
