@@ -144,10 +144,11 @@ public class TaskService {
     public List<TimeEntry> getTimeEntriesByTaskId(int taskId) {
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
+
     public int getDoneTasks(List<Task> tasks){
         int count = 0;
         for (Task t : tasks){
-            if (t.isDone() == true){
+            if (t.isDone() == true && t.getParentTaskId() != null){
                 count ++;
             }
         }
