@@ -200,6 +200,22 @@ public class ProjectServiceTest {
         verify(projectRepository, never()).insertProjectMember(employee, project);
     }
 
+    @Test
+    void removeProjectMemberFromProject_ShouldRemoveMemberByCallingRepoDeleteMethod(){
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("Test");
+
+        Project project = new Project();
+        project.setId(1);
+        project.setProjectMembers(new ArrayList<>());
+        project.setProjectMembers(List.of(employee));
+
+        projectService.removeProjectMemberFromProject(employee, project);
+
+        verify(projectRepository, times(1)).deleteProjectMember(employee, project);
+    }
+
     // TODO addProjectMemberToProject() test for DatabaseOperationException throw should be made
 
     // TODO getProjectById() tests should be made
