@@ -27,6 +27,8 @@ public class ProjectControllerTest {
     @MockitoBean
     EmployeeService employeeService;
 
+    //TODO Add ArgumentCaptors to tests
+
     @Test
     void createProject_shouldShowCreateProjectForm() throws Exception {
         mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
@@ -53,4 +55,6 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));
     }
+
+    //TODO Test for showing showSpecificProject() should be added
 }

@@ -34,6 +34,8 @@ public class TaskControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
+    //TODO Add ArgumentCaptors to tests
+
     @Test
     void showSpecificTask_returnsDetailsPage() throws Exception{
         Task task = new Task();
@@ -75,6 +77,12 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("timeEntries"))
                 .andExpect(model().attributeExists("projectMembers"));
     }
+
+    //TODO showAddTaskForm() tests should be added
+    //TODO saveTask() tests should be made
+    //TODO quickSaveTask() tests should be made
+    //TODO removeTask() tests should be made
+    //TODO editTaskIsDoneSTatus() tests should be made
 
 
 }

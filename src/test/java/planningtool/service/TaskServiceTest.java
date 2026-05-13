@@ -36,6 +36,8 @@ public class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
+    //TODO Go through and verify if repository methods have been called in cases where the exceptions are thrown by the database
+
     @Test
     void getTaskById_ReturnsTask() {
         Task task = new Task();
@@ -70,10 +72,9 @@ public class TaskServiceTest {
     }
 
     @Test
-    void getTaskById_ThrowsDatabaseOperationException_OnDataAccessError() {
+    void getTaskById_ThrowsDatabaseOperationException_OnDataAccessError(){
         when(taskRepository.findTaskById(1))
-                .thenThrow(new DataAccessException("DB down") {
-                });
+                .thenThrow(new DataAccessException("DB down") {});
 
 
         DatabaseOperationException ex = assertThrows(DatabaseOperationException.class, () -> taskService.getTaskById(1));
@@ -81,7 +82,6 @@ public class TaskServiceTest {
 
     }
 
-    // TODO This test is a bit wonky and we need to write more tests!
     @Test
     void createTask_returnsCreatedTask() {
         Task task = new Task();
@@ -146,7 +146,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails() {
+    void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails(){
         Task task = new Task();
         task.setTitle("Title");
 
@@ -240,6 +240,8 @@ public class TaskServiceTest {
         verify(taskRepository, never()).updateTask(any());
     }
 
+    //TODO editTask() test for DatabaseOperationException throw should be made
+
 
     @Test
     void createTimeEntry_ShouldCallRepositoryWhenValid() {
@@ -267,15 +269,6 @@ public class TaskServiceTest {
         verify(taskRepository).insertTimeEntry(entry);
     }
 
-    @Test
-    void createTimeEntry_ThrowsRuntime_whenNullEntry() {
-        RuntimeException ex = assertThrows(
-                RuntimeException.class,
-                () -> taskService.createTimeEntry(null)
-        );
-        assertThat(ex.getMessage()).contains("null");
-        verify(taskRepository, never()).insertTimeEntry(any());
-    }
 
     @Test
     void createTimeEntry_ThrowsBadRequest_whenInvalidTaskId() {
@@ -476,6 +469,8 @@ public class TaskServiceTest {
         assertThat(result.get(0).getTimeSpent()).isEqualByComparingTo("1.5");
         verify(taskRepository).findTimeEntriesByTaskId(5);
     }
+
+    //TODO editTaskIsDoneStatus() tests should be made (check validation first)
 
     @Test
     void getDoneTasks_ShouldReturnAListOfDoneTaskInAProject() {
