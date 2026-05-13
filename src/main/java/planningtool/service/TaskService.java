@@ -142,4 +142,8 @@ public class TaskService {
     public List<TimeEntry> getTimeEntriesByTaskId(int taskId){
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
+
+    public boolean hasChildren(int taskId){
+        return taskRepository.taskHasChildren(taskId);
+    }
 }
