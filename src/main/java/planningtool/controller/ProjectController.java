@@ -61,6 +61,7 @@ public class ProjectController {
         model.addAttribute("mainTask", false);
         model.addAttribute("doneTasks", taskService.getDoneSubtasks(project.getTasks()));
         model.addAttribute("allSubtasks", taskService.getTotalSubtasks(project.getTasks()));
+        model.addAttribute("allDone", taskService.getDoneSubtasks(project.getTasks()) == taskService.getTotalSubtasks(project.getTasks()));
         return "project/details-project";
     }
 
