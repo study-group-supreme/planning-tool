@@ -74,11 +74,16 @@ th {
     text-align: left;
     padding: 15px;
 }
-
-td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+        td {
+            padding: 10px 15px;
+            vertical-align: middle;
+        }
+td div {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
+
 input[type='checkbox'] {
     margin-right:0px ;
 }
