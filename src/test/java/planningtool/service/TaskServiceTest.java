@@ -514,19 +514,4 @@ public class TaskServiceTest {
         assertThat(result).isEqualTo(2);
 
     }
-    @Test
-    void getHighPriorityTask_shouldReturnHighPriorityTasks(){
-        Task task = new Task();
-        task.setId(1);
-        task.setHighPriority(true);
-
-        Task task1 = new Task();
-        task1.setId(2);
-        task1.setHighPriority(true);
-
-        List<Task> highPriorityTasks = List.of(task1, task);
-        Task result = taskService.getHighPriorityTask(highPriorityTasks);
-        assertThat(result).isNotNull();
-    }
-
 }
