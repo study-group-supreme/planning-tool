@@ -13,6 +13,8 @@ import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+import java.math.BigDecimal;
+
 
 @Controller
 @RequestMapping("/tasks")
@@ -98,38 +100,24 @@ public class TaskController {
     public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId){
         taskService.editTaskIsDoneStatus(taskId);
         return "redirect:/projects/" + projectId;
-
-
-        // TODO: finish designing task overview and apply time entries as needed
-        // use below for inspo
-//    @GetMapping("/{taskId}/time-entry")
-//    public String showTimeEntryForm(@PathVariable int taskId, Model model) {
-//        TimeEntry entry = new TimeEntry();
-//        entry.setTaskId(taskId);
-//        model.addAttribute("timeEntry", entry);
-//        return "task/add-time-entry";
-//    }
-//
-//    @PostMapping("/{taskId}/time-entry")
-//    public String submitTimeEntry(
-//            @PathVariable int taskId,
-//            @ModelAttribute("timeEntry") TimeEntry timeEntry,
-//            HttpSession session,
-//            Model model
-//    ) {
-//        Integer employeeId = (Integer) session.getAttribute("employeeId");
-//        timeEntry.setEmployeeId(employeeId);
-//        timeEntry.setTaskId(taskId);
-//
-//        try {
-//            taskService.createTimeEntry(timeEntry);
-//            return "redirect:/tasks/" + taskId; // TODO: have a task detail page exist for this to work
-//        } catch (Exception e){
-//            model.addAttribute("error", e.getMessage());
-//            return "task/add-time-entry";
-//        }
-//    }
-
-
     }
+
+    @PostMapping("/{taskId}/time-entry")
+    public String submitTimeEntry(
+            @PathVariable int taskId,
+            @RequestParam BigDecimal timeSpent,
+            HttpSession session,
+            Model model
+    ) {
+        Integer employeeId = (Integer) session.getAttribute("employeeId");
+
+        TimeEntry entry = new TimeEntry();
+        entry.setTaskId(taskId);
+        entry.setEmployeeId(employeeId);
+        entry.setTimeSpent(timeSpent);
+
+        taskService.createTimeEntry(entry);
+        return "redirect:/tasks/" + taskId;
+    }
+
 }
