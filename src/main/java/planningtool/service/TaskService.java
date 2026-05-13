@@ -170,5 +170,12 @@ public class TaskService {
         }
         return count;
     }
+    public Task getHighPriorityTask(List<Task> tasks){
+        for (Task t : tasks){
+            if (t.isHighPriority() == true){
+                return t;
+            }
+        }
+    }
 
 }
