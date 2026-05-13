@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import planningtool.model.Employee;
@@ -76,6 +78,22 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("parentTask"))
                 .andExpect(model().attributeExists("timeEntries"))
                 .andExpect(model().attributeExists("projectMembers"));
+    }
+    @Test
+    void removeTask_ShouldRemoveTaskByTaskId() throws Exception{
+        Task task = new Task();
+        task.setId(1);
+        task.setProjectId(1);
+
+        taskService.removeTaskById(1);
+
+      mockMvc.perform(post("/tasks/remove")
+                      .param("taskId", "1")
+                      .param("projectId", "1"))
+              .andExpect(status().is3xxRedirection())
+              .andExpect(redirectedUrl("/projects/1"));
+
+
     }
 
     //TODO showAddTaskForm() tests should be added
