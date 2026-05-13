@@ -164,4 +164,20 @@ public class TaskRepositoryTest {
         Task updatedTask = taskRepository.updateIsDoneInTaskById(task);
         assertThat(updatedTask.isDone()).isFalse();
     }
+
+    @Test
+    void taskHasChildren_ShouldReturnTrueWhenChildrenExist(){
+        // task with id=1 has children
+        boolean result = taskRepository.taskHasChildren(1);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void taskHasChildren_shouldReturnFalseWhenNoChildren(){
+        // task with id=4 has no children
+        boolean result = taskRepository.taskHasChildren(4);
+
+        assertThat(result).isFalse();
+    }
 }

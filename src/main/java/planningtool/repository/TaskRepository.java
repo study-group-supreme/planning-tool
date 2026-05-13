@@ -147,4 +147,12 @@ public class TaskRepository {
         return findTaskById(task.getId());
     }
 
+    public boolean taskHasChildren(int taskId) {
+        String sql = """
+                SELECT COUNT(*) FROM task WHERE parent_task_id = ?
+                """;
+        Integer count = jdbc.queryForObject(sql, Integer.class, taskId);
+        return count != null && count > 0;
+    }
+
 }
