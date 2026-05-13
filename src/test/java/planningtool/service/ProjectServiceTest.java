@@ -60,6 +60,8 @@ public class ProjectServiceTest {
         assertThrows(BadRequestException.class, () -> projectService.createProject(project));
     }
 
+    //TODO createProject() tests for DatabaseOperationException throw should be made
+
     @Test
     void createProject_timeOfCreation_shouldSetTimeOfCreationToNow() {
         Project project = new Project();
@@ -197,4 +199,8 @@ public class ProjectServiceTest {
 
         verify(projectRepository, never()).insertProjectMember(employee, project);
     }
+
+    // TODO addProjectMemberToProject() test for DatabaseOperationException throw should be made
+
+    // TODO getProjectById() tests should be made
 }

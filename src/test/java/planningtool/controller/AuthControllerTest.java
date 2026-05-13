@@ -26,6 +26,11 @@ public class AuthControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
+    //TODO might need revision after LoginInterceptor is implemented
+    //TODO Add ArgumentCaptors to tests
+
+    //TODO if possible to test LoginInterceptor/WebConfig it should be in this test class
+
     @Test
     void showLoginForm_shouldDisplayLoginForm() throws Exception{
         mockMvc.perform(get("/auth/login")) // this refers to the controller endpoint
