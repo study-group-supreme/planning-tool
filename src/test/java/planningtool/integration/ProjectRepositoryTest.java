@@ -102,7 +102,7 @@ public class ProjectRepositoryTest {
         projectRepository.insertProjectMember(employee, project);
 
         List<Employee> result = projectRepository.findProjectMembersByProjectId(3);
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo("Daniella Norgren");
     }
     @Test
