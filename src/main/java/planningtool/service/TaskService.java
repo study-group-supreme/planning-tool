@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
@@ -131,7 +132,8 @@ public class TaskService {
         }
         taskRepository.deleteTaskById(id);
     }
-//Properly need some validation later
+
+    //Properly need some validation later
     public Task editTaskIsDoneStatus(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
         task.setDone(!task.isDone());
@@ -139,7 +141,17 @@ public class TaskService {
 
     }
 
-    public List<TimeEntry> getTimeEntriesByTaskId(int taskId){
+    public List<TimeEntry> getTimeEntriesByTaskId(int taskId) {
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
+    public int getDoneTasks(List<Task> tasks){
+        int count = 0;
+        for (Task t : tasks){
+            if (t.isDone() == true){
+                count ++;
+            }
+        }
+        return count;
+    }
+
 }
