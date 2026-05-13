@@ -104,6 +104,18 @@ public class ProjectRepositoryTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getName()).isEqualTo("Daniella Norgren");
     }
+    @Test
+    void deleteProjectMember_ShouldDeleteProjectMemberFromTable(){
+        Project project = projectRepository.findProjectById(1);
+        List<Employee> projectMembers = projectRepository.findProjectMembersByProjectId(project.getId());
+        Employee memberToRemove = projectMembers.get(0);
+
+        assertThat(projectMembers).hasSize(4);
+        projectRepository.deleteProjectMember(memberToRemove, project);
+
+        assertThat(projectRepository.findProjectMembersByProjectId(1)).doesNotContain(memberToRemove);
+        assertThat(projectRepository.findProjectMembersByProjectId(1)).hasSize(3);
+    }
 }
 
 

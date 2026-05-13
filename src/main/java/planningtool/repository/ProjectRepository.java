@@ -53,6 +53,7 @@ public class ProjectRepository {
                 JOIN project_member
                 ON employee.id = project_member.employee_id
                 WHERE project_member.project_id = ?
+                ORDER BY employee.id
                 """;
         return jdbc.query(sql, employeeRepository.getEmployeeRowMapper(), id);
     }
