@@ -80,7 +80,7 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("projectMembers"));
     }
     @Test
-    void removeTask_ShouldRemoveTaskByTaskId() throws Exception{
+    void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception{
         Task task = new Task();
         task.setId(1);
         task.setProjectId(1);
@@ -92,15 +92,27 @@ public class TaskControllerTest {
                       .param("projectId", "1"))
               .andExpect(status().is3xxRedirection())
               .andExpect(redirectedUrl("/projects/1"));
+    }
+    @Test
+    void editTaskIsDoneStatus_shouldEditIsDoneStatus_AndRedirect()throws Exception{
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setId(1);
+        task.setDone(false);
 
+        taskService.editTaskIsDoneStatus(1);
+
+        mockMvc.perform(post("/tasks/mark-done")
+                .param("taskId", "1")
+                .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
 
     }
 
     //TODO showAddTaskForm() tests should be added
     //TODO saveTask() tests should be made
     //TODO quickSaveTask() tests should be made
-    //TODO removeTask() tests should be made
-    //TODO editTaskIsDoneSTatus() tests should be made
 
 
 }
