@@ -98,6 +98,7 @@ public class ProjectRepositoryTest {
         Project project = new Project();
         project.setId(3);
 
+        assertThat(projectRepository.findProjectMembersByProjectId(3)).isEmpty();
         projectRepository.insertProjectMember(employee, project);
 
         List<Employee> result = projectRepository.findProjectMembersByProjectId(3);
