@@ -165,11 +165,12 @@
 
     <button type="submit">Add</button>
 </form>
-
+<div class="create-button">
 <form class="create-task" th:action="@{/tasks/add}" method="get">
     <input type="hidden" name="projectId" th:value="${project.id}">
     <button type="submit">Create task</button>
 </form>
+</div>
 
 </body>
 </html>
