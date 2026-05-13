@@ -47,6 +47,7 @@ public class TaskController {
         model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
         model.addAttribute("assignedEmployee", employee);
         model.addAttribute("parentTask", parentTask);
+        model.addAttribute("hasChildren", taskService.hasChildren(taskId));
         return "task/details-task";
     }
 
