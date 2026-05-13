@@ -55,6 +55,12 @@ body {
     background: white;
     padding: 25px;
 }
+.create-button{
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 25px;
+}
 .mark-not-button{
     color: red;
 }
@@ -74,11 +80,16 @@ th {
     text-align: left;
     padding: 15px;
 }
-
-td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+        td {
+            padding: 10px 15px;
+            vertical-align: middle;
+        }
+td div {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
+
 input[type='checkbox'] {
     margin-right:0px ;
 }
