@@ -39,7 +39,7 @@ public class TaskServiceTest {
     //TODO Go through and verify if repository methods have been called in cases where the exceptions are thrown by the database
 
     @Test
-    void getTaskById_ReturnsTask(){
+    void getTaskById_ReturnsTask() {
         Task task = new Task();
         task.setId(1);
         task.setTitle("Brew coffee");
@@ -111,6 +111,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
         verify(taskRepository, never()).insertTask(any());
     }
+
     @Test
     void createTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
@@ -195,6 +196,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
         verify(taskRepository, never()).updateTask(any());
     }
+
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsWhiteSpace() {
         Task task = new Task();
@@ -202,6 +204,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
         verify(taskRepository, never()).updateTask(any());
     }
+
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsNull() {
         Task task = new Task();
@@ -209,6 +212,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
         verify(taskRepository, never()).updateTask(any());
     }
+
     @Test
     void editTask_ThrowsBadRequestException_WhenTitleIsOver225Characters() {
         Task task = new Task();
@@ -216,6 +220,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
         verify(taskRepository, never()).updateTask(any());
     }
+
     @Test
     void editTask_ThrowsBadRequestException_WhenDescriptionIsOver1080Characters() {
         Task task = new Task();
@@ -224,6 +229,7 @@ public class TaskServiceTest {
         assertThrows(BadRequestException.class, () -> taskService.editTask(task));
         verify(taskRepository, never()).updateTask(any());
     }
+
     @Test
     void editTask_ThrowsBadRequestException_WhenTimeEstimateExceedsLimit() {
         Task task = new Task();
@@ -400,7 +406,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void removeTaskById_ShouldSucceed_WhenAllSubTasksAreDone(){
+    void removeTaskById_ShouldSucceed_WhenAllSubTasksAreDone() {
         Task mainTask = new Task();
         mainTask.setId(1);
         mainTask.setTitle("Main Task");
@@ -418,7 +424,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void removeTaskById_ThrowsBadRequestException_IfYouTryToDeleteMainTaskBeforeSubtasks(){
+    void removeTaskById_ThrowsBadRequestException_IfYouTryToDeleteMainTaskBeforeSubtasks() {
         Task task = new Task();
         task.setId(1);
         task.setTitle("test");
@@ -443,7 +449,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void getTimeEntriesByTaskId_ReturnsListOfTimeEntries(){
+    void getTimeEntriesByTaskId_ReturnsListOfTimeEntries() {
         TimeEntry entry1 = new TimeEntry();
         entry1.setId(1);
         entry1.setTaskId(5);
@@ -465,5 +471,48 @@ public class TaskServiceTest {
     }
 
     //TODO editTaskIsDoneStatus() tests should be made (check validation first)
+
+    @Test
+    void getDoneTasks_ShouldReturnAListOfDoneTaskInAProject() {
+        Task task = new Task();
+        task.setParentTaskId(1);
+        task.setId(1);
+        task.setTitle("test");
+        task.setDone(true);
+
+        Task task1 = new Task();
+        task1.setParentTaskId(1);
+        task1.setId(2);
+        task1.setTitle("test2");
+        task1.setDone(true);
+
+        Task task2 = new Task();
+        task2.setParentTaskId(1);
+        task2.setId(3);
+        task2.setDone(false);
+
+        List<Task> subtasks = List.of(task1, task, task2);
+
+        int result = taskService.getDoneSubtasks(subtasks);
+
+        assertThat(result).isEqualTo(2);
+    }
+    @Test
+    void getAllSubtasks_ShouldReturnAListOfAllSubtasks(){
+        Task task = new Task();
+        task.setDone(true);
+        task.setParentTaskId(1);
+        task.setId(1);
+
+        Task task1 = new Task();
+        task1.setDone(false);
+        task1.setId(2);
+        task1.setParentTaskId(1);
+
+        List<Task> subtasks = List.of(task, task1);
+        int result = taskService.getTotalSubtasks(subtasks);
+        assertThat(result).isEqualTo(2);
+
+    }
 
 }
