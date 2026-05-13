@@ -154,6 +154,14 @@ public class TaskService {
         }
         return count;
     }
-
+    public int getTotalSubtasks(List<Task> tasks) {
+        int count = 0;
+        for (Task t : tasks) {
+            if (t.getParentTaskId() != null) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 }
