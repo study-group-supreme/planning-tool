@@ -11,10 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.springframework.web.bind.annotation.RequestParam;
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -24,6 +28,7 @@ import planningtool.service.TaskService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(TaskController.class)
@@ -44,7 +49,7 @@ public class TaskControllerTest {
     //TODO Add ArgumentCaptors to tests
 
     @Test
-    void showSpecificTask_returnsDetailsPage() throws Exception {
+    void showSpecificTask_ReturnsDetailsPage() throws Exception {
         Task task = new Task();
         task.setId(10);
         task.setTitle("Brew Coffee");
@@ -141,6 +146,46 @@ public class TaskControllerTest {
         Task createdTask = captor.getValue();
       assertEquals("test", createdTask.getTitle());
     }
+    @Test
+    void createTask_ShouldShowCreateTaskForm() throws Exception {
+
+        Employee testEmployee = new Employee();
+        testEmployee.setId(1);
+        testEmployee.setName("John Doe");
+        testEmployee.setEmail("random@email.com");
+
+        List<Employee> testList = new ArrayList<>();
+        testList.add(testEmployee);
+
+        Task testTask = new Task();
+        testTask.setProjectId(1);
+
+        Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(testList);
+
+        mockMvc.perform(get("/tasks/add?projectId=1").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/create-task"))
+                .andExpect(model().attribute("members", testList))
+                .andExpect(model().attribute("task", testTask));
+
+    }
+
+//TODO This test has not been completely overseen by someone more capable than me lol
+    @Test
+    void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
+
+        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
+    }
+
+
+    //TODO showAddTaskForm() tests should be added - DONE
+    //TODO saveTask() tests should be made - DONE?
+    //TODO quickSaveTask() tests should be made
+    //TODO removeTask() tests should be made
+    //TODO editTaskIsDoneSTatus() tests should be made
 
 
 }
