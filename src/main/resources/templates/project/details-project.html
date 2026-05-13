@@ -55,14 +55,17 @@
             </div>
             <div class="task-actions">
                 <div th:if="${!task.done}">
+                    <p th:if ="${task.isHighPriority()}">&#10071;</p>
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="taskId" th:value="${task.id}">
                         <input type="hidden" name="projectId" th:value="${project.id}">
                         <button th:if="${!task.done}" class="mark-done-button" type="submit" th:onclick="${allDone} ? 'return true' : 'return confirm(\'Not all subtasks are done. Are you sure?\')'">Mark done</button>
                     </form>
                 </div>
+
                 <p th:if="${task.isDone()}">&#10004;</p>
                 <div th:if="${task.done}">
+                    <p th:if ="${task.isHighPriority()}">&#10071;</p>
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="projectId" th:value="${project.id}">
                         <input type="hidden" name="taskId" th:value="${task.id}">
@@ -126,6 +129,7 @@
 
             <div class="task-actions">
                 <div th:if="${!task.done}">
+                    <p th:if ="${task.isHighPriority()}">&#10071;</p>
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="taskId" th:value="${task.id}">
                         <input type="hidden" name="projectId" th:value="${project.id}">
@@ -135,6 +139,7 @@
 
                 <div th:if="${task.done}">
                     <p th:if="${task.isDone()}">&#10004;</p>
+                    <p th:if ="${task.isHighPriority()}">&#10071;</p>
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="projectId" th:value="${project.id}">
                         <input type="hidden" name="taskId" th:value="${task.id}">

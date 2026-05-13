@@ -170,12 +170,14 @@ public class TaskService {
         }
         return count;
     }
+    //Method works as intenden propperly needs some work tho
     public Task getHighPriorityTask(List<Task> tasks){
         for (Task t : tasks){
             if (t.isHighPriority() == true){
-                return t;
+               return t;
             }
         }
+        return null;
     }
 
 }
