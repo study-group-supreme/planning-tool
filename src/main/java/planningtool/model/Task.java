@@ -2,6 +2,7 @@ package planningtool.model;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class Task {
     private int id;
@@ -95,5 +96,17 @@ public class Task {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && projectId == task.projectId && isHighPriority == task.isHighPriority && isDone == task.isDone && Objects.equals(parentTaskId, task.parentTaskId) && Objects.equals(assignedMemberId, task.assignedMemberId) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && Objects.equals(timeEstimate, task.timeEstimate) && Objects.equals(timeEntries, task.timeEntries);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, projectId, parentTaskId, assignedMemberId, title, description, timeEstimate, timeEntries, isHighPriority, isDone);
     }
 }

@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import org.springframework.web.bind.annotation.RequestParam;
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -17,6 +20,7 @@ import planningtool.service.TaskService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(TaskController.class)
@@ -37,7 +41,7 @@ public class TaskControllerTest {
     //TODO Add ArgumentCaptors to tests
 
     @Test
-    void showSpecificTask_returnsDetailsPage() throws Exception{
+    void showSpecificTask_ReturnsDetailsPage() throws Exception {
         Task task = new Task();
         task.setId(10);
         task.setTitle("Brew Coffee");
@@ -58,7 +62,7 @@ public class TaskControllerTest {
         entry.setId(3);
         entry.setEmployeeId(3);
         entry.setTimeSpent(new BigDecimal("0.5"));
-        entry.setTimeOfCreation(LocalDateTime.of(2026,5,10,12,0));
+        entry.setTimeOfCreation(LocalDateTime.of(2026, 5, 10, 12, 0));
 
         List<Employee> projectMembers = List.of(assigned);
 
@@ -76,6 +80,39 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("parentTask"))
                 .andExpect(model().attributeExists("timeEntries"))
                 .andExpect(model().attributeExists("projectMembers"));
+    }
+
+    @Test
+    void createTask_ShouldShowCreateTaskForm() throws Exception {
+
+        Employee testEmployee = new Employee();
+        testEmployee.setId(1);
+        testEmployee.setName("John Doe");
+        testEmployee.setEmail("random@email.com");
+
+        List<Employee> testList = new ArrayList<>();
+        testList.add(testEmployee);
+
+        Task testTask = new Task();
+        testTask.setProjectId(1);
+
+        Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(testList);
+
+        mockMvc.perform(get("/tasks/add?projectId=1").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/create-task"))
+                .andExpect(model().attribute("members", testList))
+                .andExpect(model().attribute("task", testTask));
+
+    }
+
+
+    @Test
+    void createProject_shouldShowCreateProjectForm() throws Exception {
+        mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk()).
+                andExpect(view().name("project/create-project"))
+                .andExpect(model().attributeExists("project"));
     }
 
     //TODO showAddTaskForm() tests should be added
