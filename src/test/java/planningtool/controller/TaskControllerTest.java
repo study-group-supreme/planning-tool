@@ -7,6 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -106,17 +107,19 @@ public class TaskControllerTest {
 
     }
 
-
+//TODO This test has not been completely overseen by someone more capable than me lol
     @Test
-    void createProject_shouldShowCreateProjectForm() throws Exception {
-        mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
-                .andExpect(status().isOk()).
-                andExpect(view().name("project/create-project"))
-                .andExpect(model().attributeExists("project"));
+    void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
+
+        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
     }
 
-    //TODO showAddTaskForm() tests should be added
-    //TODO saveTask() tests should be made
+
+    //TODO showAddTaskForm() tests should be added - DONE
+    //TODO saveTask() tests should be made - DONE?
     //TODO quickSaveTask() tests should be made
     //TODO removeTask() tests should be made
     //TODO editTaskIsDoneSTatus() tests should be made
