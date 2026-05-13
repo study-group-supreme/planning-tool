@@ -1,11 +1,15 @@
 package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import planningtool.model.Employee;
@@ -76,6 +80,24 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("parentTask"))
                 .andExpect(model().attributeExists("timeEntries"))
                 .andExpect(model().attributeExists("projectMembers"));
+    }
+
+    @Test
+    void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception{
+        int taskId = 5;
+
+        mockMvc.perform(post("tasks/{taskId}/time-entry", taskId)
+                        .param("timeSpent", "1.5")
+                        .sessionAttr("employeeId", 3))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/tasks/"));
+
+        ArgumentCaptor<TimeEntry> captor = ArgumentCaptor.forClass(TimeEntry.class);
+        Mockito.verify(taskService).createTimeEntry(captor.capture());
+
+        TimeEntry sent = captor.getValue();
+        assertEquals(new BigDecimal("1.5"), sent.getTimeSpent());
+        assertEquals(3,sent.getEmployeeId());
     }
 
     //TODO showAddTaskForm() tests should be added
