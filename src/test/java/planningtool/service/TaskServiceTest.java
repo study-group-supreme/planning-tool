@@ -464,6 +464,26 @@ public class TaskServiceTest {
         verify(taskRepository).findTimeEntriesByTaskId(5);
     }
 
+    @Test
+    void hasChildren_ReturnsTrue_WhenRepositoryReturnsTrue(){
+        when(taskRepository.taskHasChildren(5)).thenReturn(true);
+
+        boolean result = taskService.hasChildren(5);
+        assertTrue(result);
+        verify(taskRepository).taskHasChildren(5);
+    }
+
+    @Test
+    void hasChildren_ReturnsFalse_WhenRepositoryReturnsFalse(){
+        when(taskRepository.taskHasChildren(5)).thenReturn(false);
+
+        boolean result = taskService.hasChildren(5);
+        assertFalse(result);
+        verify(taskRepository).taskHasChildren(5);
+    }
+
+
+
     //TODO editTaskIsDoneStatus() tests should be made (check validation first)
 
 }
