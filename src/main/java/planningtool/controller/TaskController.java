@@ -102,6 +102,7 @@ public class TaskController {
         return "redirect:/projects/" + projectId;
     }
 
+    // ATTN: NEEDS A LOGGED IN SESSION TO WORK
     @PostMapping("/{taskId}/time-entry")
     public String submitTimeEntry(
             @PathVariable int taskId,
