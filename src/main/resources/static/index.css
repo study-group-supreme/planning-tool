@@ -55,6 +55,12 @@ body {
     background: white;
     padding: 25px;
 }
+.create-button{
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 25px;
+}
 .mark-not-button{
     color: red;
 }

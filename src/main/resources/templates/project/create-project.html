@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Project</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
+<div></div>
 <form th:action="@{/projects/add}" th:object="${project}" method="post">
     <p>
         <label>Title</label><br>
         <input type="text" th:field="*{title}"/>
     </p>
     <p>
-    <label>Description</label><br>
+        <label>Description</label><br>
         <input type="text" th:field="*{description}"/>
     </p>
     <p>
@@ -20,6 +22,7 @@
     </p>
 
     <button type="submit">Create</button>
+    </div>
 </form>
 </body>
 </html>
