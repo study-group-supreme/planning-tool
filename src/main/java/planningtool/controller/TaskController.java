@@ -84,6 +84,21 @@ public class TaskController {
 
         return "redirect:/projects/" + projectId;
     }
+// TODO Add error handling and try/catch to this? Sensei, help me!!
+    @GetMapping("/{taskId}/edit")
+    public String editTask(@PathVariable int taskId, Model model) {
+        Task updatedTask = taskService.getTaskById(taskId);
+        model.addAttribute("task", updatedTask);
+        model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
+        return "task/edit-task";
+// TODO Add error handling and try/catch to this? Sensei, help me!!
+    }
+    @PostMapping("/{taskId}/edit")
+    public String saveEditedTask(@PathVariable int taskId, @ModelAttribute Task task) {
+        task.setId(taskId);
+        taskService.editTask(task);
+        return "redirect:/tasks/" + taskId;
+    }
 
     @PostMapping("/remove")
     public String removeTask(@RequestParam int taskId, @RequestParam int projectId, Model model) {
@@ -98,8 +113,9 @@ public class TaskController {
         }
         return "redirect:/projects/" + projectId;
     }
+
     @PostMapping("/mark-done")
-    public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId){
+    public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId) {
         taskService.editTaskIsDoneStatus(taskId);
         return "redirect:/projects/" + projectId;
     }

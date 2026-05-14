@@ -60,6 +60,13 @@
                     <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button type="submit">Edit Task</button>
+                </form>
+            </div>
+
+
             <div class="task-actions">
                 <div th:if="${!task.done}">
                     <form th:action="@{/tasks/mark-done}" method="post">
@@ -134,6 +141,13 @@
                     </button>
                 </form>
             </div>
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button type="submit">Edit Task</button>
+                </form>
+            </div>
+
+
 
             <div class="task-actions">
                 <div th:if="${!task.done}">
