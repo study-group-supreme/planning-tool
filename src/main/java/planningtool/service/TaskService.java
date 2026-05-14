@@ -171,4 +171,8 @@ public class TaskService {
         return count;
     }
 
+
+    public boolean hasChildren(int taskId){
+        return taskRepository.taskHasChildren(taskId);
+    }
 }
