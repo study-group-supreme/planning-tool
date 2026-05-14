@@ -86,11 +86,11 @@ public class TaskControllerTest {
     void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception{
         int taskId = 5;
 
-        mockMvc.perform(post("tasks/{taskId}/time-entry", taskId)
+        mockMvc.perform(post("/tasks/{taskId}/time-entry", taskId)
                         .param("timeSpent", "1.5")
                         .sessionAttr("employeeId", 3))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/tasks/"));
+                .andExpect(redirectedUrl("/tasks/" + taskId));
 
         ArgumentCaptor<TimeEntry> captor = ArgumentCaptor.forClass(TimeEntry.class);
         Mockito.verify(taskService).createTimeEntry(captor.capture());
