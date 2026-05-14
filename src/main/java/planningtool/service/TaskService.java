@@ -15,15 +15,19 @@ import planningtool.repository.TaskRepository;
 
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final ProjectService projectService;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, ProjectService projectService) {
         this.taskRepository = taskRepository;
+        this.projectService = projectService;
     }
 
     public Task getTaskById(int id) {
@@ -145,12 +149,13 @@ public class TaskService {
     public Task editTaskIsDoneStatus(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
         boolean newStatus = !task.isDone();
-        if (task.getParentTaskId() == null){
+        if (task.getParentTaskId() == null) {
             List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
-            for (Task t : subtasks){
+            for (Task t : subtasks) {
                 t.setDone(newStatus);
                 taskRepository.updateIsDoneInTaskById(t);
-            }}
+            }
+        }
         task.setDone(newStatus);
         return taskRepository.updateIsDoneInTaskById(task);
 
@@ -160,15 +165,16 @@ public class TaskService {
         return taskRepository.findTimeEntriesByTaskId(taskId);
     }
 
-    public int getDoneSubtasks(List<Task> tasks){
+    public int getDoneSubtasks(List<Task> tasks) {
         int count = 0;
-        for (Task t : tasks){
-            if (t.isDone() == true && t.getParentTaskId() != null){
-                count ++;
+        for (Task t : tasks) {
+            if (t.isDone() == true && t.getParentTaskId() != null) {
+                count++;
             }
         }
         return count;
     }
+
     public int getTotalSubtasks(List<Task> tasks) {
         int count = 0;
         for (Task t : tasks) {
@@ -180,7 +186,28 @@ public class TaskService {
     }
 
 
-    public boolean hasChildren(int taskId){
+    public boolean hasChildren(int taskId) {
         return taskRepository.taskHasChildren(taskId);
+    }
+
+    public List<Task> getTasksByParentId(int parentId) {
+        return taskRepository.findSubtasksByParentId(parentId);
+    }
+
+    public Map<Task, int[]> getMainTaskProgress(int projectId) {
+        Map<Task, int[]> map = new HashMap<>();
+        List<Task> tasks = projectService.getProjectById(projectId).getTasks();
+        for (Task t : tasks) {
+            if (t.getParentTaskId() == null) { // main task
+                List<Task> subtasks = getTasksByParentId(t.getId());
+                map.put(t, new int[]{
+                        getDoneSubtasks(subtasks),
+                        getTotalSubtasks(subtasks)
+                });
+            }
+            //{0} = doneSubtasks
+            //{1} = totalSubtasks
+        }
+        return map;
     }
 }
