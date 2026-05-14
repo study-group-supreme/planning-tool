@@ -63,16 +63,9 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public String showSpecificProject(@PathVariable int projectId, Model model) {
         Project project = projectService.getProjectById(projectId);
-        for (Task t : project.getTasks()) {
-            if (t.getParentTaskId() == null) {
-                List<Task> subtasks = taskService.getTasksByParentId(t.getId());
-                t.setDoneSubtasks(taskService.getDoneSubtasks(subtasks));
-                t.setTotalSubtasks(taskService.getTotalSubtasks(subtasks));
-            }
-        }
         model.addAttribute("project", project);
-        model.addAttribute("mainTask", false);;
+        model.addAttribute("mainTask", false);
+        model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         return "project/details-project";
     }
-
 }
