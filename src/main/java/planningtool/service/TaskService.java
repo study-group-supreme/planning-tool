@@ -175,4 +175,7 @@ public class TaskService {
     public boolean hasChildren(int taskId){
         return taskRepository.taskHasChildren(taskId);
     }
+    public List<Task> getTasksByParentId(int parentId){
+        return taskRepository.findSubtasksByParentId(parentId);
+    }
 }

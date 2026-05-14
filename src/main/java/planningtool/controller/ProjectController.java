@@ -6,12 +6,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Project;
+import planningtool.model.Task;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/projects")
 @Controller
@@ -60,11 +63,15 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public String showSpecificProject(@PathVariable int projectId, Model model) {
         Project project = projectService.getProjectById(projectId);
+        for (Task t : project.getTasks()) {
+            if (t.getParentTaskId() == null) {
+                List<Task> subtasks = taskService.getTasksByParentId(t.getId());
+                t.setDoneSubtasks(taskService.getDoneSubtasks(subtasks));
+                t.setTotalSubtasks(taskService.getTotalSubtasks(subtasks));
+            }
+        }
         model.addAttribute("project", project);
-        model.addAttribute("mainTask", false);
-        model.addAttribute("doneTasks", taskService.getDoneSubtasks(project.getTasks()));
-        model.addAttribute("allSubtasks", taskService.getTotalSubtasks(project.getTasks()));
-        model.addAttribute("allDone", taskService.getDoneSubtasks(project.getTasks()) == taskService.getTotalSubtasks(project.getTasks()));
+        model.addAttribute("mainTask", false);;
         return "project/details-project";
     }
 

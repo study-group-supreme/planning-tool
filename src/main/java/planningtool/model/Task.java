@@ -15,6 +15,8 @@ public class Task {
     private List<TimeEntry> timeEntries;
     private boolean isHighPriority;
     private boolean isDone;
+    private int doneSubtasks;
+    private int totalSubtasks;
 
     public Task(){}
 
@@ -76,6 +78,22 @@ public class Task {
 
     public boolean isHighPriority() {
         return isHighPriority;
+    }
+
+    public int getDoneSubtasks() {
+        return doneSubtasks;
+    }
+
+    public void setDoneSubtasks(int doneSubtasks) {
+        this.doneSubtasks = doneSubtasks;
+    }
+
+    public int getTotalSubtasks() {
+        return totalSubtasks;
+    }
+
+    public void setTotalSubtasks(int totalSubtasks) {
+        this.totalSubtasks = totalSubtasks;
     }
 
     public void setHighPriority(boolean highPriority) {
