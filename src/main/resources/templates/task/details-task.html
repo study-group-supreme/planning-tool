@@ -44,7 +44,18 @@
 </div>
 
 <h2>Time Entries</h2>
+<div th:if="${!hasChildren}">
+    <h3>Add Time Entry</h3>
+    <form th:action="@{|/tasks/${task.id}/time-entry|}" method="post">
+        <label>Hours spent</label>
+        <input type="number" step="0.25" name="timeSpent" required>
+        <button type="submit">Save</button>
+    </form>
+</div>
 
+<div th:if="${hasChildren}">
+    <p><em>This task has subtasks. Time entries can only be added to a task if it has no subtasks defined.</em></p>
+</div>
 <table class="time-entries" th:if="${timeEntries != null and !timeEntries.isEmpty()}">
     <tr>
         <th>Employee</th>

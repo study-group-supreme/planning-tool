@@ -13,6 +13,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -183,6 +186,26 @@ public class TaskControllerTest {
 
     //TODO showAddTaskForm() tests should be added - DONE
     //TODO saveTask() tests should be made - DONE?
+    @Test
+    void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception{
+        int taskId = 5;
+
+        mockMvc.perform(post("/tasks/{taskId}/time-entry", taskId)
+                        .param("timeSpent", "1.5")
+                        .sessionAttr("employeeId", 3))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/" + taskId));
+
+        ArgumentCaptor<TimeEntry> captor = ArgumentCaptor.forClass(TimeEntry.class);
+        Mockito.verify(taskService).createTimeEntry(captor.capture());
+
+        TimeEntry sent = captor.getValue();
+        assertEquals(new BigDecimal("1.5"), sent.getTimeSpent());
+        assertEquals(3,sent.getEmployeeId());
+    }
+
+    //TODO showAddTaskForm() tests should be added
+    //TODO saveTask() tests should be made
     //TODO quickSaveTask() tests should be made
     //TODO removeTask() tests should be made
     //TODO editTaskIsDoneSTatus() tests should be made
