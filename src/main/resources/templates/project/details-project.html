@@ -39,7 +39,7 @@
     <tr th:if="${task.getParentTaskId()== null}" th:each="task : ${project.getTasks()}">
         <td>
         <span th:text="${task.title}"></span>
-            <p th:if ="${task.isHighPriority()}">High priority &#10071;</p>
+            <span th:if ="${task.isHighPriority()}">&#10071;</span>
         </td>
         <td>
             <div th:if="${!mainTask}">
@@ -112,7 +112,7 @@
     <tr th:if="${task.getParentTaskId()!= null}" th:each="task : ${project.getTasks()}">
         <td>
         <span th:text="${task.title}"></span>
-        <p th:if ="${task.isHighPriority()}">High priority &#10071;</p>
+        <span th:if ="${task.isHighPriority()}">&#10071;</span>
         </td>
         <td>
             <div th:if="${!mainTask}">
