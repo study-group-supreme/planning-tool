@@ -69,7 +69,7 @@ public class TaskServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
 
         assertThat(ex.getMessage().contains("Database error"));
-
+        verify(taskRepository).findTaskById(99);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TaskServiceTest {
 
         DatabaseOperationException ex = assertThrows(DatabaseOperationException.class, () -> taskService.getTaskById(1));
         assertThat(ex.getMessage()).contains("Database error");
-
+        verify(taskRepository).findTaskById(1);
     }
 
     @Test
@@ -103,6 +103,7 @@ public class TaskServiceTest {
         assertEquals("Lunch room", createdTask.getDescription());
         assertFalse(createdTask.isHighPriority());
         assertThat(createdTask.getTimeEstimate()).isEqualByComparingTo("0.25");
+        verify(taskRepository).insertTask(any());
     }
 
     @Test
@@ -160,6 +161,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("creation failed");
+        verify(taskRepository).insertTask(any());
     }
 
     @Test
@@ -188,6 +190,7 @@ public class TaskServiceTest {
         assertThat(result.getDescription()).isEqualTo("just a test, again");
         assertTrue(result.isHighPriority());
         assertThat(result.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1"));
+        verify(taskRepository).updateTask(any());
     }
 
     @Test
@@ -351,6 +354,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Failed to create time entry");
+        verify(taskRepository).insertTimeEntry(any());
     }
 
     @Test
