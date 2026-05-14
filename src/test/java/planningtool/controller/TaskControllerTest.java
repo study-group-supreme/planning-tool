@@ -210,5 +210,17 @@ public class TaskControllerTest {
     //TODO removeTask() tests should be made
     //TODO editTaskIsDoneSTatus() tests should be made
 
+    @Test
+    void removeTimeEntry_ShouldCallServiceAndRedirect() throws Exception {
+        int taskId = 7;
+        int entryId = 3;
+
+        mockMvc.perform(post("/tasks/{taskId}/time-entry/{entryId}/remove", taskId, entryId)
+                .sessionAttr("employeeId", 10))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/"+taskId));
+
+        verify(taskService).removeTimeEntryById(entryId);
+    }
 
 }
