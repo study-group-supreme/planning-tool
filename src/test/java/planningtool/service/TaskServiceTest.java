@@ -532,6 +532,25 @@ public class TaskServiceTest {
         List<Task> subtasks = List.of(task, task1);
         int result = taskService.getTotalSubtasks(subtasks);
         assertThat(result).isEqualTo(2);
+    }
+    @Test
+    void getTasksByParentId_shouldReturnListOfTasksWithSameParentId(){
+        Task task = new Task();
+        task.setId(1);
 
+        Task task1 = new Task();
+        task1.setId(2);
+        task1.setParentTaskId(1);
+
+        Task task2 = new Task();
+        task2.setId(3);
+        task2.setParentTaskId(1);
+
+        List<Task> allTasks = List.of(task,task1,task2);
+       when(taskRepository.findSubtasksByParentId(task1.getParentTaskId())).thenReturn(allTasks);
+taskService.getTasksByParentId(1);
+
+assertThat(allTasks.get(1).getId()).isEqualTo(2);
+assertThat(allTasks.get(2).getId()).isEqualTo(3);
     }
 }
