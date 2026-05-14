@@ -197,6 +197,8 @@ public class TaskService {
                         getTotalSubtasks(subtasks)
                 });
             }
+            //{0} = doneSubtasks
+            //{1} = totalSubtasks
         }
         return map;
     }
