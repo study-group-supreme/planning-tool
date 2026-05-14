@@ -44,6 +44,7 @@
         <td>
             <div th:if="${!mainTask}">
                 <progress th:value="${doneTasks}" th:max="${allSubtasks}"></progress>
+                <span th:text="${allSubtasks > 0 ? (doneTasks * 100 / allSubtasks) + '%' : '0%'}"></span>
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
