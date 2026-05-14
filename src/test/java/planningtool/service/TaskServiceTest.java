@@ -58,6 +58,7 @@ public class TaskServiceTest {
 
         BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
         assertThat(ex.getMessage().contains("Invalid task"));
+        verify(taskRepository, never()).findTaskById(0);
     }
 
     @Test
