@@ -6,8 +6,16 @@
     <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
+<div class="member-list">
+<p>Welcome!</p>
+<p th:text="${employeeName}"></p>
+    <br>
+    <p th:text="${date}"></p>
+</div>
 <div class="empty-list" th:if="${emptyList}">
     <p th:text="${message}"></p>
+    <p>Welcome</p>
+    <p th:text="${employeeName}"></p>
     <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>
 <div class="create-button">
@@ -22,7 +30,9 @@
             <th>Deadline</th>
         </tr>
         <tr th:each="project : ${projects}">
-            <td th:text="${project.getTitle()}"></td>
+            <td>
+                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+            </td>
             <td th:text="${project.getDescription()}"></td>
             <td th:text="${project.getDeadline()}"></td>
         </tr>

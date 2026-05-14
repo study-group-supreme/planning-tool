@@ -1,22 +1,22 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.task-list {
-    table-layout: auto;
-}
-
 .delete-button {
-    color: red;
+    color: black;
     margin-right: 50px;
     margin-bottom: 10px;
     align-items: center;
+    background-color: red;
+}
+.delete-button:hover {
+    background-color: darkred;
+    cursor: pointer;
 }
 
 .mark-done-button {
-    color: green;
+    color: black;
+    background-color: lightgreen;
+}
+.mark-done-button:hover {
+    background-color: darkgreen;
+    cursor: pointer;
 }
 
 body {
@@ -62,7 +62,12 @@ body {
     padding: 25px;
 }
 .mark-not-button{
-    color: red;
+    color: black;
+    background-color: red;
+}
+.mark-not-button:hover {
+    background-color: darkred;
+    cursor: pointer;
 }
 table {
     width: 100%;

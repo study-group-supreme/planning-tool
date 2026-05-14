@@ -10,6 +10,7 @@ import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/projects")
@@ -31,6 +32,8 @@ public class ProjectController {
         try {
             List<Project> employeeProjects = projectService.getProjectsByEmployeeId(employeeId);
             model.addAttribute("projects", employeeProjects);
+            model.addAttribute("employeeName", employeeService.getEmployeeById(employeeId).getName());
+            model.addAttribute("date", LocalDate.now());
             return "project/list-projects";
         } catch (NotFoundException e) {
             model.addAttribute("emptyList", true);

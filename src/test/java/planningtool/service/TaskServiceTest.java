@@ -534,5 +534,4 @@ public class TaskServiceTest {
         assertThat(result).isEqualTo(2);
 
     }
-
 }
