@@ -72,6 +72,17 @@
         </td>
         <td th:text="${entry.timeSpent}"></td>
         <td th:text="${entry.timeOfCreation}"></td>
+        <td>
+            <div th:if="${entry.employeeId == loggedInId}">
+                <form th:action="@{|/tasks/${task.id}/time-entry/${entry.id}/remove|}" method="post">
+                    <button type="submit"
+                            class="delete-button"
+                            onclick="return confirm('Are you sure you want to delete this time entry?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </td>
     </tr>
 
     <p th:if="${timeEntries == null or timeEntries.isEmpty()}">

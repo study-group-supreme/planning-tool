@@ -58,6 +58,7 @@ public class TaskServiceTest {
 
         BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.getTaskById(0));
         assertThat(ex.getMessage().contains("Invalid task"));
+        verify(taskRepository, never()).findTaskById(0);
     }
 
     @Test
@@ -68,7 +69,7 @@ public class TaskServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class, () -> taskService.getTaskById(99));
 
         assertThat(ex.getMessage().contains("Database error"));
-
+        verify(taskRepository).findTaskById(99);
     }
 
     @Test
@@ -79,7 +80,7 @@ public class TaskServiceTest {
 
         DatabaseOperationException ex = assertThrows(DatabaseOperationException.class, () -> taskService.getTaskById(1));
         assertThat(ex.getMessage()).contains("Database error");
-
+        verify(taskRepository).findTaskById(1);
     }
 
     @Test
@@ -102,6 +103,7 @@ public class TaskServiceTest {
         assertEquals("Lunch room", createdTask.getDescription());
         assertFalse(createdTask.isHighPriority());
         assertThat(createdTask.getTimeEstimate()).isEqualByComparingTo("0.25");
+        verify(taskRepository).insertTask(any());
     }
 
     @Test
@@ -159,6 +161,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("creation failed");
+        verify(taskRepository).insertTask(any());
     }
 
     @Test
@@ -187,6 +190,7 @@ public class TaskServiceTest {
         assertThat(result.getDescription()).isEqualTo("just a test, again");
         assertTrue(result.isHighPriority());
         assertThat(result.getTimeEstimate()).isEqualByComparingTo(new BigDecimal("1"));
+        verify(taskRepository).updateTask(any());
     }
 
     @Test
@@ -350,6 +354,7 @@ public class TaskServiceTest {
         );
 
         assertThat(ex.getMessage()).contains("Failed to create time entry");
+        verify(taskRepository).insertTimeEntry(any());
     }
 
     @Test
@@ -449,6 +454,33 @@ public class TaskServiceTest {
     }
 
     @Test
+    void removeTimeEntryById_ShouldCallRepository(){
+        TimeEntry entry = new TimeEntry();
+        entry.setId(10);
+        entry.setEmployeeId(1);
+        entry.setTaskId(5);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+        taskService.removeTimeEntryById(10);
+        verify(taskRepository).deleteTimeEntryById(10);
+    }
+
+    @Test
+    void removeTimeEntryById_ThrowsDatabaseOperationException_WhenRepositoryFails(){
+        TimeEntry entry = new TimeEntry();
+        entry.setId(1);
+        entry.setTaskId(5);
+        entry.setTimeSpent(new BigDecimal("1.5"));
+
+        doThrow(new DataAccessException("DB error") {})
+                .when(taskRepository).deleteTimeEntryById(1);
+
+        assertThrows(DatabaseOperationException.class,
+                () -> taskService.removeTimeEntryById(1));
+
+        verify(taskRepository).deleteTimeEntryById(1);
+    }
+
+    @Test
     void getTimeEntriesByTaskId_ReturnsListOfTimeEntries() {
         TimeEntry entry1 = new TimeEntry();
         entry1.setId(1);
@@ -534,5 +566,4 @@ public class TaskServiceTest {
         assertThat(result).isEqualTo(2);
 
     }
-
 }

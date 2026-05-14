@@ -6,6 +6,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import planningtool.model.Employee;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -51,6 +52,9 @@ public class ProjectControllerTest {
     void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
+        Employee employee = new Employee();
+        employee.setName("Test");
+        when(employeeService.getEmployeeById(1)).thenReturn(employee);
         mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));

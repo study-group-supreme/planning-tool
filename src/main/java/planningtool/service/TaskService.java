@@ -96,6 +96,14 @@ public class TaskService {
         }
     }
 
+    public void removeTimeEntryById(int timeEntryId) {
+        try {
+            taskRepository.deleteTimeEntryById(timeEntryId);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Failed to delete time entry", e);
+        }
+    }
+
     public Task editTask(Task task) {
 
         if (task.getTitle() == null || task.getTitle().isBlank()) {

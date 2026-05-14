@@ -31,7 +31,8 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public String showSpecificTask(@PathVariable int taskId, Model model) {
+    public String showSpecificTask(@PathVariable int taskId, Model model, HttpSession session){
+        Integer loggedInId = (Integer) session.getAttribute("employeeId");
         Task task = taskService.getTaskById(taskId);
         Task parentTask = null;
         Employee employee = null;
@@ -50,6 +51,7 @@ public class TaskController {
         model.addAttribute("assignedEmployee", employee);
         model.addAttribute("parentTask", parentTask);
         model.addAttribute("hasChildren", taskService.hasChildren(taskId));
+        model.addAttribute("loggedInId", loggedInId);
         return "task/details-task";
     }
 
@@ -134,6 +136,17 @@ public class TaskController {
         entry.setTimeSpent(timeSpent);
 
         taskService.createTimeEntry(entry);
+        return "redirect:/tasks/" + taskId;
+    }
+
+    @PostMapping("/{taskId}/time-entry/{entryId}/remove")
+    public String removeTimeEntry(
+            @PathVariable int taskId,
+            @PathVariable int entryId,
+            HttpSession session
+    ) {
+        Integer employeeId = (Integer) session.getAttribute("employeeId");
+        taskService.removeTimeEntryById(entryId);
         return "redirect:/tasks/" + taskId;
     }
 
