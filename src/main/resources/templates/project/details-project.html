@@ -53,6 +53,13 @@
                     <button class="delete-button" type="submit">Delete task</button>
                 </form>
             </div>
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button type="submit">Edit Task</button>
+                </form>
+            </div>
+
+
             <div class="task-actions">
                 <div th:if="${!task.done}">
                     <form th:action="@{/tasks/mark-done}" method="post">
@@ -109,7 +116,7 @@
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <button class="delete-button" type="submit"
-                            onclick="return confirm('Are you sure, you want to delte this task?')">Delete task
+                            onclick="return confirm('Are you sure, you want to delete this task?')">Delete task
                     </button>
                 </form>
             </div>
@@ -123,6 +130,13 @@
                     </button>
                 </form>
             </div>
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button type="submit">Edit Task</button>
+                </form>
+            </div>
+
+
 
             <div class="task-actions">
                 <div th:if="${!task.done}">
