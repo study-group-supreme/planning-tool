@@ -182,6 +182,39 @@ public class TaskControllerTest {
                 .andExpect(redirectedUrl("/projects/1"));
 
     }
+    @Test
+    void editTask_ShouldShowEditTaskForm() throws Exception {
+        Employee testEmployee = new Employee();
+        testEmployee.setId(1);
+        testEmployee.setName("John Doe");
+        testEmployee.setEmail("random@email.com");
+
+        List<Employee> testList = new ArrayList<>();
+        testList.add(testEmployee);
+
+        Task testTask = new Task();
+        testTask.setId(1);
+        testTask.setProjectId(1);
+
+        Mockito.when(taskService.getTaskById(1)).thenReturn(testTask);
+        Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(testList);
+
+        mockMvc.perform(get("/tasks/1/edit").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/edit-task"))
+                .andExpect(model().attribute("members", testList))
+                .andExpect(model().attribute("task", testTask));
+
+    }
+    @Test
+    void editTask_ShouldEditTaskAndRedirect() throws Exception {
+
+        mockMvc.perform(post("/tasks/1/edit")
+                .param("title", "Updated title")
+                .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1"));
+    }
 
 
     //TODO showAddTaskForm() tests should be added - DONE

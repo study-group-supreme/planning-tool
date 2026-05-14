@@ -82,14 +82,14 @@ public class TaskController {
 
         return "redirect:/projects/" + projectId;
     }
-
+// TODO Add error handling and try/catch to this? Sensei, help me!!
     @GetMapping("/{taskId}/edit")
     public String editTask(@PathVariable int taskId, Model model) {
         Task updatedTask = taskService.getTaskById(taskId);
         model.addAttribute("task", updatedTask);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
         return "task/edit-task";
-
+// TODO Add error handling and try/catch to this? Sensei, help me!!
     }
     @PostMapping("/{taskId}/edit")
     public String saveEditedTask(@PathVariable int taskId, @ModelAttribute Task task) {
