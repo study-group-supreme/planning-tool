@@ -189,7 +189,6 @@ public class TaskControllerTest {
 
     }
 
-//TODO This test has not been completely overseen by someone more capable than me lol
     @Test
     void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
 
@@ -206,7 +205,6 @@ public class TaskControllerTest {
 
 
     //TODO showAddTaskForm() tests should be added - DONE
-    //TODO saveTask() tests should be made - DONE?
     @Test
     void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception{
         int taskId = 5;
