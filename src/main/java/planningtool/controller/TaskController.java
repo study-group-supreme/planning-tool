@@ -31,7 +31,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public String showSpecificTask(@PathVariable int taskId, Model model){
+    public String showSpecificTask(@PathVariable int taskId, Model model) {
         Task task = taskService.getTaskById(taskId);
         Task parentTask = null;
         Employee employee = null;
@@ -83,6 +83,21 @@ public class TaskController {
         return "redirect:/projects/" + projectId;
     }
 
+    @GetMapping("/{taskId}/edit")
+    public String editTask(@PathVariable int taskId, Model model) {
+        Task updatedTask = taskService.getTaskById(taskId);
+        model.addAttribute("task", updatedTask);
+        model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
+        return "task/edit-task";
+
+    }
+    @PostMapping("/{taskId}/edit")
+    public String saveEditedTask(@PathVariable int taskId, @ModelAttribute Task task) {
+        task.setId(taskId);
+        taskService.editTask(task);
+        return "redirect:/tasks/" + taskId;
+    }
+
     @PostMapping("/remove")
     public String removeTask(@RequestParam int taskId, @RequestParam int projectId, Model model) {
         try {
@@ -96,8 +111,9 @@ public class TaskController {
         }
         return "redirect:/projects/" + projectId;
     }
+
     @PostMapping("/mark-done")
-    public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId){
+    public String editTaskIsDoneStatus(@RequestParam int taskId, @RequestParam int projectId) {
         taskService.editTaskIsDoneStatus(taskId);
         return "redirect:/projects/" + projectId;
     }
