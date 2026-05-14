@@ -91,6 +91,21 @@ public class TaskControllerTest {
                 .andExpect(model().attributeExists("parentTask"))
                 .andExpect(model().attributeExists("timeEntries"))
                 .andExpect(model().attributeExists("projectMembers"));
+
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(taskService, Mockito.times(2)).getTaskById(captor.capture());
+        verify(employeeService).getEmployeeById(captor.capture());
+        verify(taskService).getTimeEntriesByTaskId(captor.capture());
+        verify(projectService).getProjectMembersByProjectId(captor.capture());
+
+        List<Integer> captured = captor.getAllValues();
+
+        assertThat(captured.get(0)).isEqualTo(10); // main task
+        assertThat(captured.get(1)).isEqualTo(5);  // parent task
+        assertThat(captured.get(2)).isEqualTo(3);  // assigned member
+        assertThat(captured.get(3)).isEqualTo(10); // time entries
+        assertThat(captured.get(4)).isEqualTo(1);  // project members
     }
 
     @Test
@@ -147,10 +162,11 @@ public class TaskControllerTest {
         verify(taskService).createTask(captor.capture());
 
         Task createdTask = captor.getValue();
-      assertEquals("test", createdTask.getTitle());
+        assertEquals("test", createdTask.getTitle());
     }
+
     @Test
-    void createTask_ShouldShowCreateTaskForm() throws Exception {
+    void showAddTaskForm_ShouldShowCreateTaskForm() throws Exception {
 
         Employee testEmployee = new Employee();
         testEmployee.setId(1);
