@@ -197,6 +197,11 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
 
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskService).createTask(captor.capture());
+        assertThat(captor.getValue().getTitle()).isEqualTo("Brew coffee");
+        assertThat(captor.getValue().getProjectId()).isEqualTo(1);
+
     }
 
 
