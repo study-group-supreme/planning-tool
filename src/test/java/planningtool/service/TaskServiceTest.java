@@ -454,6 +454,33 @@ public class TaskServiceTest {
     }
 
     @Test
+    void removeTimeEntryById_ShouldCallRepository(){
+        TimeEntry entry = new TimeEntry();
+        entry.setId(10);
+        entry.setEmployeeId(1);
+        entry.setTaskId(5);
+        entry.setTimeSpent(new BigDecimal("1.0"));
+        taskService.removeTimeEntryById(10);
+        verify(taskRepository).deleteTimeEntryById(10);
+    }
+
+    @Test
+    void removeTimeEntryById_ThrowsDatabaseOperationException_WhenRepositoryFails(){
+        TimeEntry entry = new TimeEntry();
+        entry.setId(1);
+        entry.setTaskId(5);
+        entry.setTimeSpent(new BigDecimal("1.5"));
+
+        doThrow(new DataAccessException("DB error") {})
+                .when(taskRepository).deleteTimeEntryById(1);
+
+        assertThrows(DatabaseOperationException.class,
+                () -> taskService.removeTimeEntryById(1));
+
+        verify(taskRepository).deleteTimeEntryById(1);
+    }
+
+    @Test
     void getTimeEntriesByTaskId_ReturnsListOfTimeEntries() {
         TimeEntry entry1 = new TimeEntry();
         entry1.setId(1);
