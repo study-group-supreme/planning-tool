@@ -6,7 +6,8 @@
     <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
-<form th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}" method="post">
+<div th:replace="fragment/header :: header"></div>
+<form class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}" method="post">
     <input type="hidden" th:value="${projectId}">
     <label>Add employee
         <select name="employeeId">
@@ -20,6 +21,6 @@
     <button type="submit">Add</button>
 </form>
 <form th:action="@{/projects/{projectId}(projectId = ${projectId})}" method="get">
-        <button type="submit">Back to project details</button>
+        <button class="Back-button" type="submit">Back to project details</button>
     </form></body>
 </html>
