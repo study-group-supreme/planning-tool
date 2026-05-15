@@ -25,9 +25,9 @@ VALUES (1, 1),
        (4, 1);
 
 INSERT INTO task (project_id, parent_task_id, assigned_member_id, title, description, time_estimate, is_high_priority, is_done)
-VALUES (1, null, 2, 'Brew coffee', null, '0.5', true, false),
-       (1, 1, 3, 'Grind the beans', null, '0.25', true, false),
-       (1, 1, 1, 'Pour boiling water', null, '0.25', true, false),
+VALUES (1, null, 2, 'Brew coffee', null, '1.5', true, false),
+       (1, 1, 3, 'Grind the beans', null, '1.0', true, false),
+       (1, 1, 1, 'Pour boiling water', null, '1.0', true, false),
        (2, null, 4, 'Motivational speech', null, '1', false,false);
 
 INSERT INTO time_entry (employee_id, task_id, time_spent)
