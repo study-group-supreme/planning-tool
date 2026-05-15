@@ -72,6 +72,18 @@ public class ProjectService {
         return projectRepository.findProjectMembersByProjectId(id);
     }
 
+    public List<Employee> getEmployeesNotOnProject(int projectId){
+        List<Employee> employeesNotOnProject = new ArrayList<>();
+        List<Employee> employeesOnProject = getProjectMembersByProjectId(projectId);
+        List<Employee> allEmployees = employeeRepository.findAllEmployees();
+        for (Employee employee : allEmployees){
+            if(!employeesOnProject.contains(employee)){
+                employeesNotOnProject.add(employee);
+            }
+        }
+        return employeesNotOnProject;
+    }
+
     public List<Project> getProjectsByEmployeeId(int employeeId) {
         List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
         Employee employee = employeeRepository.findEmployeeById(employeeId);
@@ -82,6 +94,7 @@ public class ProjectService {
         }
         return projects;
     }
+
 
     public Employee addProjectMemberToProject(Employee employee, Project project) {
         if (project.getProjectMembers().contains(employee)) {
