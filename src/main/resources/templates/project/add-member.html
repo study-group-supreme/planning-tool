@@ -19,6 +19,7 @@
     </label>
     <button type="submit">Add</button>
 </form>
-
-</body>
+<form th:action="@{/projects/{projectId}(projectId = ${projectId})}" method="get">
+        <button type="submit">Back to project details</button>
+    </form></body>
 </html>
