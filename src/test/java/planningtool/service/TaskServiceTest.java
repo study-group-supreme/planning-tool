@@ -323,6 +323,18 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTimeEntry_ThrowsBadRequest_whenTimeSpentTooLarge() {
+        TimeEntry entry = new TimeEntry();
+        entry.setTaskId(1);
+        entry.setEmployeeId(1);
+        entry.setTimeSpent(new BigDecimal("10000.00"));
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.createTimeEntry(entry));
+        assertThat(ex.getMessage().contains("cannot exceed 9999.99"));
+        verify(taskRepository, never()).insertTimeEntry(entry);
+    }
+
+    @Test
     void createTimeEntry_ThrowsBadRequest_whenTimeSpentNegative() {
         TimeEntry entry = new TimeEntry();
         entry.setEmployeeId(1);
