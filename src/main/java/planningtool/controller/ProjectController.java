@@ -74,6 +74,8 @@ public class ProjectController {
     @GetMapping("/add-member/{projectId}")
     public String addProjectMember(@PathVariable int projectId, Model model) {
         List<Employee> employeesNotOnProject = projectService.getEmployeesNotOnProject(projectId);
+        List<Employee> employeesOnProject = projectService.getProjectMembersByProjectId(projectId);
+        model.addAttribute("projectMembers", employeesOnProject);
         model.addAttribute("projectId", projectId);
         model.addAttribute("employees", employeesNotOnProject);
         return "project/add-member";

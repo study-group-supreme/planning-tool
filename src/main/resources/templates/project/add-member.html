@@ -20,6 +20,14 @@
     </label>
     <button type="submit">Add</button>
 </form>
+<table class="member-list">
+    <tr>
+        <td><strong>Project Members</strong></td>
+    </tr>
+    <tr th:each="member : ${projectMembers}">
+        <td th:text="${member.name}"></td>
+    </tr>
+</table>
 <form th:action="@{/projects/{projectId}(projectId = ${projectId})}" method="get">
         <button class="Back-button" type="submit">Back to project details</button>
     </form></body>
