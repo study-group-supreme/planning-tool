@@ -98,10 +98,9 @@ public class TaskController {
         } catch (NotFoundException e) {
             return "redirect:/projects";
         }
-
-// TODO We need to display an error message, right now it just redirects to prevent whitelabel
     }
 
+    // TODO We need to display an error message, right now it just redirects to prevent whitelabel
     @PostMapping("/{taskId}/edit")
     public String saveEditedTask(@PathVariable int taskId, @ModelAttribute Task task) {
         try {
