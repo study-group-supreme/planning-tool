@@ -1,5 +1,6 @@
 package planningtool.service;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -91,6 +92,17 @@ public class ProjectService {
             return employee;
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseOperationException("Employee could not be added", e.getCause());
+        }
+    }
+
+    public void removeProjectMemberFromProject(Employee employee, Project project){
+        if(!project.getProjectMembers().contains(employee)){
+            throw new NotFoundException("Employee: " + employee.getName() + " is not a member of this project");
+        }
+        try{
+            projectRepository.deleteProjectMember(employee, project);
+        } catch (DataAccessException e){
+            throw new DatabaseOperationException("Employee could not be removed", e.getCause());
         }
     }
 

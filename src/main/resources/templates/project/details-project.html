@@ -6,6 +6,7 @@
     <title>Show Project</title>
 </head>
 <body>
+<div th:replace="fragment/header :: header"></div>
 <div class="-details">
     <h1 th:text="${project.title}"></h1>
     <p th:text="${project.description}"></p>
