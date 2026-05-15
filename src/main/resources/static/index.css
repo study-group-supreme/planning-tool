@@ -107,4 +107,38 @@ input[type='checkbox'] {
 .task-actions form {
     margin: 0;
 }
+.navleft{
+    display: inline-block;
+}
+.navright{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+.navbar{
+    width: 100%;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4f46e5;
+    position: sticky;
+    top: 0;
+}
+.navbar button {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.navbar button:hover {
+    background-color: lightblue;
+    color: white;
+}
 
