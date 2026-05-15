@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import planningtool.exception.NotFoundException;
+import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.service.EmployeeService;
@@ -58,7 +59,7 @@ public class ProjectController {
         Integer projectManagerId = (Integer) session.getAttribute("employeeId");
         project.setProjectCreatorId(projectManagerId);
         projectService.createProject(project);
-        return "redirect:/projects";
+        return "redirect:/projects/add-member/" + project.getId();
     }
 
     @GetMapping("/{projectId}")
@@ -69,8 +70,20 @@ public class ProjectController {
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         return "project/details-project";
     }
-    @PostMapping("/add-member")
-    public String addProjectMember(@RequestParam int employeeId ){
 
+    @GetMapping("/add-member/{projectId}")
+    public String addProjectMember(@PathVariable int projectId, Model model) {
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("employees", allEmployees);
+        return "project/add-member";
+    }
+
+    @PostMapping("/{projectId}/add-member")
+    public String addProjectMember(@ModelAttribute int employeeId, @PathVariable int projectId) {
+       Employee employee = employeeService.getEmployeeById(employeeId);
+       Project project = projectService.getProjectById(projectId);
+        projectService.addProjectMemberToProject(employee, project);
+        return "redirect:/projects/add-member/" + projectId;
     }
 }

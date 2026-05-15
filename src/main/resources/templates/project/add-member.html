@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add project member</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
+</head>
+<body>
+<form th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}" method="post">
+    <input type="hidden" th:value="${projectId}">
+    <label>Add employee
+        <select>
+            <option th:each="employee : ${employees}"
+                    th:text="${employee.name}"
+                    th:value="${employee.id}"
+            ></option>
+
+        </select>
+    </label>
+    <button type="submit">Add</button>
+</form>
+
+</body>
+</html>
