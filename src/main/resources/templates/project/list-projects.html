@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
+<div th:replace="fragment/header :: header"></div>
 <div class="member-list">
 <p>Welcome!</p>
 <p th:text="${employeeName}"></p>

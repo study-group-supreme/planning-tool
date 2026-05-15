@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/index.css}">
 </head>
 <body>
+<div th:replace="fragment/header :: header"></div>
 <form th:action="@{/tasks/{taskId}/edit(taskId=${task.id})}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{projectId}">
     <label>

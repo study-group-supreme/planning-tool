@@ -1,25 +1,26 @@
-<div th:fragment="header"></div>
+<div th:fragment="header">
 <nav class="navbar">
     <div class="navleft">
         <button type="button"
                 onclick="window.location.href='/projects'"
-                th:if="${session.employeeId}"
+                th:if="${session.employeeId != null}"
                 >All projects</button>
         <button type="button"
-                onclick="window.location.href='/add'"
-                th:if="${session.employeeId}"
+                onclick="window.location.href='/projects/add'"
+                th:if="${session.employeeId != null}"
                 >Create project</button>
     </div>
-    <div class="nav right">
+    <div class="navright">
         <button type="button"
                 onclick="window.location.href='/login'"
-                th:if="${!session.employeeId}"
+                th:if="${session.employeeId == null}"
                 >Login</button>
 
         <button type="button"
                 onclick="window.location.href='/logout'"
-                th:if="${session.employeeId}"
+                th:if="${session.employeeId != null}"
                 >Logout</button>
     </div>
 
 </nav>
+</div>
