@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
@@ -201,6 +203,18 @@ public class ProjectServiceTest {
     }
 
     @Test
+    void addProjectMemberToProject_ShouldThrowDatabaseOperationException(){
+        Project project = new Project();
+        project.setProjectMembers(new ArrayList<>());
+        Employee employee = new Employee();
+
+        doThrow(new DataIntegrityViolationException("")).when(projectRepository).insertProjectMember(employee, project);
+
+        assertThrows(DatabaseOperationException.class, () -> {projectService.addProjectMemberToProject(employee, project);
+        });
+    }
+
+    @Test
     void removeProjectMemberFromProject_ShouldRemoveMemberByCallingRepoDeleteMethod(){
         Employee employee = new Employee();
         employee.setId(1);
@@ -216,7 +230,32 @@ public class ProjectServiceTest {
         verify(projectRepository, times(1)).deleteProjectMember(employee, project);
     }
 
-    // TODO addProjectMemberToProject() test for DatabaseOperationException throw should be made
+    @Test
+    void removeProjectMemberFromProject_ShouldThrowNotFoundException(){
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setName("Test");
+
+        Project project = new Project();
+        project.setId(1);
+        project.setProjectMembers(new ArrayList<>());
+
+        assertThrows(NotFoundException.class, () -> projectService.removeProjectMemberFromProject(employee, project));
+
+        verify(projectRepository, never()).deleteProjectMember(employee, project);
+    }
+
+    @Test
+    void removeProjectMemberToProject_ShouldThrowDatabaseOperationException(){
+        Employee employee = new Employee();
+        Project project = new Project();
+        project.setProjectMembers(List.of(employee));
+
+        doThrow(new DataIntegrityViolationException("")).when(projectRepository).deleteProjectMember(employee, project);
+
+        assertThrows(DatabaseOperationException.class, () -> {projectService.removeProjectMemberFromProject(employee, project);
+        });
+    }
 
     // TODO getProjectById() tests should be made
 }
