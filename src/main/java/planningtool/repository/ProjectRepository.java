@@ -45,6 +45,7 @@ public class ProjectRepository {
         return p;
     });
 
+
     public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
                 SELECT employee.id, employee.name, employee.role_id, employee.email, employee.password
@@ -52,6 +53,7 @@ public class ProjectRepository {
                 JOIN project_member
                 ON employee.id = project_member.employee_id
                 WHERE project_member.project_id = ?
+                ORDER BY employee.id
                 """;
         return jdbc.query(sql, employeeRepository.getEmployeeRowMapper(), id);
     }
@@ -121,7 +123,10 @@ public class ProjectRepository {
         jdbc.update(sql,employee.getId(), project.getId());
     }
 
-
+    public void deleteProjectMember(Employee employee, Project project){
+        String sql = "DELETE FROM project_member WHERE project_id = ? AND employee_id = ?";
+        jdbc.update(sql, project.getId(), employee.getId());
+    }
 
 
 }
