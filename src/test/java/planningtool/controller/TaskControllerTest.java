@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -22,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 import org.springframework.web.bind.annotation.RequestParam;
+import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -202,6 +206,7 @@ public class TaskControllerTest {
         assertThat(captor.getValue().getProjectId()).isEqualTo(1);
 
     }
+
     @Test
     void editTask_ShouldShowEditTaskForm() throws Exception {
         Employee testEmployee = new Employee();
@@ -226,20 +231,52 @@ public class TaskControllerTest {
                 .andExpect(model().attribute("task", testTask));
 
     }
+
     @Test
     void editTask_ShouldEditTaskAndRedirect() throws Exception {
 
         mockMvc.perform(post("/tasks/1/edit")
-                .param("title", "Updated title")
-                .param("projectId", "1"))
+                        .param("title", "Updated title")
+                        .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/tasks/1"));
     }
 
+    @Test
+    void editTask_ShouldCatchNotFoundException() throws Exception {
+        Mockito.when(taskService.getTaskById(200)).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/tasks/200/edit").sessionAttr("employeeId", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+    @Test
+    void editTask_ShouldCatchBadRequestException() throws Exception {
+        Mockito.when(taskService.editTask(any(Task.class))).thenThrow(BadRequestException.class);
+
+        mockMvc.perform(post("/tasks/1/edit")
+                        .param("title", "New title")
+                        .param("projectId", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/edit"));
+    }
+
+    @Test
+    void editTask_ShouldDatabaseOperationException() throws Exception {
+        Mockito.when(taskService.editTask(any(Task.class))).thenThrow(DatabaseOperationException.class);
+
+        mockMvc.perform(post("/tasks/1/edit")
+                        .param("title", "New title")
+                        .param("projectId", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+
 
     //TODO showAddTaskForm() tests should be added - DONE
     @Test
-    void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception{
+    void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception {
         int taskId = 5;
 
         mockMvc.perform(post("/tasks/{taskId}/time-entry", taskId)
@@ -253,7 +290,7 @@ public class TaskControllerTest {
 
         TimeEntry sent = captor.getValue();
         assertEquals(new BigDecimal("1.5"), sent.getTimeSpent());
-        assertEquals(3,sent.getEmployeeId());
+        assertEquals(3, sent.getEmployeeId());
     }
 
     //TODO showAddTaskForm() tests should be added
@@ -268,9 +305,9 @@ public class TaskControllerTest {
         int entryId = 3;
 
         mockMvc.perform(post("/tasks/{taskId}/time-entry/{entryId}/remove", taskId, entryId)
-                .sessionAttr("employeeId", 10))
+                        .sessionAttr("employeeId", 10))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/tasks/"+taskId));
+                .andExpect(redirectedUrl("/tasks/" + taskId));
 
         verify(taskService).removeTimeEntryById(entryId);
     }
