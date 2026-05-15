@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 import org.springframework.web.bind.annotation.RequestParam;
+import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Task;
@@ -247,6 +250,28 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
+    @Test
+    void editTask_ShouldCatchBadRequestException() throws Exception {
+        Mockito.when(taskService.editTask(any(Task.class))).thenThrow(BadRequestException.class);
+
+        mockMvc.perform(post("/tasks/1/edit")
+                        .param("title", "New title")
+                        .param("projectId", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1/edit"));
+    }
+
+    @Test
+    void editTask_ShouldDatabaseOperationException() throws Exception {
+        Mockito.when(taskService.editTask(any(Task.class))).thenThrow(DatabaseOperationException.class);
+
+        mockMvc.perform(post("/tasks/1/edit")
+                        .param("title", "New title")
+                        .param("projectId", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
 
 
     //TODO showAddTaskForm() tests should be added - DONE

@@ -112,7 +112,6 @@ public class TaskController {
         } catch (DatabaseOperationException e) {
             return "redirect:/projects";
         }
-
     }
 
     @PostMapping("/remove")
