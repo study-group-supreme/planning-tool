@@ -48,6 +48,7 @@ public class ProjectController {
     @GetMapping("/add")
     public String createProject(Model model) {
         model.addAttribute("project", new Project());
+        model.addAttribute("employee", employeeService.getAllEmployees());
         return "project/create-project";
     }
 
@@ -67,5 +68,9 @@ public class ProjectController {
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         return "project/details-project";
+    }
+    @PostMapping("/add-member")
+    public String addProjectMember(@RequestParam int employeeId ){
+
     }
 }
