@@ -83,6 +83,9 @@ public class TaskService {
         if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Time spent must be a positive number");
         }
+        if (timeSpent.compareTo(new BigDecimal("9999.99")) > 0) {
+            throw new BadRequestException("Time spent cannot exceed 9999.99 hours");
+        }
 
         try {
             taskRepository.findTaskById(timeEntry.getTaskId());
