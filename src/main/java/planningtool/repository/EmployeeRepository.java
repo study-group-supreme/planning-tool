@@ -48,6 +48,7 @@ public class EmployeeRepository {
                 WHERE id NOT IN (
                     SELECT employee_id FROM project_member WHERE project_id = ?
                     )
+                ORDER BY employee.id
                 """;
         return jdbc.query(sql, employeeRowMapper, projectId);
     }
