@@ -50,7 +50,7 @@
     <h3>Add Time Entry</h3>
     <form th:action="@{|/tasks/${task.id}/time-entry|}" method="post">
         <label>Hours spent</label>
-        <input type="number" step="0.25" name="timeSpent" required>
+        <input type="number" step="0.5" min="1.0" max="9999.99" name="timeSpent" required>
         <button type="submit">Save</button>
     </form>
 </div>
