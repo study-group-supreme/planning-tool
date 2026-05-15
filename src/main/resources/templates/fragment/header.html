@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div th:fragment="header"></div>
+<nav class="navbar">
+    <div class="navleft">
+        <button type="button"
+                onclick="window.location.href='/projects'"
+                th:if="${session.employeeId}"
+                >All projects</button>
+        <button type="button"
+                onclick="window.location.href='/add'"
+                th:if="${session.employeeId}"
+                >Create project</button>
+    </div>
+    <div class="nav right">
+        <button type="button"
+                onclick="window.location.href='/login'"
+                th:if="${!session.employeeId}"
+                >Login</button>
 
-</body>
-</html>
+        <button type="button"
+                onclick="window.location.href='/logout'"
+                th:if="${session.employeeId}"
+                >Logout</button>
+    </div>
+
+</nav>
