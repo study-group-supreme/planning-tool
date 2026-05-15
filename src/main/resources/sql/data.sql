@@ -31,6 +31,6 @@ VALUES (1, null, 2, 'Brew coffee', null, '0.5', true, false),
        (2, null, 4, 'Motivational speech', null, '1', false,false);
 
 INSERT INTO time_entry (employee_id, task_id, time_spent)
-VALUES (1, 2, '0.25'),
+VALUES (1, 2, '1.0'),
        (4, 4, '2.5'),
-       (2, 3, '0.25');
+       (2, 3, '1.0');
