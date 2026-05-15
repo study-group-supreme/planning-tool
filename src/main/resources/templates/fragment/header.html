@@ -12,12 +12,12 @@
     </div>
     <div class="navright">
         <button type="button"
-                onclick="window.location.href='/login'"
+                onclick="window.location.href='/auth/login'"
                 th:if="${session.employeeId == null}"
                 >Login</button>
 
         <button type="button"
-                onclick="window.location.href='/logout'"
+                onclick="window.location.href='/auth/logout'"
                 th:if="${session.employeeId != null}"
                 >Logout</button>
     </div>

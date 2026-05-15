@@ -43,4 +43,13 @@ public class EmployeeRepositoryTest {
         assertThat(employees.get(2).getName()).isEqualTo("Daniella Norgren");
         assertThat(employees.get(3).getName()).isEqualTo("Mads Svanholm");
     }
+
+    @Test
+    void findEmployeesNotOnProject_ShouldReturnEmployeesNotAssignedToSpecificProject(){
+        List<Employee> result = employeeRepository.findEmployeesNotOnProject(2);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getName()).isEqualTo("Andreas Jensen");
+        assertThat(result.get(1).getName()).isEqualTo("August Skipper");
+    }
 }

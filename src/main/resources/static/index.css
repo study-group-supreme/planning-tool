@@ -141,4 +141,12 @@ input[type='checkbox'] {
     background-color: lightblue;
     color: white;
 }
+.Back-button{
+    background-color: #4f46e5;
+    color: white;
+}
+.Back-button:hover{
+    background-color: lightblue;
+    color: white;
+}
 

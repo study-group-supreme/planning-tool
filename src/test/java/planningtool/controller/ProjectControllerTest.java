@@ -45,7 +45,7 @@ public class ProjectControllerTest {
                         .param("description", "description")
                         .param("deadline", "2028-02-02"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrlPattern("/projects/add-member/*"));
     }
 
     @Test
