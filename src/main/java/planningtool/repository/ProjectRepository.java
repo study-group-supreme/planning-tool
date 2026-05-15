@@ -46,6 +46,7 @@ public class ProjectRepository {
     });
 
 
+    // TODO Consider if this method should be moved to the EmployeeRepository
     public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
                 SELECT employee.id, employee.name, employee.role_id, employee.email, employee.password
@@ -127,6 +128,5 @@ public class ProjectRepository {
         String sql = "DELETE FROM project_member WHERE project_id = ? AND employee_id = ?";
         jdbc.update(sql, project.getId(), employee.getId());
     }
-
 
 }

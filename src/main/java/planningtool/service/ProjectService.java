@@ -73,15 +73,7 @@ public class ProjectService {
     }
 
     public List<Employee> getEmployeesNotOnProject(int projectId){
-        List<Employee> employeesNotOnProject = new ArrayList<>();
-        List<Employee> employeesOnProject = getProjectMembersByProjectId(projectId);
-        List<Employee> allEmployees = employeeRepository.findAllEmployees();
-        for (Employee employee : allEmployees){
-            if(!employeesOnProject.contains(employee)){
-                employeesNotOnProject.add(employee);
-            }
-        }
-        return employeesNotOnProject;
+        return employeeRepository.findEmployeesNotOnProject(projectId);
     }
 
     public List<Project> getProjectsByEmployeeId(int employeeId) {
