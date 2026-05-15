@@ -9,7 +9,7 @@
 <form th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}" method="post">
     <input type="hidden" th:value="${projectId}">
     <label>Add employee
-        <select>
+        <select name="employeeId">
             <option th:each="employee : ${employees}"
                     th:text="${employee.name}"
                     th:value="${employee.id}"

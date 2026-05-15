@@ -80,7 +80,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/add-member")
-    public String addProjectMember(@ModelAttribute int employeeId, @PathVariable int projectId) {
+    public String addProjectMember(@RequestParam int employeeId, @PathVariable int projectId) {
        Employee employee = employeeService.getEmployeeById(employeeId);
        Project project = projectService.getProjectById(projectId);
         projectService.addProjectMemberToProject(employee, project);
