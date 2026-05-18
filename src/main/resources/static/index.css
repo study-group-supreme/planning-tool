@@ -98,9 +98,6 @@ td div {
     gap: 10px;
 }
 
-input[type='checkbox'] {
-    margin-right:0px ;
-}
 .task-actions {
     display: inline-flex;
     align-items: center;
