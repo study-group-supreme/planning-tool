@@ -109,7 +109,8 @@ public class ProjectService {
             throw new BadRequestException("Deadline has to be in the future");
         }
         try {
-            return editProject(project);
+            projectRepository.updateProject(project);
+            return projectRepository.findProjectById(project.getId());
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Project could not be updated", e.getCause());
         }

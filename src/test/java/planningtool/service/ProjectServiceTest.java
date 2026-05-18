@@ -257,5 +257,30 @@ public class ProjectServiceTest {
         });
     }
 
+    @Test
+    void editProject_ReturnsUpdatedProject() {
+        Project originalProject = new Project();
+        originalProject.setId(1);
+        originalProject.setTitle("Original Title");
+        originalProject.setDeadline(LocalDate.of(2030, 8, 9));
+        originalProject.setDescription("Original Description");
+        originalProject.setProjectCreatorId(1);
+        originalProject.setTimeOfCreation(LocalDate.now());
+
+        when(projectRepository.findProjectById(1)).thenReturn(originalProject);
+
+        originalProject.setTitle("New title");
+        originalProject.setDescription("New Description");
+        originalProject.setDeadline(LocalDate.of(2031, 7, 8));
+
+        Project result = projectService.editProject(originalProject);
+
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getTitle()).isEqualTo("New title");
+        assertThat(result.getDeadline()).isEqualTo(LocalDate.of(2031, 7, 8));
+        assertThat(result.getDescription()).isEqualTo("New Description");
+        verify(projectRepository).updateProject(any());
+    }
+
     // TODO getProjectById() tests should be made
 }
