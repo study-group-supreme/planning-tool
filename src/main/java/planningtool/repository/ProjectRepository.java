@@ -70,6 +70,18 @@ public class ProjectRepository {
                 """;
         return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
     }
+    public List<Task> findMainTasksByProjectId(int id) {
+        String sql = """
+                SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
+                task.parent_task_id, task.project_id, task.assigned_member_id,task.is_done
+                FROM task
+                JOIN project
+                ON task.project_id = project.id
+                AND task.parent_task_id is null
+                WHERE task.project_id = ?
+                """;
+        return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
+    }
 
     public Project insertProject(Project project) {
         String sql = """

@@ -74,6 +74,9 @@ public class ProjectService {
             throw new NotFoundException("No project found");
         }
     }
+    public List<Task> getMainTasksByProjectId(int id){
+        return projectRepository.findMainTasksByProjectId(id);
+    }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
         return projectRepository.findProjectMembersByProjectId(id);
