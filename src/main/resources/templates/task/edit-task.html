@@ -34,7 +34,7 @@
         High Priority: <input type="checkbox" th:field="*{highPriority}">
     </label>
     <br>
-    <label>
+    <label th:if="${task.getParentTaskId() != null}">
         Parrent task: <select th:field="*{parentTaskId}">
         <option th:each="t : ${mainTask}"
                 th:value="${t.id}"
