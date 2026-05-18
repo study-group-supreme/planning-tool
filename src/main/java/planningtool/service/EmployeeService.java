@@ -37,6 +37,10 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(int id){
+        Employee employee = new Employee();
+        if (employee.getId() < 0){
+            throw new NotFoundException("No employee found");
+        }
         return employeeRepository.findEmployeeById(id);
     }
 }
