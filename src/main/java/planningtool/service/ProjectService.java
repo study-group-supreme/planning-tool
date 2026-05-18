@@ -13,6 +13,7 @@ import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
+import planningtool.repository.TaskRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ import java.util.List;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
+    private final TaskRepository taskRepository;
 
-    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
+    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+        this.taskRepository = taskRepository;
     }
 
     // TODO Might need more exception handling
@@ -65,7 +68,13 @@ public class ProjectService {
 
 
     public List<Task> getTasksByProjectId(int id) {
-        return projectRepository.findTasksByProjectId(id);
+       List<Task> allTasks = taskRepository.findAllTasks();
+        try{
+            projectRepository.findTasksByProjectId(id);
+        } catch (EmptyResultDataAccessException e){
+            throw new NotFoundException("No project found ");
+        }
+     return allTasks;
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
