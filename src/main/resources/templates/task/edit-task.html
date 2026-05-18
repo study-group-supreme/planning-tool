@@ -36,10 +36,10 @@
     <br>
     <label th:if="${task.getParentTaskId() != null}">
         Parrent task: <select th:field="*{parentTaskId}">
+        <option value="" >Main Task</option>
         <option th:each="t : ${mainTask}"
                 th:value="${t.id}"
                 th:text="${t.title}">
-
         </option>
     </select>
     </label>
