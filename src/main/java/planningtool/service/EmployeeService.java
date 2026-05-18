@@ -38,14 +38,14 @@ public class EmployeeService {
 
     public Employee getEmployeeById(int id) {
         Employee employee;
-        {
-            try {
-                employee = employeeRepository.findEmployeeById(id);
-            } catch (EmptyResultDataAccessException e) {
-                throw new NotFoundException("No employee found ");
 
-            }
-            return employee;
+        try {
+            employee = employeeRepository.findEmployeeById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("No employee found ");
+
         }
+        return employee;
+
     }
 }
