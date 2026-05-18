@@ -1,7 +1,5 @@
 .delete-button {
     color: black;
-    margin-right: 50px;
-    margin-bottom: 10px;
     align-items: center;
     background-color: red;
 }
@@ -37,12 +35,6 @@ body {
     background: white;
     padding: 25px;
 }
-.subtask-list{
-    border-radius: 12px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 25px;
-}
 .dates{
     border-radius: 12px;
     margin-bottom: 20px;
@@ -55,7 +47,10 @@ body {
     background: white;
     padding: 25px;
 }
-.create-button{
+.button-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 12px;
     margin-bottom: 20px;
     background: white;
@@ -75,7 +70,6 @@ table {
     margin-bottom: 30px;
     background: white;
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
@@ -87,7 +81,7 @@ th {
 }
         td {
             padding: 10px 15px;
-            vertical-align: middle;
+            align-items: center;
         }
 td div {
     display: inline-flex;
@@ -95,18 +89,12 @@ td div {
     gap: 10px;
 }
 
-input[type='checkbox'] {
-    margin-right:0px ;
-}
 .task-actions {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
 }
 
-.task-actions form {
-    margin: 0;
-}
 .navleft{
     display: inline-block;
 }
@@ -148,5 +136,25 @@ input[type='checkbox'] {
 .Back-button:hover{
     background-color: lightblue;
     color: white;
+}
+.leave-button {
+    color: black;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    align-items: center;
+    background-color: red;
+}
+.leave-button:hover {
+    background-color: darkred;
+    cursor: pointer;
+}
+.task-list td:nth-child(1) { width: 25%; }
+.task-list td:nth-child(2) { width: 25%; }
+.btn:hover{
+    background-color: gray;
+    cursor: pointer;
+}
+progress{
+    width: 100px;
 }
 
