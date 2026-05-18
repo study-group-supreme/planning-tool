@@ -160,7 +160,6 @@
             </div>
 
 
-
             <div class="task-actions">
                 <div th:if="${!task.done}">
                     <form th:action="@{/tasks/mark-done}" method="post">
@@ -209,9 +208,22 @@
     </form>
 </div>
 <div class="create-button">
+    <span>
     <form th:action="@{/projects}" method="get">
         <button type="submit">Back to all projects</button>
     </form>
+        </span>
+
+    <span>
+        <form th:action="@{/projects/{projectId}/remove-member(projectId=${project.id})}" method="post">
+            <input type="hidden" th:value="${project.id}">
+            <input name="employeeId" type="hidden" th:value="${currentUserId}">
+            <button class="leave-button" type="submit"
+                    onclick="return confirm('Are you sure, you want to leave this project?')">
+                Leave project
+            </button>
+        </form>
+    </span>
 </div>
 
 </body>

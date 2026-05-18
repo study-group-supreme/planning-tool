@@ -149,4 +149,15 @@ input[type='checkbox'] {
     background-color: lightblue;
     color: white;
 }
+.leave-button {
+    color: black;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    align-items: center;
+    background-color: red;
+}
+.leave-button:hover {
+    background-color: darkred;
+    cursor: pointer;
+}
 
