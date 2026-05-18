@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -31,7 +33,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public String showSpecificTask(@PathVariable int taskId, Model model, HttpSession session){
+    public String showSpecificTask(@PathVariable int taskId, Model model, HttpSession session) {
         Integer loggedInId = (Integer) session.getAttribute("employeeId");
         Task task = taskService.getTaskById(taskId);
         Task parentTask = null;
@@ -86,6 +88,8 @@ public class TaskController {
         return "redirect:/projects/" + projectId;
     }
 
+    // TODO We need to display an error message, right now it just redirects to prevent whitelabel
+
     @GetMapping("/{taskId}/add-subtask")
     public String showAddSubtaskForm(@PathVariable int taskId, Model model) {
         Task parent = taskService.getTaskById(taskId);
@@ -121,17 +125,28 @@ public class TaskController {
 // TODO Add error handling and try/catch to this? Sensei, help me!!
     @GetMapping("/{taskId}/edit")
     public String editTask(@PathVariable int taskId, Model model) {
-        Task updatedTask = taskService.getTaskById(taskId);
-        model.addAttribute("task", updatedTask);
-        model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
-        return "task/edit-task";
-// TODO Add error handling and try/catch to this? Sensei, help me!!
+        try {
+            Task updatedTask = taskService.getTaskById(taskId);
+            model.addAttribute("task", updatedTask);
+            model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
+            return "task/edit-task";
+        } catch (NotFoundException e) {
+            return "redirect:/projects";
+        }
     }
+
+    // TODO We need to display an error message, right now it just redirects to prevent whitelabel
     @PostMapping("/{taskId}/edit")
     public String saveEditedTask(@PathVariable int taskId, @ModelAttribute Task task) {
-        task.setId(taskId);
-        taskService.editTask(task);
-        return "redirect:/tasks/" + taskId;
+        try {
+            task.setId(taskId);
+            taskService.editTask(task);
+            return "redirect:/tasks/" + taskId;
+        } catch (BadRequestException e) {
+            return "redirect:/tasks/" + taskId + "/edit";
+        } catch (DatabaseOperationException e) {
+            return "redirect:/projects";
+        }
     }
 
     @PostMapping("/remove")

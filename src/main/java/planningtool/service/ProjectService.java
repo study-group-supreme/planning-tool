@@ -72,6 +72,10 @@ public class ProjectService {
         return projectRepository.findProjectMembersByProjectId(id);
     }
 
+    public List<Employee> getEmployeesNotOnProject(int projectId){
+        return employeeRepository.findEmployeesNotOnProject(projectId);
+    }
+
     public List<Project> getProjectsByEmployeeId(int employeeId) {
         List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
         Employee employee = employeeRepository.findEmployeeById(employeeId);
@@ -82,6 +86,7 @@ public class ProjectService {
         }
         return projects;
     }
+
 
     public Employee addProjectMemberToProject(Employee employee, Project project) {
         if (project.getProjectMembers().contains(employee)) {

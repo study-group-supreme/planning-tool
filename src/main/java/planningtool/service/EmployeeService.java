@@ -7,6 +7,9 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
+
+import java.util.List;
+
 @Service
 
 public class EmployeeService {
@@ -14,6 +17,10 @@ public class EmployeeService {
 
     public EmployeeService(EmployeeRepository employeeRepository){
         this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> getAllEmployees(){
+        return employeeRepository.findAllEmployees();
     }
 
     public Employee login(String email, String password){

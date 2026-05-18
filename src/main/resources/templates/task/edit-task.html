@@ -36,9 +36,12 @@
     <input type="hidden" th:field="*{done}">
     <input type="hidden" th:field="*{parentTaskId}">
     <br>
-    <button type="submit">Edit Task</button>
-
+    <button type="submit">Save changes</button>
 </form>
+<form th:action="@{/tasks/{taskId}(taskId=${task.id})}" method="get">
+    <button type="submit">Cancel</button>
+</form>
+
 
 </body>
 </html>

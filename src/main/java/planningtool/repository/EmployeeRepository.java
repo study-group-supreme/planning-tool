@@ -42,4 +42,15 @@ public class EmployeeRepository {
         return jdbc.query(sql,employeeRowMapper);
     }
 
+    public List<Employee> findEmployeesNotOnProject(int projectId){
+        String sql = """
+                SELECT * FROM employee
+                WHERE id NOT IN (
+                    SELECT employee_id FROM project_member WHERE project_id = ?
+                    )
+                ORDER BY employee.id
+                """;
+        return jdbc.query(sql, employeeRowMapper, projectId);
+    }
+
 }
