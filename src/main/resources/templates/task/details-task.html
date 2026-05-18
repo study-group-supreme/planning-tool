@@ -23,7 +23,10 @@
 
     <p>
         <strong>Estimated Time:</strong>
-        <span th:text="${task.timeEstimate != null ? task.timeEstimate + ' hours' : 'Not estimated'}"></span>
+        <span th:if="${hasChildren}"
+              th:text="${totalEstimatedTime != null ? totalEstimatedTime + ' hours' : 'No subtasks estimated'}"></span>
+        <span th:if="${!hasChildren}"
+              th:text="${task.timeEstimate != null ? task.timeEstimate + ' hours' : 'Not estimated'}"></span>
     </p>
 
     <p>
