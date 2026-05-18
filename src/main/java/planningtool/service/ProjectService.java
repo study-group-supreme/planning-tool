@@ -72,7 +72,7 @@ public class ProjectService {
         return projectRepository.findProjectMembersByProjectId(id);
     }
 
-    public List<Employee> getEmployeesNotOnProject(int projectId){
+    public List<Employee> getEmployeesNotOnProject(int projectId) {
         return employeeRepository.findEmployeesNotOnProject(projectId);
     }
 
@@ -100,17 +100,32 @@ public class ProjectService {
         }
     }
 
-    public void removeProjectMemberFromProject(Employee employee, Project project){
-        if(!project.getProjectMembers().contains(employee)){
+    public void removeProjectMemberFromProject(Employee employee, Project project) {
+        if (!project.getProjectMembers().contains(employee)) {
             throw new NotFoundException("Employee: " + employee.getName() + " is not a member of this project");
         }
-        try{
+        try {
             projectRepository.deleteProjectMember(employee, project);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new DatabaseOperationException("Employee could not be removed", e.getCause());
         }
     }
 
+    public void archiveProject(Project project) {
+        try {
+            projectRepository.archiveProject(project);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Project could not be found", e.getCause());
+        }
 
+    }
+
+    public void restoreProject(Project project) {
+        try {
+            projectRepository.restoreProject(project);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Project could not be found", e.getCause());
+        }
+    }
 }
 
