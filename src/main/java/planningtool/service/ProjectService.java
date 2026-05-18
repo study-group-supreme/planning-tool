@@ -95,6 +95,26 @@ public class ProjectService {
         return projects;
     }
 
+    public Project editProject(Project project) {
+        if (project.getTitle() == null || project.getTitle().isBlank()) {
+            throw new BadRequestException("Title cannot be empty");
+        }
+        if (project.getTitle().length() > 225) {
+            throw new BadRequestException("Task title cannot exceed 225 characters");
+        }
+        if ((project.getTitle() != null) && (project.getDescription().length() > 1080)){
+            throw new BadRequestException("Project description cannot exceed 1080 characters");
+        }
+        if (project.getDeadline().isBefore(LocalDate.now())){
+            throw new BadRequestException("Deadline has to be in the future");
+        }
+        try {
+            return editProject(project);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Project could not be updated", e.getCause());
+        }
+    }
+
 
     public Employee addProjectMemberToProject(Employee employee, Project project) {
         if (project.getProjectMembers().contains(employee)) {
