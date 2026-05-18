@@ -257,5 +257,25 @@ public class ProjectServiceTest {
         });
     }
 
+    @Test
+    void archiveProject_ShouldCallRepository() {
+        Project project = new Project();
+        project.setId(1);
+        project.setTitle("test");
+        project.setActive(true);
+        projectService.archiveProject(project);
+        verify(projectRepository).archiveProject(project);
+    }
+
+    @Test
+    void restoreProject_ShouldCallRepository() {
+        Project project = new Project();
+        project.setId(1);
+        project.setTitle("test");
+        project.setActive(false);
+        projectService.restoreProject(project);
+        verify(projectRepository).restoreProject(project);
+    }
+
     // TODO getProjectById() tests should be made
 }
