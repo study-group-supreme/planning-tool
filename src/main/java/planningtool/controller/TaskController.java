@@ -52,6 +52,7 @@ public class TaskController {
         model.addAttribute("parentTask", parentTask);
         model.addAttribute("hasChildren", taskService.hasChildren(taskId));
         model.addAttribute("loggedInId", loggedInId);
+        model.addAttribute("subtasks", taskService.getTasksByParentId(taskId));
         return "task/details-task";
     }
 
@@ -83,6 +84,39 @@ public class TaskController {
         taskService.createTask(task);
 
         return "redirect:/projects/" + projectId;
+    }
+
+    @GetMapping("/{taskId}/add-subtask")
+    public String showAddSubtaskForm(@PathVariable int taskId, Model model) {
+        Task parent = taskService.getTaskById(taskId);
+
+        Task subtask = new Task();
+
+        subtask.setProjectId(parent.getProjectId());
+        subtask.setParentTaskId(parent.getId());
+
+        model.addAttribute("task", subtask);
+        model.addAttribute("members", projectService.getProjectMembersByProjectId(parent.getProjectId()));
+
+        return "task/create-task";
+    }
+
+    @PostMapping("/{taskId}/quick-add-subtask")
+    public String quickAddSubtask(
+            @PathVariable int taskId,
+            @RequestParam String title
+    ){
+        Task parent = taskService.getTaskById(taskId);
+
+        Task subTask = new Task();
+
+        subTask.setProjectId(parent.getProjectId());
+        subTask.setParentTaskId(parent.getId());
+        subTask.setTitle(title);
+
+        taskService.createTask(subTask);
+
+        return "redirect:/tasks/"+taskId;
     }
 // TODO Add error handling and try/catch to this? Sensei, help me!!
     @GetMapping("/{taskId}/edit")

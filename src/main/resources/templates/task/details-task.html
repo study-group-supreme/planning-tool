@@ -91,6 +91,29 @@
         No time entries yet.
     </p>
 </table>
+<h2>Subtasks</h2>
+
+<div th:if="${subtasks != null and !subtasks.isEmpty()}">
+    <ul>
+        <li th:each="st : ${subtasks}">
+            <a th:href="@{/tasks/{id}(id=${st.id})}" th:text="${st.title}"></a>
+            <span th:if="${st.highPriority}">❗</span>
+            <span th:if="${st.done}">✔</span>
+        </li>
+    </ul>
+</div>
+
+<p th:if="${subtasks == null or subtasks.isEmpty()}">
+    No subtasks yet.
+</p>
+<form th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
+    <input type="text" name="title" placeholder="Quick add subtask..." required>
+    <button type="submit">Add</button>
+</form>
+<form th:action="@{/tasks/{id}/add-subtask(id=${task.id})}" method="get">
+    <button type="submit">Create subtask</button>
+</form>
+
 <form th:action="@{/projects/{id}(id=${task.getProjectId()})}" method="get">
     <button type="submit">Back to Project</button>
 </form>
