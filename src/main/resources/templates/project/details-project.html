@@ -201,13 +201,13 @@
 
     <button type="submit">Add</button>
 </form>
-<div class="create-button">
+<div class="button-row">
     <form class="create-task" th:action="@{/tasks/add}" method="get">
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button type="submit">Create task</button>
     </form>
 </div>
-<div class="-details">
+<div class="button-row">
     <span>
     <form th:action="@{/projects}" method="get">
         <button type="submit">Back to all projects</button>

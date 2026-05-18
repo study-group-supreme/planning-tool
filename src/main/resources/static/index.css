@@ -26,9 +26,6 @@ body {
 }
 
 .-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: white;
     padding: 25px;
     border-radius: 12px;
@@ -58,7 +55,7 @@ body {
     background: white;
     padding: 25px;
 }
-.create-button{
+.button-row{
     display: flex;
     justify-content: space-between;
     align-items: center;
