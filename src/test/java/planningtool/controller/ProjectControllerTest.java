@@ -1,6 +1,7 @@
 package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
@@ -50,7 +51,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+    void showListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
         Employee employee = new Employee();
@@ -101,7 +102,39 @@ public class ProjectControllerTest {
                 .andExpect(redirectedUrl("/projects"));
         verify(projectService).removeProjectMemberFromProject(employee, project);
     }
-}
+
 
 //TODO Test for showing showSpecificProject() should be added
 
+    @Test
+    void archiveProject_ShouldArchiveProject_AndRedirect() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setTitle("test");
+
+        Mockito.when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(post("/projects/archive")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+    }
+
+    @Test
+    void restoreProject_ShouldRestoreProject_AndRedirect() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setTitle("test");
+
+        Mockito.when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(post("/projects/restore")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+    }
+
+    //TODO Test for showing showSpecificProject() should be added
+}

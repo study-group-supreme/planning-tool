@@ -32,14 +32,16 @@ public class ProjectRepositoryTest {
         assertThat(employees.get(2).getName()).isEqualTo("Daniella Norgren");
         assertThat(employees.get(3).getName()).isEqualTo("Mads Svanholm");
     }
+
     @Test
-    void findTasksByProjectId_shouldReturnTasksWithTheSameProjectId(){
+    void findTasksByProjectId_shouldReturnTasksWithTheSameProjectId() {
         List<Task> tasks = projectRepository.findTasksByProjectId(1);
         assertThat(tasks.get(0).getTitle()).isEqualTo("Brew coffee");
         assertThat(tasks).hasSize(3);
     }
+
     @Test
-    void insertProject_ShouldCreateNewProject(){
+    void insertProject_ShouldCreateNewProject() {
         Project newProject = new Project();
         newProject.setTitle("test");
         newProject.setDescription("tester");
@@ -59,7 +61,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
-    void findProjectById_ShouldFindProjectWithCorrespondingId(){
+    void findProjectById_ShouldFindProjectWithCorrespondingId() {
         Project found = projectRepository.findProjectById(1);
         assertThat(found.getId()).isEqualTo(1);
         assertThat(found.getTitle()).isEqualTo("Exam Project");
@@ -71,7 +73,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
-    void updateProject_ShouldUpdateProject_Title_Description_Deadline(){
+    void updateProject_ShouldUpdateProject_Title_Description_Deadline() {
         Project projectToUpdate = projectRepository.findProjectById(1);
         projectToUpdate.setTitle("Complex Project");
         projectToUpdate.setDescription("Very difficult");
@@ -85,14 +87,36 @@ public class ProjectRepositoryTest {
         assertThat(projectAfterUpdate.getDescription()).isEqualTo("Very difficult");
         assertThat(projectAfterUpdate.getDeadline()).isEqualTo(LocalDate.of(2027, 5, 6));
     }
+
     @Test
-    void findProjectsByEmployeeId_ShouldFindAllProjectsConnectedToAnEmployee(){
+    void archiveProject_ShouldSetProjectToInactive() {
+
+        projectRepository.archiveProject(1);
+
+        Project projectAfterArchive = projectRepository.findProjectById(1);
+
+        assertThat(projectAfterArchive.isActive()).isFalse();
+    }
+
+    @Test
+    void restoreProject_ShouldSetProjectToActive() {
+
+        projectRepository.restoreProject(1);
+
+        Project projectAfterRestoration = projectRepository.findProjectById(1);
+
+        assertThat(projectAfterRestoration.isActive()).isTrue();
+    }
+
+    @Test
+    void findProjectsByEmployeeId_ShouldFindAllProjectsConnectedToAnEmployee() {
         List<Project> projects = projectRepository.findProjectsByEmployeeId(4);
         assertThat(projects.get(0).getTitle()).isEqualTo("Exam Project");
         assertThat(projects.get(1).getTitle()).isEqualTo("Sample Project");
     }
+
     @Test
-    void insertProjectMember_ShouldInsertProjectMemberIntoDB(){
+    void insertProjectMember_ShouldInsertProjectMemberIntoDB() {
         Employee employee = new Employee();
         employee.setId(3);
         Project project = new Project();
@@ -105,8 +129,9 @@ public class ProjectRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo("Daniella Norgren");
     }
+
     @Test
-    void deleteProjectMember_ShouldDeleteProjectMemberFromTable(){
+    void deleteProjectMember_ShouldDeleteProjectMemberFromTable() {
         Project project = projectRepository.findProjectById(1);
         List<Employee> projectMembers = projectRepository.findProjectMembersByProjectId(project.getId());
         Employee memberToRemove = projectMembers.get(0);
