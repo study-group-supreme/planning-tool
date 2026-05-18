@@ -76,30 +76,12 @@ public class ProjectService {
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
-        Project project = projectRepository.findProjectById(id);
-        try {
-            List<Employee> members = projectRepository.findProjectMembersByProjectId(id);
-            if (members.isEmpty()) {
-                throw new NotFoundException(
-                        "No employees are connected to this project: " + project.getTitle()
-                );
-            }
-            return members;
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("No employees are connected to this project: " + project.getTitle());
-        }
+        return projectRepository.findProjectMembersByProjectId(id);
     }
 
+
     public List<Employee> getEmployeesNotOnProject(int projectId) {
-
-        List<Employee> employees =
-                employeeRepository.findEmployeesNotOnProject(projectId);
-
-        if (employees.isEmpty()) {
-            throw new NotFoundException("All employees are working on this project");
-        }
-        return employees;
-
+        return employeeRepository.findEmployeesNotOnProject(projectId);
     }
 
     public List<Project> getProjectsByEmployeeId(int employeeId) {
