@@ -45,6 +45,15 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task) {
+
+        // Check if this task has a parent, and check if the parent itself is not a subtask
+        if (task.getParentTaskId() != null) {
+            Task parent = taskRepository.findTaskById(task.getParentTaskId());
+            if (parent.getParentTaskId() != null){
+                throw new BadRequestException("Subtasks cannot have their own subtasks");
+            }
+        }
+
         // If user set task to high priority in normal creation, it stays
         if (!task.isHighPriority()) {
             task.setHighPriority(false);
