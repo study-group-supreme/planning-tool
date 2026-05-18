@@ -7,6 +7,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -58,6 +59,26 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));
+    }
+    @Test
+    void addProjectMember_ShouldAddProjectMember() throws Exception {
+
+        Employee employee = new Employee();
+        employee.setName("test");
+        employee.setId(1);
+
+        Project project = new Project();
+        project.setTitle("test");
+        project.setId(1);
+
+        when(employeeService.getEmployeeById(1)).thenReturn(employee);
+        when(projectService.getProjectById(1)).thenReturn(project);
+
+        mockMvc.perform(post("/projects/{projectId}/add-member", 1)
+                        .param("employeeId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/add-member/1"));
+        verify(projectService).addProjectMemberToProject(employee, project);
     }
 
     //TODO Test for showing showSpecificProject() should be added
