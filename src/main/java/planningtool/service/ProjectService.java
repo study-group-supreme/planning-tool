@@ -74,6 +74,9 @@ public class ProjectService {
             throw new NotFoundException("No project found");
         }
     }
+    public List<Task> getMainTasksByProjectId(int id){
+        return projectRepository.findMainTasksByProjectId(id);
+    }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
         return projectRepository.findProjectMembersByProjectId(id);
@@ -140,6 +143,21 @@ public class ProjectService {
         }
     }
 
+    public void archiveProject(int projectId) {
+        try {
+            projectRepository.archiveProject(projectId);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Project could not be found", e.getCause());
+        }
 
+    }
+
+    public void restoreProject(int projectId) {
+        try {
+            projectRepository.restoreProject(projectId);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Project could not be found", e.getCause());
+        }
+    }
 }
 

@@ -27,6 +27,7 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.service.EmployeeService;
@@ -250,6 +251,7 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
+
     @Test
     void editTask_ShouldCatchBadRequestException() throws Exception {
         Mockito.when(taskService.editTask(any(Task.class))).thenThrow(BadRequestException.class);
@@ -271,7 +273,6 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
-
 
 
     //TODO showAddTaskForm() tests should be added - DONE
@@ -311,5 +312,17 @@ public class TaskControllerTest {
 
         verify(taskService).removeTimeEntryById(entryId);
     }
+    @Test
+    void editTask_CanUpdateParentTaskId() throws Exception {
+       mockMvc.perform(post("/tasks/{taskId}/edit", 1)
+               .param("parentTaskId", "5")
+               .param("title", "test")
+               .param("projectId", "1"));
+       ArgumentCaptor<Task> taskArgumentCaptor = ArgumentCaptor.forClass(Task.class);
 
+verify(taskService).editTask(taskArgumentCaptor.capture());
+Task capturedTask = taskArgumentCaptor.getValue();
+assertEquals(5, capturedTask.getParentTaskId());
+
+    }
 }

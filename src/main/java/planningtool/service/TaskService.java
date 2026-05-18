@@ -46,11 +46,18 @@ public class TaskService {
     @Transactional
     public Task createTask(Task task) {
 
-        // Check if this task has a parent, and check if the parent itself is not a subtask
+        // If this task is a subtask
         if (task.getParentTaskId() != null) {
             Task parent = taskRepository.findTaskById(task.getParentTaskId());
+
+            // Prevent subtasks of subtasks
             if (parent.getParentTaskId() != null){
                 throw new BadRequestException("Subtasks cannot have their own subtasks");
+            }
+            // Clear the parent time estimate if this is the first subtask
+            if (parent.getTimeEstimate() != null){
+                parent.setTimeEstimate(null);
+                taskRepository.updateTask(parent);
             }
         }
 
@@ -221,5 +228,30 @@ public class TaskService {
             //{1} = totalSubtasks
         }
         return map;
+    }
+
+    public BigDecimal getEstimatedTime(int taskId) {
+        Task task = taskRepository.findTaskById(taskId);
+
+        // Subtask → return its own estimate
+        if (task.getParentTaskId() != null) {
+            return task.getTimeEstimate();
+        }
+
+        // Parent task → check subtasks
+        List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
+
+        if (subtasks.isEmpty()) {
+            return task.getTimeEstimate();
+        }
+
+        // Parent with subtasks → sum subtasks
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task st : subtasks) {
+            if (st.getTimeEstimate() != null) {
+                total = total.add(st.getTimeEstimate());
+            }
+        }
+        return total;
     }
 }

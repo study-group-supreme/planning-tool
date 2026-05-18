@@ -206,6 +206,80 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_ClearsParentTimeEstimate_WhenCreatingFirstSubtask(){
+        Task parent = new Task();
+        parent.setId(1);
+        parent.setProjectId(1);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("5.0"));
+
+        Task subtask = new Task();
+        subtask.setProjectId(1);
+        subtask.setParentTaskId(1);
+        subtask.setTitle("Subtask");
+
+        when(taskRepository.findTaskById(1)).thenReturn(parent);
+        when(taskRepository.insertTask(subtask)).thenReturn(subtask);
+
+        taskService.createTask(subtask);
+
+        verify(taskRepository).updateTask(argThat(t ->
+                t.getId() == 1 && t.getTimeEstimate() == null
+        ));
+    }
+
+    @Test
+    void getEstimatedTime_SumsSubtaskEstimates_WhenParentHasSubtasks(){
+        Task parent = new Task();
+        parent.setId(1);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("10.0")); // should be ignored
+
+        Task s1 = new Task();
+        s1.setTimeEstimate(new BigDecimal("2.0"));
+
+        Task s2 = new Task();
+        s2.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(1)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(s1, s2));
+
+        BigDecimal result = taskService.getEstimatedTime(1);
+
+        assertThat(result).isEqualByComparingTo("5.5");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsParentEstimate_WhenNoSubTasks(){
+        Task parent = new Task();
+        parent.setId(5);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("8.0"));
+
+        when(taskRepository.findTaskById(5)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(5)).thenReturn(List.of());
+
+        BigDecimal result = taskService.getEstimatedTime(5);
+
+        assertThat(result).isEqualByComparingTo("8.0");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsOwnEstimate_WhenTaskIsSubtask(){
+        Task subtask = new Task();
+        subtask.setId(10);
+        subtask.setParentTaskId(1);
+        subtask.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(10)).thenReturn(subtask);
+
+        BigDecimal result = taskService.getEstimatedTime(10);
+
+        assertThat(result).isEqualByComparingTo("3.5");
+        verify(taskRepository, never()).findSubtasksByParentId(anyInt());
+    }
+
+    @Test
     void editTask_ReturnsUpdatedTask() {
         Task originalTask = new Task();
         originalTask.setId(1);

@@ -30,7 +30,7 @@ public class ProjectServiceTest {
     @Mock
     private ProjectRepository projectRepository;
     @Mock
-    private  EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private ProjectService projectService;
@@ -171,7 +171,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void addProjectMemberToProject_ShouldAddProjectMemberByCallingRepoInsertMethod(){
+    void addProjectMemberToProject_ShouldAddProjectMemberByCallingRepoInsertMethod() {
         Project project = new Project();
         project.setId(1);
         project.setProjectMembers(new ArrayList<>());
@@ -188,7 +188,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void addProjectMemberToProject_ShouldThrowBadRequestException(){
+    void addProjectMemberToProject_ShouldThrowBadRequestException() {
         Project project = new Project();
         project.setId(1);
 
@@ -204,19 +204,20 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void addProjectMemberToProject_ShouldThrowDatabaseOperationException(){
+    void addProjectMemberToProject_ShouldThrowDatabaseOperationException() {
         Project project = new Project();
         project.setProjectMembers(new ArrayList<>());
         Employee employee = new Employee();
 
         doThrow(new DataIntegrityViolationException("")).when(projectRepository).insertProjectMember(employee, project);
 
-        assertThrows(DatabaseOperationException.class, () -> {projectService.addProjectMemberToProject(employee, project);
+        assertThrows(DatabaseOperationException.class, () -> {
+            projectService.addProjectMemberToProject(employee, project);
         });
     }
 
     @Test
-    void removeProjectMemberFromProject_ShouldRemoveMemberByCallingRepoDeleteMethod(){
+    void removeProjectMemberFromProject_ShouldRemoveMemberByCallingRepoDeleteMethod() {
         Employee employee = new Employee();
         employee.setId(1);
         employee.setName("Test");
@@ -232,7 +233,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void removeProjectMemberFromProject_ShouldThrowNotFoundException(){
+    void removeProjectMemberFromProject_ShouldThrowNotFoundException() {
         Employee employee = new Employee();
         employee.setId(1);
         employee.setName("Test");
@@ -247,16 +248,63 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void removeProjectMemberToProject_ShouldThrowDatabaseOperationException(){
+    void removeProjectMemberToProject_ShouldThrowDatabaseOperationException() {
         Employee employee = new Employee();
         Project project = new Project();
         project.setProjectMembers(List.of(employee));
 
         doThrow(new DataIntegrityViolationException("")).when(projectRepository).deleteProjectMember(employee, project);
 
-        assertThrows(DatabaseOperationException.class, () -> {projectService.removeProjectMemberFromProject(employee, project);
+        assertThrows(DatabaseOperationException.class, () -> {
+            projectService.removeProjectMemberFromProject(employee, project);
         });
     }
+
+    @Test
+    void archiveProject_ShouldCallRepository() {
+        Project project = new Project();
+        project.setId(1);
+        project.setTitle("test");
+        project.setActive(true);
+        projectService.archiveProject(1);
+        verify(projectRepository).archiveProject(1);
+    }
+
+    @Test
+    void archiveProject_ThrowsDatabaseOperationException_WhenRepositoryFails() {
+
+        doThrow(new DataAccessException("DB error") {
+        }).when(projectRepository).archiveProject(1);
+
+        assertThrows(DatabaseOperationException.class,
+                () -> projectService.archiveProject(1));
+
+        verify(projectRepository).archiveProject(1);
+    }
+
+
+    @Test
+    void restoreProject_ShouldCallRepository() {
+        Project project = new Project();
+        project.setId(1);
+        project.setTitle("test");
+        project.setActive(false);
+        projectService.restoreProject(1);
+        verify(projectRepository).restoreProject(1);
+    }
+
+    @Test
+    void restoreProject_ThrowsDatabaseOperationException_WhenRepositoryFails() {
+
+        doThrow(new DataAccessException("DB error") {
+        }).when(projectRepository).restoreProject(1);
+
+        assertThrows(DatabaseOperationException.class,
+                () -> projectService.restoreProject(1));
+
+        verify(projectRepository).restoreProject(1);
+    }
+
 
     @Test
     void editProject_ReturnsUpdatedProject() {

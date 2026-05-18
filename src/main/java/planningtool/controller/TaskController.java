@@ -48,6 +48,7 @@ public class TaskController {
         }
 
         model.addAttribute("task", task);
+        model.addAttribute("totalEstimatedTime", taskService.getEstimatedTime(taskId));
         model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
         model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
         model.addAttribute("assignedEmployee", employee);
@@ -129,6 +130,7 @@ public class TaskController {
             Task updatedTask = taskService.getTaskById(taskId);
             model.addAttribute("task", updatedTask);
             model.addAttribute("members", projectService.getProjectMembersByProjectId(updatedTask.getProjectId()));
+            model.addAttribute("mainTask", projectService.getMainTasksByProjectId(updatedTask.getProjectId()));
             return "task/edit-task";
         } catch (NotFoundException e) {
             return "redirect:/projects";

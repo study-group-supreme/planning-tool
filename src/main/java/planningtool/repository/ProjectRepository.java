@@ -35,7 +35,7 @@ public class ProjectRepository {
         p.setDescription(rs.getString("description"));
         p.setActive(rs.getBoolean("active"));
         Date sqlDeadline = rs.getDate("deadline");
-        if(sqlDeadline != null){
+        if (sqlDeadline != null) {
             p.setDeadline(sqlDeadline.toLocalDate());
         }
         p.setProjectCreatorId(rs.getInt("project_creator_id"));
@@ -66,6 +66,18 @@ public class ProjectRepository {
                 FROM task
                 JOIN project
                 ON task.project_id = project.id
+                WHERE task.project_id = ?
+                """;
+        return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
+    }
+    public List<Task> findMainTasksByProjectId(int id) {
+        String sql = """
+                SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
+                task.parent_task_id, task.project_id, task.assigned_member_id,task.is_done
+                FROM task
+                JOIN project
+                ON task.project_id = project.id
+                AND task.parent_task_id is null
                 WHERE task.project_id = ?
                 """;
         return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
@@ -121,12 +133,31 @@ public class ProjectRepository {
                 INSERT INTO project_member (employee_id, project_id)
                 VALUES(?, ?) 
                 """;
-        jdbc.update(sql,employee.getId(), project.getId());
+        jdbc.update(sql, employee.getId(), project.getId());
     }
 
-    public void deleteProjectMember(Employee employee, Project project){
+    public void deleteProjectMember(Employee employee, Project project) {
         String sql = "DELETE FROM project_member WHERE project_id = ? AND employee_id = ?";
         jdbc.update(sql, project.getId(), employee.getId());
     }
 
+    public void archiveProject(int projectId) {
+        String sql = """
+                UPDATE project
+                SET active = ?
+                WHERE id = ?
+                """;
+        jdbc.update(sql, false, projectId);
+    }
+
+    public void restoreProject(int projectId) {
+        String sql = """
+                UPDATE project
+                SET active = ?
+                WHERE id = ?
+                """;
+        jdbc.update(sql, true, projectId);
+    }
+
 }
+
