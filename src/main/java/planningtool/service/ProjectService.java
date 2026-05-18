@@ -13,6 +13,7 @@ import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
+import planningtool.repository.TaskRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ import java.util.List;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
+    private final TaskRepository taskRepository;
 
-    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
+    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
+        this.taskRepository = taskRepository;
     }
 
     // TODO Might need more exception handling
@@ -65,14 +68,19 @@ public class ProjectService {
 
 
     public List<Task> getTasksByProjectId(int id) {
-        return projectRepository.findTasksByProjectId(id);
+        try {
+            return projectRepository.findTasksByProjectId(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("No project found");
+        }
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
         return projectRepository.findProjectMembersByProjectId(id);
     }
 
-    public List<Employee> getEmployeesNotOnProject(int projectId){
+
+    public List<Employee> getEmployeesNotOnProject(int projectId) {
         return employeeRepository.findEmployeesNotOnProject(projectId);
     }
 
@@ -100,13 +108,13 @@ public class ProjectService {
         }
     }
 
-    public void removeProjectMemberFromProject(Employee employee, Project project){
-        if(!project.getProjectMembers().contains(employee)){
+    public void removeProjectMemberFromProject(Employee employee, Project project) {
+        if (!project.getProjectMembers().contains(employee)) {
             throw new NotFoundException("Employee: " + employee.getName() + " is not a member of this project");
         }
-        try{
+        try {
             projectRepository.deleteProjectMember(employee, project);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new DatabaseOperationException("Employee could not be removed", e.getCause());
         }
     }
