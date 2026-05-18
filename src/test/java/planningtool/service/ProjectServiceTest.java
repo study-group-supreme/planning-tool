@@ -275,8 +275,7 @@ public class ProjectServiceTest {
         Project testProject = new Project();
 
         doThrow(new DataAccessException("DB error") {
-        })
-                .when(projectRepository).archiveProject(testProject);
+        }).when(projectRepository).archiveProject(testProject);
 
         assertThrows(DatabaseOperationException.class,
                 () -> projectService.archiveProject(testProject));
@@ -300,8 +299,7 @@ public class ProjectServiceTest {
         Project testProject = new Project();
 
         doThrow(new DataAccessException("DB error") {
-        })
-                .when(projectRepository).restoreProject(testProject);
+        }).when(projectRepository).restoreProject(testProject);
 
         assertThrows(DatabaseOperationException.class,
                 () -> projectService.restoreProject(testProject));
