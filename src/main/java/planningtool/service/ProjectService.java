@@ -68,32 +68,38 @@ public class ProjectService {
 
 
     public List<Task> getTasksByProjectId(int id) {
-        List<Task> allTasks = taskRepository.findAllTasks();
         try {
-            projectRepository.findTasksByProjectId(id);
+            return projectRepository.findTasksByProjectId(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("No project found ");
+            throw new NotFoundException("No project found");
         }
-        return allTasks;
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
         Project project = projectRepository.findProjectById(id);
         try {
-            projectRepository.findProjectMembersByProjectId(id);
+            List<Employee> members = projectRepository.findProjectMembersByProjectId(id);
+            if (members.isEmpty()) {
+                throw new NotFoundException(
+                        "No employees are connected to this project: " + project.getTitle()
+                );
+            }
+            return members;
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("No employees are connected to this project" + project.getTitle());
+            throw new NotFoundException("No employees are connected to this project: " + project.getTitle());
         }
-        return projectRepository.findProjectMembersByProjectId(id);
     }
 
     public List<Employee> getEmployeesNotOnProject(int projectId) {
-        List<Employee> allEmployees = employeeRepository.findEmployeesNotOnProject(projectId);
-        try {
-        } catch (EmptyResultDataAccessException e) {
+
+        List<Employee> employees =
+                employeeRepository.findEmployeesNotOnProject(projectId);
+
+        if (employees.isEmpty()) {
             throw new NotFoundException("All employees are working on this project");
         }
-        return allEmployees;
+        return employees;
+
     }
 
     public List<Project> getProjectsByEmployeeId(int employeeId) {
