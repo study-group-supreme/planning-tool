@@ -68,20 +68,26 @@ public class ProjectService {
 
 
     public List<Task> getTasksByProjectId(int id) {
-       List<Task> allTasks = taskRepository.findAllTasks();
-        try{
+        List<Task> allTasks = taskRepository.findAllTasks();
+        try {
             projectRepository.findTasksByProjectId(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("No project found ");
         }
-     return allTasks;
+        return allTasks;
     }
 
     public List<Employee> getProjectMembersByProjectId(int id) {
+        Project project = projectRepository.findProjectById(id);
+        try {
+            projectRepository.findProjectMembersByProjectId(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("No employees are connected to this project" + project.getTitle());
+        }
         return projectRepository.findProjectMembersByProjectId(id);
     }
 
-    public List<Employee> getEmployeesNotOnProject(int projectId){
+    public List<Employee> getEmployeesNotOnProject(int projectId) {
         return employeeRepository.findEmployeesNotOnProject(projectId);
     }
 
@@ -109,13 +115,13 @@ public class ProjectService {
         }
     }
 
-    public void removeProjectMemberFromProject(Employee employee, Project project){
-        if(!project.getProjectMembers().contains(employee)){
+    public void removeProjectMemberFromProject(Employee employee, Project project) {
+        if (!project.getProjectMembers().contains(employee)) {
             throw new NotFoundException("Employee: " + employee.getName() + " is not a member of this project");
         }
-        try{
+        try {
             projectRepository.deleteProjectMember(employee, project);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new DatabaseOperationException("Employee could not be removed", e.getCause());
         }
     }
