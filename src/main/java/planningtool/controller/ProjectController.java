@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
@@ -87,5 +88,27 @@ public class ProjectController {
        Project project = projectService.getProjectById(projectId);
         projectService.addProjectMemberToProject(employee, project);
         return "redirect:/projects/add-member/" + projectId;
+    }
+
+    @PostMapping("/archive")
+    public String archiveProject(@RequestParam int projectId) {
+        try {
+            Project project = projectService.getProjectById(projectId);
+            projectService.archiveProject(project);
+            return "redirect:/projects";
+        } catch (DatabaseOperationException e) {
+            return "redirect:/projects";
+        }
+    }
+
+    @PostMapping("/restore")
+    public String restoreProject(@RequestParam int projectId) {
+        try {
+            Project project = projectService.getProjectById(projectId);
+            projectService.restoreProject(project);
+            return "redirect:/projects";
+        } catch (DatabaseOperationException e) {
+            return "redirect:/projects";
+        }
     }
 }

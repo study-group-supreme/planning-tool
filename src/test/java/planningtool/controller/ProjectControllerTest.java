@@ -1,12 +1,14 @@
 package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -49,7 +51,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void ShowListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+    void showListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
         Employee employee = new Employee();
@@ -58,6 +60,36 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));
+    }
+
+    @Test
+    void archiveProject_ShouldArchiveProject_AndRedirect() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setTitle("test");
+
+        Mockito.when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(post("/projects/archive")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+    }
+
+    @Test
+    void restoreProject_ShouldRestoreProject_AndRedirect() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setTitle("test");
+
+        Mockito.when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(post("/projects/restore")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
     }
 
     //TODO Test for showing showSpecificProject() should be added
