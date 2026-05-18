@@ -222,4 +222,17 @@ public class TaskService {
         }
         return map;
     }
+
+    public BigDecimal calculateTotalEstimatedTimeForParentTask(int parentTaskId){
+        List<Task> subtasks = taskRepository.findSubtasksByParentId(parentTaskId);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task task : subtasks){
+            if (task.getTimeEstimate() != null){
+                total = total.add(task.getTimeEstimate());
+            }
+        }
+
+        return total;
+    }
 }
