@@ -117,6 +117,11 @@ public class ProjectRepositoryTest {
         assertThat(projectRepository.findProjectMembersByProjectId(1)).doesNotContain(memberToRemove);
         assertThat(projectRepository.findProjectMembersByProjectId(1)).hasSize(3);
     }
+    @Test
+    void findMainTasksByProjectId_ShouldReturnAllMainTasksByProjectId(){
+        List<Task> tasks = projectRepository.findMainTasksByProjectId(1);
+        assertThat(tasks.get(0).getTitle()).isEqualTo("Brew coffee");
+    }
 }
 
 
