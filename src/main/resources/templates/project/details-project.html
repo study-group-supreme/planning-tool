@@ -17,6 +17,10 @@
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button type="submit">Archive project</button>
     </form>
+    <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
+        <input type="hidden" name="projectId" th:value="${project.id}">
+        <button type="submit">Restore project</button>
+    </form>
 
 </div>
 
