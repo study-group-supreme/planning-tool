@@ -13,7 +13,7 @@
     <br>
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
-    <form th:action="@{/projects/archive}" method="post">
+    <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button type="submit">Archive project</button>
     </form>
