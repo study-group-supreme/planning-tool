@@ -206,6 +206,29 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_ClearsParentTimeEstimate_WhenCreatingFirstSubtask(){
+        Task parent = new Task();
+        parent.setId(1);
+        parent.setProjectId(1);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("5.0"));
+
+        Task subtask = new Task();
+        subtask.setProjectId(1);
+        subtask.setParentTaskId(1);
+        subtask.setTitle("Subtask");
+
+        when(taskRepository.findTaskById(1)).thenReturn(parent);
+        when(taskRepository.insertTask(subtask)).thenReturn(subtask);
+
+        taskService.createTask(subtask);
+
+        verify(taskRepository).updateTask(argThat(t ->
+                t.getId() == 1 && t.getTimeEstimate() == null
+        ));
+    }
+
+    @Test
     void editTask_ReturnsUpdatedTask() {
         Task originalTask = new Task();
         originalTask.setId(1);
