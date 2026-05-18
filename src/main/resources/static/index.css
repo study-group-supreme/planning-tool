@@ -154,4 +154,7 @@ td div {
     background-color: gray;
     cursor: pointer;
 }
+progress{
+    width: 100px;
+}
 
