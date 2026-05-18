@@ -88,7 +88,12 @@ public class ProjectService {
     }
 
     public List<Employee> getEmployeesNotOnProject(int projectId) {
-        return employeeRepository.findEmployeesNotOnProject(projectId);
+        List<Employee> allEmployees = employeeRepository.findEmployeesNotOnProject(projectId);
+        try {
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("All employees are working on this project");
+        }
+        return allEmployees;
     }
 
     public List<Project> getProjectsByEmployeeId(int employeeId) {
