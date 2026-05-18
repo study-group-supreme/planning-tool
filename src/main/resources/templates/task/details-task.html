@@ -103,16 +103,21 @@
     </ul>
 </div>
 
-<p th:if="${subtasks == null or subtasks.isEmpty()}">
-    No subtasks yet.
-</p>
-<form th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
-    <input type="text" name="title" placeholder="Quick add subtask..." required>
-    <button type="submit">Add</button>
-</form>
-<form th:action="@{/tasks/{id}/add-subtask(id=${task.id})}" method="get">
-    <button type="submit">Create subtask</button>
-</form>
+
+<div th:if="${parentTask == null}">
+    <p th:if="${subtasks == null or subtasks.isEmpty()}">
+        No subtasks yet.
+    </p>
+    <form th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
+        <input type="text" name="title" placeholder="Quick add subtask..." required>
+        <button type="submit">Add</button>
+    </form>
+
+    <form th:action="@{/tasks/{id}/add-subtask(id=${task.id})}" method="get">
+        <button type="submit">Create subtask</button>
+    </form>
+</div>
+
 
 <form th:action="@{/projects/{id}(id=${task.getProjectId()})}" method="get">
     <button type="submit">Back to Project</button>
