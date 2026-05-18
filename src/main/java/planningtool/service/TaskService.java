@@ -46,11 +46,18 @@ public class TaskService {
     @Transactional
     public Task createTask(Task task) {
 
-        // Check if this task has a parent, and check if the parent itself is not a subtask
+        // If this task is a subtask
         if (task.getParentTaskId() != null) {
             Task parent = taskRepository.findTaskById(task.getParentTaskId());
+
+            // Prevent subtasks of subtasks
             if (parent.getParentTaskId() != null){
                 throw new BadRequestException("Subtasks cannot have their own subtasks");
+            }
+            // Clear the parent time estimate if this is the first subtask
+            if (parent.getTimeEstimate() != null){
+                parent.setTimeEstimate(null);
+                taskRepository.updateTask(parent);
             }
         }
 
