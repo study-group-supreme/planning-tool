@@ -226,6 +226,12 @@ public class TaskService {
     public BigDecimal calculateTotalEstimatedTimeForParentTask(int parentTaskId){
         List<Task> subtasks = taskRepository.findSubtasksByParentId(parentTaskId);
 
+        if (subtasks.isEmpty()){
+            // No subtasks --> return parent's own estimate
+            Task parent = taskRepository.findTaskById(parentTaskId);
+            return parent.getTimeEstimate();
+        }
+
         BigDecimal total = BigDecimal.ZERO;
         for (Task task : subtasks){
             if (task.getTimeEstimate() != null){
