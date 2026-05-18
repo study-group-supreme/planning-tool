@@ -42,39 +42,8 @@
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
         </td>
-        <td>
-            <div th:if="${!mainTask and progressMap.containsKey(task)}">
+        <td class="button-row">
 
-                <progress
-                        th:value="${progressMap.get(task)[0]}"
-                        th:max="${progressMap.get(task)[1]}">
-                </progress>
-
-                <span th:text="${progressMap.get(task)[1] > 0 ? (progressMap.get(task)[0] * 100 / progressMap.get(task)[1]) + '%': '0%'}">
-    </span>
-
-            </div>
-
-            <form th:action="@{/tasks/remove}" method="post">
-                <input type="hidden" name="taskId" th:value="${task.id}">
-                <input type="hidden" name="projectId" th:value="${project.id}">
-                <span th:if="${task.done}">
-                      <button class="delete-button" type="submit">Delete task</button>  
-                    </span>
-            </form>
-            </div>
-            <div th:if="${mainTask}">
-                <form th:action="@{/tasks/remove}" method="post">
-                    <input type="hidden" name="taskId" th:value="${task.id}">
-                    <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button class="delete-button" type="submit">Delete task</button>
-                </form>
-            </div>
-            <div>
-                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
-                    <button type="submit">Edit Task</button>
-                </form>
-            </div>
 
 
             <div class="task-actions">
@@ -96,6 +65,39 @@
                         <button class="mark-not-button" type="submit">Mark not done</button>
                     </form>
                 </div>
+                <form th:action="@{/tasks/remove}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <span th:if="${task.done}">
+                      <button class="delete-button" type="submit">Delete task</button>
+                    </span>
+                </form>
+            </div>
+            <div th:if="${mainTask}">
+                <form th:action="@{/tasks/remove}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button class="delete-button" type="submit">Delete task</button>
+                </form>
+            </div>
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button type="submit">Edit Task</button>
+                </form>
+            </div>
+
+
+
+            <div th:if="${!mainTask and progressMap.containsKey(task)}">
+
+                <progress
+                        th:value="${progressMap.get(task)[0]}"
+                        th:max="${progressMap.get(task)[1]}">
+                </progress>
+
+                <span th:text="${progressMap.get(task)[1] > 0 ? (progressMap.get(task)[0] * 100 / progressMap.get(task)[1]) + '%': '0%'}">
+    </span>
+
             </div>
         </td>
         <td>
