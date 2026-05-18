@@ -165,6 +165,47 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_AllowsSubtask_WhenParentIsMainTask(){
+        // A success case for creating a subtask
+        // Subtasks are not allowed when their parent is already a subtask
+        Task parent = new Task();
+        parent.setId(10);
+        parent.setParentTaskId(null); // Makes it a main task
+
+        Task subtask = new Task();
+        subtask.setTitle("Subtask");
+        subtask.setParentTaskId(10);
+
+        when(taskRepository.findTaskById(10)).thenReturn(parent);
+        when(taskRepository.insertTask(subtask)).thenReturn(subtask);
+
+        Task result = taskService.createTask(subtask);
+
+        assertThat(result).isNotNull();
+        verify(taskRepository).findTaskById(10);
+        verify(taskRepository).insertTask(subtask);
+    }
+
+    @Test
+    void createTask_ThrowsBadRequest_WhenParentIsAlreadySubtask() {
+        Task parentSubtask = new Task();
+        parentSubtask.setId(20);
+        parentSubtask.setParentTaskId(5); // is already a subtask
+
+        Task newSubtask = new Task();
+        newSubtask.setTitle("Invalid");
+        newSubtask.setParentTaskId(20);
+
+        when(taskRepository.findTaskById(20)).thenReturn(parentSubtask);
+
+        BadRequestException ex = assertThrows(BadRequestException.class, () -> taskService.createTask(newSubtask));
+
+        assertThat(ex.getMessage()).contains("cannot have their own subtasks");
+        verify(taskRepository).findTaskById(20);
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
     void editTask_ReturnsUpdatedTask() {
         Task originalTask = new Task();
         originalTask.setId(1);

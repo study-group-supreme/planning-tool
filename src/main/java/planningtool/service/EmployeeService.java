@@ -15,28 +15,33 @@ import java.util.List;
 public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository){
+    public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Employee> getAllEmployees(){
+    public List<Employee> getAllEmployees() {
         return employeeRepository.findAllEmployees();
     }
 
-    public Employee login(String email, String password){
+    public Employee login(String email, String password) {
         Employee employee;
-        try{
+        try {
             employee = employeeRepository.findEmployeeByEmail(email);
-        } catch(EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Email is not in the system");
         }
-        if (!employee.getPassword().equals(password)){
+        if (!employee.getPassword().equals(password)) {
             throw new BadRequestException("Incorrect password");
         }
         return employee;
     }
 
-    public Employee getEmployeeById(int id){
-        return employeeRepository.findEmployeeById(id);
+    public Employee getEmployeeById(int id) {
+        try {
+            return employeeRepository.findEmployeeById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("No employee found ");
+
+        }
     }
 }

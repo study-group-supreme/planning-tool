@@ -155,4 +155,11 @@ public class TaskRepository {
         return count != null && count > 0;
     }
 
+    public List<Task> findAllTasks() {
+        String sql = """
+                SELECT * FROM TASK ORDER BY id
+                """;
+        return jdbc.query(sql, taskRowMapper);
+    }
+
 }

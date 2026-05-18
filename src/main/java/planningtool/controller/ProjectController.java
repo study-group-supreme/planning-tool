@@ -64,11 +64,13 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    public String showSpecificProject(@PathVariable int projectId, Model model) {
+    public String showSpecificProject(@PathVariable int projectId, Model model, HttpSession session) {
         Project project = projectService.getProjectById(projectId);
+        Integer currentUserId = (Integer) session.getAttribute("employeeId");
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
+        model.addAttribute("currentUserId", currentUserId);
         return "project/details-project";
     }
 
@@ -84,10 +86,18 @@ public class ProjectController {
 
     @PostMapping("/{projectId}/add-member")
     public String addProjectMember(@RequestParam int employeeId, @PathVariable int projectId) {
-       Employee employee = employeeService.getEmployeeById(employeeId);
-       Project project = projectService.getProjectById(projectId);
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        Project project = projectService.getProjectById(projectId);
         projectService.addProjectMemberToProject(employee, project);
         return "redirect:/projects/add-member/" + projectId;
+    }
+
+    @PostMapping("/{projectId}/remove-member")
+    public String removeProjectMember(@RequestParam int employeeId, @PathVariable int projectId) {
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        Project project = projectService.getProjectById(projectId);
+        projectService.removeProjectMemberFromProject(employee, project);
+        return "redirect:/projects";
     }
 
     @PostMapping("/archive")

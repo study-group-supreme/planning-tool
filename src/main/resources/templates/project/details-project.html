@@ -33,10 +33,13 @@
 <table class="task-list">
     <tr>
         <th>
-            <strong>Main tasks</strong>
+            Main tasks
         </th>
         <th>
-            <strong>Task status</strong>
+            Task status
+        </th>
+        <th>
+            Progression status
         </th>
         <th>
             Task details
@@ -46,6 +49,42 @@
         <td>
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
+        </td>
+        <td>
+
+
+            <div th:if="${!task.done}">
+                <form th:action="@{/tasks/mark-done}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button class="mark-done-button" type="submit">
+                        Mark done
+                    </button>
+                </form>
+            </div>
+
+            <div class="task-actions" th:if="${task.done}">
+                <p th:if="${task.isDone()}">&#10004;</p>
+                <form th:action="@{/tasks/mark-done}" method="post">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <button class="mark-not-button" type="submit">Mark not done</button>
+                </form>
+            </div>
+
+            <div class="task-actions">
+                <form th:action="@{/tasks/remove}" method="post">
+                    <input type="hidden" name="taskId" th:value="${task.id}">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button class="delete-button" type="submit">Delete task</button>
+                </form>
+            </div>
+
+            <div>
+                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button class="btn" type="submit">Edit Task</button>
+                </form>
+            </div>
         </td>
         <td>
             <div th:if="${!mainTask and progressMap.containsKey(task)}">
@@ -59,72 +98,22 @@
     </span>
 
             </div>
-
-            <form th:action="@{/tasks/remove}" method="post">
-                <input type="hidden" name="taskId" th:value="${task.id}">
-                <input type="hidden" name="projectId" th:value="${project.id}">
-                <span th:if="${task.done}">
-                      <button class="delete-button" type="submit">Delete task</button>  
-                    </span>
-            </form>
-            </div>
-            <div th:if="${mainTask}">
-                <form th:action="@{/tasks/remove}" method="post">
-                    <input type="hidden" name="taskId" th:value="${task.id}">
-                    <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button class="delete-button" type="submit">Delete task</button>
-                </form>
-            </div>
-            <div>
-                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
-                    <button type="submit">Edit Task</button>
-                </form>
-            </div>
-
-
-            <div class="task-actions">
-                <div th:if="${!task.done}">
-                    <form th:action="@{/tasks/mark-done}" method="post">
-                        <input type="hidden" name="taskId" th:value="${task.id}">
-                        <input type="hidden" name="projectId" th:value="${project.id}">
-                        <button class="mark-done-button" type="submit">
-                            Mark done
-                        </button>
-                    </form>
-                </div>
-
-                <p th:if="${task.isDone()}">&#10004;</p>
-                <div th:if="${task.done}">
-                    <form th:action="@{/tasks/mark-done}" method="post">
-                        <input type="hidden" name="projectId" th:value="${project.id}">
-                        <input type="hidden" name="taskId" th:value="${task.id}">
-                        <button class="mark-not-button" type="submit">Mark not done</button>
-                    </form>
-                </div>
-            </div>
         </td>
         <td>
             <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
-        </td>
-        <td th:if="${task.getParentTaskId()} != null">
-            <span th:each="subTask : ${project.getTasks()}">
-                <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">
-                    <span th:text="${subTask.title}"></span>
-                </span>
-            </span>
         </td>
     </tr>
 </table>
 
 <!--SUBTASK-->
 
-<table class="subtask-list">
+<table class="task-list">
     <tr>
         <th>
-            <strong>Subtask</strong>
+            Subtasks
         </th>
         <th>
-            <strong>Task status</strong>
+            Task status
         </th>
         <th>
             Subtask details
@@ -139,7 +128,25 @@
             <span th:if="${task.isHighPriority()}">&#10071;</span>
         </td>
         <td>
-            <div th:if="${!mainTask}">
+            <div class="task-actions">
+                <div th:if="${!task.done}">
+                    <form th:action="@{/tasks/mark-done}" method="post">
+                        <input type="hidden" name="taskId" th:value="${task.id}">
+                        <input type="hidden" name="projectId" th:value="${project.id}">
+                        <button class="mark-done-button" type="submit">Mark done</button>
+                    </form>
+                </div>
+
+                <div class="task-actions" th:if="${task.done}">
+                    <p th:if="${task.isDone()}">&#10004;</p>
+                    <form th:action="@{/tasks/mark-done}" method="post">
+                        <input type="hidden" name="projectId" th:value="${project.id}">
+                        <input type="hidden" name="taskId" th:value="${task.id}">
+                        <button class="mark-not-button" type="submit">Mark not done</button>
+                    </form>
+                </div>
+            </div>
+            <div th:if="${!mainTask}" class="task-actions">
                 <form th:action="@{/tasks/remove}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
@@ -160,29 +167,8 @@
             </div>
             <div>
                 <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
-                    <button type="submit">Edit Task</button>
+                    <button class="btn" type="submit">Edit Task</button>
                 </form>
-            </div>
-
-
-
-            <div class="task-actions">
-                <div th:if="${!task.done}">
-                    <form th:action="@{/tasks/mark-done}" method="post">
-                        <input type="hidden" name="taskId" th:value="${task.id}">
-                        <input type="hidden" name="projectId" th:value="${project.id}">
-                        <button class="mark-done-button" type="submit">Mark done</button>
-                    </form>
-                </div>
-
-                <div th:if="${task.done}">
-                    <p th:if="${task.isDone()}">&#10004;</p>
-                    <form th:action="@{/tasks/mark-done}" method="post">
-                        <input type="hidden" name="projectId" th:value="${project.id}">
-                        <input type="hidden" name="taskId" th:value="${task.id}">
-                        <button class="mark-not-button" type="submit">Mark not done</button>
-                    </form>
-                </div>
             </div>
         </td>
         <td>
@@ -205,18 +191,31 @@
 
     <input type="text" name="title" placeholder="Quick add task…" required>
 
-    <button type="submit">Add</button>
+    <button class="btn" type="submit">Add</button>
 </form>
-<div class="create-button">
+<div class="button-row">
     <form class="create-task" th:action="@{/tasks/add}" method="get">
         <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit">Create task</button>
+        <button class="btn" type="submit">Create task</button>
     </form>
 </div>
-<div class="create-button">
+<div class="button-row">
+    <span>
     <form th:action="@{/projects}" method="get">
-        <button type="submit">Back to all projects</button>
+        <button class="btn" type="submit">Back to all projects</button>
     </form>
+        </span>
+
+    <span>
+        <form th:action="@{/projects/{projectId}/remove-member(projectId=${project.id})}" method="post">
+            <input type="hidden" th:value="${project.id}">
+            <input name="employeeId" type="hidden" th:value="${currentUserId}">
+            <button class="leave-button" type="submit"
+                    onclick="return confirm('Are you sure, you want to leave this project?')">
+                Leave project
+            </button>
+        </form>
+    </span>
 </div>
 
 </body>

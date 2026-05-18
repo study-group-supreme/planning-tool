@@ -180,4 +180,14 @@ public class TaskRepositoryTest {
 
         assertThat(result).isFalse();
     }
+    @Test
+    void findAllTasks_ShouldReturnAllTask(){
+        List<Task> allTasks = taskRepository.findAllTasks();
+
+        assertThat(allTasks.get(0).getId()).isEqualTo(1);
+        assertThat(allTasks.get(1).getParentTaskId()).isEqualTo(1);
+        assertThat(allTasks.get(2).getParentTaskId()).isEqualTo(1);
+        assertThat(allTasks.get(3).getId()).isEqualTo(4);
+        assertThat(allTasks.size()).isEqualTo(4);
+    }
 }
