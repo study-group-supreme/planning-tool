@@ -103,8 +103,7 @@ public class ProjectController {
     @PostMapping("/archive")
     public String archiveProject(@RequestParam int projectId) {
         try {
-            Project project = projectService.getProjectById(projectId);
-            projectService.archiveProject(project);
+            projectService.archiveProject(projectId);
             return "redirect:/projects";
         } catch (DatabaseOperationException e) {
             return "redirect:/projects";
@@ -114,8 +113,7 @@ public class ProjectController {
     @PostMapping("/restore")
     public String restoreProject(@RequestParam int projectId) {
         try {
-            Project project = projectService.getProjectById(projectId);
-            projectService.restoreProject(project);
+            projectService.restoreProject(projectId);
             return "redirect:/projects";
         } catch (DatabaseOperationException e) {
             return "redirect:/projects";

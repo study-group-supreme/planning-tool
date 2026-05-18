@@ -119,18 +119,18 @@ public class ProjectService {
         }
     }
 
-    public void archiveProject(Project project) {
+    public void archiveProject(int projectId) {
         try {
-            projectRepository.archiveProject(project);
+            projectRepository.archiveProject(projectId);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Project could not be found", e.getCause());
         }
 
     }
 
-    public void restoreProject(Project project) {
+    public void restoreProject(int projectId) {
         try {
-            projectRepository.restoreProject(project);
+            projectRepository.restoreProject(projectId);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Project could not be found", e.getCause());
         }

@@ -266,21 +266,20 @@ public class ProjectServiceTest {
         project.setId(1);
         project.setTitle("test");
         project.setActive(true);
-        projectService.archiveProject(project);
-        verify(projectRepository).archiveProject(project);
+        projectService.archiveProject(1);
+        verify(projectRepository).archiveProject(1);
     }
 
     @Test
     void archiveProject_ThrowsDatabaseOperationException_WhenRepositoryFails() {
-        Project testProject = new Project();
 
         doThrow(new DataAccessException("DB error") {
-        }).when(projectRepository).archiveProject(testProject);
+        }).when(projectRepository).archiveProject(1);
 
         assertThrows(DatabaseOperationException.class,
-                () -> projectService.archiveProject(testProject));
+                () -> projectService.archiveProject(1));
 
-        verify(projectRepository).archiveProject(testProject);
+        verify(projectRepository).archiveProject(1);
     }
 
 
@@ -290,21 +289,20 @@ public class ProjectServiceTest {
         project.setId(1);
         project.setTitle("test");
         project.setActive(false);
-        projectService.restoreProject(project);
-        verify(projectRepository).restoreProject(project);
+        projectService.restoreProject(1);
+        verify(projectRepository).restoreProject(1);
     }
 
     @Test
     void restoreProject_ThrowsDatabaseOperationException_WhenRepositoryFails() {
-        Project testProject = new Project();
 
         doThrow(new DataAccessException("DB error") {
-        }).when(projectRepository).restoreProject(testProject);
+        }).when(projectRepository).restoreProject(1);
 
         assertThrows(DatabaseOperationException.class,
-                () -> projectService.restoreProject(testProject));
+                () -> projectService.restoreProject(1));
 
-        verify(projectRepository).restoreProject(testProject);
+        verify(projectRepository).restoreProject(1);
     }
 
 

@@ -90,9 +90,8 @@ public class ProjectRepositoryTest {
 
     @Test
     void archiveProject_ShouldSetProjectToInactive() {
-        Project projectToArchive = projectRepository.findProjectById(1);
 
-        projectRepository.archiveProject(projectToArchive);
+        projectRepository.archiveProject(1);
 
         Project projectAfterArchive = projectRepository.findProjectById(1);
 
@@ -101,11 +100,10 @@ public class ProjectRepositoryTest {
 
     @Test
     void restoreProject_ShouldSetProjectToActive() {
-        Project projectToRestore = projectRepository.findProjectById(3);
 
-        projectRepository.restoreProject(projectToRestore);
+        projectRepository.restoreProject(1);
 
-        Project projectAfterRestoration = projectRepository.findProjectById(3);
+        Project projectAfterRestoration = projectRepository.findProjectById(1);
 
         assertThat(projectAfterRestoration.isActive()).isTrue();
     }

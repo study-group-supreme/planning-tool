@@ -129,22 +129,22 @@ public class ProjectRepository {
         jdbc.update(sql, project.getId(), employee.getId());
     }
 
-    public void archiveProject(Project project) {
+    public void archiveProject(int projectId) {
         String sql = """
                 UPDATE project
                 SET active = ?
                 WHERE id = ?
                 """;
-        jdbc.update(sql, false, project.getId());
+        jdbc.update(sql, false, projectId);
     }
 
-    public void restoreProject(Project project) {
+    public void restoreProject(int projectId) {
         String sql = """
                 UPDATE project
                 SET active = ?
                 WHERE id = ?
                 """;
-        jdbc.update(sql, true, project.getId());
+        jdbc.update(sql, true, projectId);
     }
 
 }
