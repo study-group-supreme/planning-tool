@@ -60,6 +60,7 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-projects"));
     }
+
     @Test
     void addProjectMember_ShouldAddProjectMember() throws Exception {
 
@@ -81,5 +82,26 @@ public class ProjectControllerTest {
         verify(projectService).addProjectMemberToProject(employee, project);
     }
 
-    //TODO Test for showing showSpecificProject() should be added
+    @Test
+    void removeProjectMember_ShouldRemoveProjectMember() throws Exception {
+        Employee employee = new Employee();
+        employee.setName("test");
+        employee.setId(1);
+
+        Project project = new Project();
+        project.setTitle("testProject");
+        project.setId(1);
+
+        when(employeeService.getEmployeeById(1)).thenReturn(employee);
+        when(projectService.getProjectById(1)).thenReturn(project);
+
+        mockMvc.perform(post("/projects/{projectId}/remove-member", 1)
+                        .param("employeeId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+        verify(projectService).removeProjectMemberFromProject(employee, project);
+    }
 }
+
+//TODO Test for showing showSpecificProject() should be added
+
