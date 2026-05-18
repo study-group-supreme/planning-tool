@@ -81,6 +81,7 @@ th {
 }
         td {
             padding: 10px 15px;
+            align-items: center;
         }
 td div {
     display: inline-flex;
@@ -147,4 +148,6 @@ td div {
     background-color: darkred;
     cursor: pointer;
 }
+.task-list td:nth-child(1) { width: 25%; }
+.task-list td:nth-child(2) { width: 25%; }
 
