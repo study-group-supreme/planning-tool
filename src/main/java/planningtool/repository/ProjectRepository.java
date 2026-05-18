@@ -35,7 +35,7 @@ public class ProjectRepository {
         p.setDescription(rs.getString("description"));
         p.setActive(rs.getBoolean("active"));
         Date sqlDeadline = rs.getDate("deadline");
-        if(sqlDeadline != null){
+        if (sqlDeadline != null) {
             p.setDeadline(sqlDeadline.toLocalDate());
         }
         p.setProjectCreatorId(rs.getInt("project_creator_id"));
@@ -121,12 +121,31 @@ public class ProjectRepository {
                 INSERT INTO project_member (employee_id, project_id)
                 VALUES(?, ?) 
                 """;
-        jdbc.update(sql,employee.getId(), project.getId());
+        jdbc.update(sql, employee.getId(), project.getId());
     }
 
-    public void deleteProjectMember(Employee employee, Project project){
+    public void deleteProjectMember(Employee employee, Project project) {
         String sql = "DELETE FROM project_member WHERE project_id = ? AND employee_id = ?";
         jdbc.update(sql, project.getId(), employee.getId());
     }
 
+    public void archiveProject(Project project) {
+        String sql = """
+                UPDATE project
+                SET active = ?
+                WHERE id = ?
+                """;
+        jdbc.update(sql, false, project.getId());
+    }
+
+    public void restoreProject(Project project) {
+        String sql = """
+                UPDATE project
+                SET active = ?
+                WHERE id = ?
+                """;
+        jdbc.update(sql, true, project.getId());
+    }
+
 }
+
