@@ -150,4 +150,8 @@ td div {
 }
 .task-list td:nth-child(1) { width: 25%; }
 .task-list td:nth-child(2) { width: 25%; }
+.btn:hover{
+    background-color: gray;
+    cursor: pointer;
+}
 
