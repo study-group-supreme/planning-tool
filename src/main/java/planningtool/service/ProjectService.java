@@ -109,7 +109,7 @@ public class ProjectService {
         if ((project.getDescription() != null) && (project.getDescription().length() > 1080)){
             throw new BadRequestException("Project description cannot exceed 1080 characters");
         }
-        if (project.getDeadline().isBefore(LocalDate.now())){
+        if (project.getDeadline() != null && (project.getDeadline().isBefore(LocalDate.now()))){
             throw new BadRequestException("Deadline has to be in the future");
         }
         try {
