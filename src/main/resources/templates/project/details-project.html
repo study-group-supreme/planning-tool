@@ -13,6 +13,10 @@
     <br>
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
+    <p>
+        <strong>Total Estimated Time:</strong>
+        <span th:text="${totalEstimate != null ? totalEstimate + ' hours' : 'No estimates'}"></span>
+    </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button type="submit"

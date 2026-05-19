@@ -230,28 +230,28 @@ public class TaskService {
         return map;
     }
 
-    public BigDecimal getEstimatedTime(int taskId) {
-        Task task = taskRepository.findTaskById(taskId);
-
-        // Subtask → return its own estimate
-        if (task.getParentTaskId() != null) {
-            return task.getTimeEstimate();
-        }
-
-        // Parent task → check subtasks
-        List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
-
-        if (subtasks.isEmpty()) {
-            return task.getTimeEstimate();
-        }
-
-        // Parent with subtasks → sum subtasks
-        BigDecimal total = BigDecimal.ZERO;
-        for (Task st : subtasks) {
-            if (st.getTimeEstimate() != null) {
-                total = total.add(st.getTimeEstimate());
-            }
-        }
-        return total;
-    }
+//    public BigDecimal getEstimatedTime(int taskId) {
+//        Task task = taskRepository.findTaskById(taskId);
+//
+//        // Subtask → return its own estimate
+//        if (task.getParentTaskId() != null) {
+//            return task.getTimeEstimate();
+//        }
+//
+//        // Parent task → check subtasks
+//        List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
+//
+//        if (subtasks.isEmpty()) {
+//            return task.getTimeEstimate();
+//        }
+//
+//        // Parent with subtasks → sum subtasks
+//        BigDecimal total = BigDecimal.ZERO;
+//        for (Task st : subtasks) {
+//            if (st.getTimeEstimate() != null) {
+//                total = total.add(st.getTimeEstimate());
+//            }
+//        }
+//        return total;
+//    }
 }

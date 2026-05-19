@@ -15,6 +15,7 @@ import planningtool.model.Task;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
+import planningtool.repository.TaskRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +35,7 @@ public class ProjectServiceTest {
     @Mock
     private EmployeeRepository employeeRepository;
     @Mock
-    private TaskService taskService;
+    private TaskRepository taskRepository;
 
     @InjectMocks
     private ProjectService projectService;
@@ -322,16 +323,16 @@ public class ProjectServiceTest {
         when(projectRepository.findMainTasksByProjectId(1))
                 .thenReturn(mainTasks);
 
-        when(taskService.getEstimatedTime(10)).thenReturn(new BigDecimal("2.5"));
-        when(taskService.getEstimatedTime(20)).thenReturn(new BigDecimal("3.0"));
+        when(projectService.getEstimatedTime(10)).thenReturn(new BigDecimal("2.5"));
+        when(projectService.getEstimatedTime(20)).thenReturn(new BigDecimal("3.0"));
 
         BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
 
         assertThat(result).isEqualTo(new BigDecimal("5.5"));
 
         verify(projectRepository).findMainTasksByProjectId(1);
-        verify(taskService).getEstimatedTime(10);
-        verify(taskService).getEstimatedTime(20);
+        verify(projectService).getEstimatedTime(10);
+        verify(projectService).getEstimatedTime(20);
     }
 
     @Test
@@ -342,6 +343,57 @@ public class ProjectServiceTest {
         BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
 
         assertThat(result).isEqualTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    void getEstimatedTime_SumsSubtaskEstimates_WhenParentHasSubtasks(){
+        Task parent = new Task();
+        parent.setId(1);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("10.0")); // should be ignored
+
+        Task s1 = new Task();
+        s1.setTimeEstimate(new BigDecimal("2.0"));
+
+        Task s2 = new Task();
+        s2.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(1)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(s1, s2));
+
+        BigDecimal result = projectService.getEstimatedTime(1);
+
+        assertThat(result).isEqualByComparingTo("5.5");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsParentEstimate_WhenNoSubTasks(){
+        Task parent = new Task();
+        parent.setId(5);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("8.0"));
+
+        when(taskRepository.findTaskById(5)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(5)).thenReturn(List.of());
+
+        BigDecimal result = projectService.getEstimatedTime(5);
+
+        assertThat(result).isEqualByComparingTo("8.0");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsOwnEstimate_WhenTaskIsSubtask(){
+        Task subtask = new Task();
+        subtask.setId(10);
+        subtask.setParentTaskId(1);
+        subtask.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(10)).thenReturn(subtask);
+
+        BigDecimal result = projectService.getEstimatedTime(10);
+
+        assertThat(result).isEqualByComparingTo("3.5");
+        verify(taskRepository, never()).findSubtasksByParentId(anyInt());
     }
 
 
