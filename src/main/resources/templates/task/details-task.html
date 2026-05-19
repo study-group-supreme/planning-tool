@@ -17,7 +17,7 @@
 
     <p>
         <strong>Parent Task:</strong>
-        <span th:if="${parentTask != null}" th:text="${parentTask.title}"></span>
+        <a th:if="${parentTask != null}" th:href="@{/tasks/{id}(id=${parentTask.id})}" th:text="${parentTask.title}"></a>
         <span th:if="${parentTask == null}">None</span>
     </p>
 
