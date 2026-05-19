@@ -214,9 +214,14 @@ progress {
     background: white;
 }
 .login .navbar{
-    position: fixed;
-    width: 100%;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4f46e5;
+    position: sticky;
     top: 0;
-    left: 0;
-    height: 20px;
+    margin-left: -16px;
+    margin-right: -16px;
+    height: 35px;
 }
