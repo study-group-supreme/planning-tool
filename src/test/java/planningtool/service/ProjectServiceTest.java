@@ -314,25 +314,28 @@ public class ProjectServiceTest {
     void getTotalEstimatedTimeForProject_ShouldSumAllMainTaskEntries(){
         Task t1 = new Task();
         t1.setId(10);
+        t1.setTimeEstimate(new BigDecimal("2.5"));
 
         Task t2 = new Task();
         t2.setId(20);
+        t2.setTimeEstimate(new BigDecimal("3.0"));
 
         List<Task> mainTasks = List.of(t1, t2);
 
         when(projectRepository.findMainTasksByProjectId(1))
                 .thenReturn(mainTasks);
 
-        when(projectService.getEstimatedTime(10)).thenReturn(new BigDecimal("2.5"));
-        when(projectService.getEstimatedTime(20)).thenReturn(new BigDecimal("3.0"));
+        // Mock repository calls inside getEstimatedTime()
+        when(taskRepository.findTaskById(10)).thenReturn(t1);
+        when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
+
+        when(taskRepository.findTaskById(20)).thenReturn(t2);
+        when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
+
 
         BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
 
         assertThat(result).isEqualTo(new BigDecimal("5.5"));
-
-        verify(projectRepository).findMainTasksByProjectId(1);
-        verify(projectService).getEstimatedTime(10);
-        verify(projectService).getEstimatedTime(20);
     }
 
     @Test
