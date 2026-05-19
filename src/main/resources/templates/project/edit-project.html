@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Project</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
+</head>
+<body>
+<div th:replace="fragment/header :: header"></div>
+<form th:action="@{/projects/{projectId}/edit(projectId=${projectId})}" th:object="${project}" method="post">
+    <table>
+        <tr>
+            <th th:text="'Title | Current Title: ' + *{title}"></th>
+            <td><label>
+                <input type="text" th:field="*{title}" maxlength="225">
+            </label></td>
+        </tr>
+        <tr>
+            <th th:text="'Description | Current Description: ' + *{description}"></th>
+            <td><label>
+                <textarea th:field="*{description}" maxlength="1080"></textarea>
+            </label></td>
+        </tr>
+        <tr>
+            <th th:text="'Deadline | Current Deadline: ' + *{deadline}"></th>
+            <td><label>
+                <input type="text" th:field="*{deadline}">
+            </label></td>
+        </tr>
+        <tr>
+            <td>
+                <button class="btn" type="submit">Save changes</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

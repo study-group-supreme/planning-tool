@@ -8,8 +8,8 @@
 <body>
 <div th:replace="fragment/header :: header"></div>
 <div class="member-list">
-<p>Welcome!</p>
-<p th:text="${employeeName}"></p>
+    <p>Welcome!</p>
+    <p th:text="${employeeName}"></p>
     <br>
     <p th:text="${date}"></p>
 </div>
@@ -19,7 +19,7 @@
     <p th:text="${employeeName}"></p>
     <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>
-<div class="button-row">
+<div class="row-alignment">
     <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>
 
@@ -30,7 +30,7 @@
             <th>Description</th>
             <th>Deadline</th>
         </tr>
-        <tr th:each="project : ${projects}">
+        <tr th:each="project : ${projects}" th:if="${project.active}">
             <td>
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
             </td>
@@ -38,6 +38,23 @@
             <td th:text="${project.getDeadline()}"></td>
         </tr>
 
+    </table>
+</div>
+
+<div th:if="!${emptyList}">
+    <table>
+        <tr>
+            <th>Archived Project</th>
+            <th>Description</th>
+            <th>Deadline</th>
+        </tr>
+            <tr class="archived" th:each="project : ${projects}" th:if="${!project.active}">
+                <td>
+                    <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+                </td>
+                <td th:text="${project.getDescription()}"></td>
+                <td th:text="${project.getDeadline()}"></td>
+            </tr>
     </table>
 </div>
 
