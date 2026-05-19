@@ -13,15 +13,21 @@
     <br>
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
-    <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit">Archive project</button>
-    </form>
-    <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit">Restore project</button>
-    </form>
 
+    <div class="button-row">
+        <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
+            <button class="btn">Edit Project</button>
+        </form>
+
+        <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
+            <input type="hidden" name="projectId" th:value="${project.id}">
+            <button type="submit">Archive project</button>
+        </form>
+        <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
+            <input type="hidden" name="projectId" th:value="${project.id}">
+            <button type="submit">Restore project</button>
+        </form>
+    </div>
 </div>
 
 <table class="member-list">
