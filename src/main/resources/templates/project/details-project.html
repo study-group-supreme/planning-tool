@@ -14,6 +14,8 @@
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
 
+    <p class="danger" th:if="${error != null}" th:text="${error}"></p>
+
     <div class="row-alignment">
         <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
             <button class="btn">Edit Project</button>

@@ -67,9 +67,8 @@ public class ProjectController {
             return "redirect:/projects/add-member/" + project.getId();
         }catch (BadRequestException e){
             attributes.addFlashAttribute("error", e.getMessage());
-
+            return "redirect:/projects/add";
         }
-        return "redirect:/projects/add";
     }
 
     @GetMapping("/{projectId}")
@@ -121,22 +120,24 @@ public class ProjectController {
     }
 
     @PostMapping("/archive")
-    public String archiveProject(@RequestParam int projectId) {
+    public String archiveProject(@RequestParam int projectId, RedirectAttributes attributes) {
         try {
             projectService.archiveProject(projectId);
             return "redirect:/projects";
         } catch (DatabaseOperationException e) {
-            return "redirect:/projects";
+            attributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/projects/" + projectId;
         }
     }
 
     @PostMapping("/restore")
-    public String restoreProject(@RequestParam int projectId) {
+    public String restoreProject(@RequestParam int projectId, RedirectAttributes attributes) {
         try {
             projectService.restoreProject(projectId);
             return "redirect:/projects";
         } catch (DatabaseOperationException e) {
-            return "redirect:/projects";
+            attributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/projects/" + projectId;
         }
     }
 
