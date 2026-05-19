@@ -306,5 +306,95 @@ public class ProjectServiceTest {
     }
 
 
+    @Test
+    void editProject_ReturnsUpdatedProject() {
+        Project originalProject = new Project();
+        originalProject.setId(1);
+        originalProject.setTitle("Original Title");
+        originalProject.setDeadline(LocalDate.now().plusDays(2));
+        originalProject.setDescription("Original Description");
+        originalProject.setProjectCreatorId(1);
+        originalProject.setTimeOfCreation(LocalDate.now());
+
+        when(projectRepository.findProjectById(1)).thenReturn(originalProject);
+
+        originalProject.setTitle("New title");
+        originalProject.setDescription("New Description");
+        originalProject.setDeadline(LocalDate.now().plusWeeks(1));
+
+        Project result = projectService.editProject(originalProject);
+
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getTitle()).isEqualTo("New title");
+        assertThat(result.getDeadline()).isEqualTo(LocalDate.now().plusWeeks(1));
+        assertThat(result.getDescription()).isEqualTo("New Description");
+        verify(projectRepository).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowsBadRequestException_WhenTitleIsEmpty(){
+        Project project = new Project();
+        project.setTitle("");
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowsBadRequestException_WhenTitleIsWhiteSpace(){
+        Project project = new Project();
+        project.setTitle("    ");
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowsBadRequestException_WhenTitleIsNull(){
+        Project project = new Project();
+        project.setTitle(null);
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowsBadRequestException_WhenTitleIsOver225Characters(){
+        Project project = new Project();
+        project.setTitle("T".repeat(226));
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowsBadRequestException_WhenDeadlineIsInThePast(){
+        Project project = new Project();
+        project.setDeadline(LocalDate.of(1999, 9, 5));
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowBadRequestException_WhenDescriptionIsTooLong(){
+        Project project = new Project();
+        project.setDescription("T".repeat(1081));
+        assertThrows(BadRequestException.class, () -> projectService.editProject(project));
+        verify(projectRepository, never()).updateProject(any());
+    }
+
+    @Test
+    void editProject_ThrowDatabaseOperationException_IfDatabaseException(){
+        Project project = new Project();
+        project.setId(1);
+        project.setTitle("Test");
+        project.setDescription("Testing");
+        project.setDeadline(LocalDate.now().plusWeeks(1));
+
+        doThrow(new DataIntegrityViolationException("")).when(projectRepository).updateProject(project);
+
+        DatabaseOperationException exception = assertThrows(DatabaseOperationException.class, () -> {projectService.editProject(project);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Project could not be updated");
+
+        verify(projectRepository, never()).findProjectById(anyInt());
+    }
     // TODO getProjectById() tests should be made
 }
