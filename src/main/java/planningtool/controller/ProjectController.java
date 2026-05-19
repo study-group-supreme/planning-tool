@@ -93,6 +93,14 @@ public class ProjectController {
         return "redirect:/projects/add-member/" + projectId;
     }
 
+    @PostMapping("/{projectId}/add-member-details")
+    public String addProjectMemberInDetailsPage(@RequestParam int employeeId, @PathVariable int projectId){
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        Project project = projectService.getProjectById(projectId);
+        projectService.addProjectMemberToProject(employee, project);
+        return "redirect:/projects/" + projectId;
+    }
+
     @PostMapping("/{projectId}/remove-member")
     public String removeProjectMember(@RequestParam int employeeId, @PathVariable int projectId) {
         Employee employee = employeeService.getEmployeeById(employeeId);

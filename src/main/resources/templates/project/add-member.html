@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <td>
-                <form class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}"
+                <form th:if="${!employees.isEmpty()}" class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}"
                       method="post">
                     <input type="hidden" th:value="${projectId}">
                     <label>Add employee
