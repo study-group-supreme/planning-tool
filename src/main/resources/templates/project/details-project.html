@@ -37,6 +37,10 @@
         <strong>Total Estimated Time:</strong>
         <span th:text="${totalEstimate != null ? totalEstimate + ' hours' : 'No estimates'}"></span>
     </p>
+    <p>
+        <strong>Total Logged Time:</strong>
+        <span th:text="${totalLoggedTime != null ? totalLoggedTime + ' hours' : 'No time logged'}"></span>
+    </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button type="submit"
