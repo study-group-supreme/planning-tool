@@ -8,6 +8,7 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.EmployeeRepository;
@@ -36,6 +37,7 @@ public class TaskController {
     public String showSpecificTask(@PathVariable int taskId, Model model, HttpSession session) {
         Integer loggedInId = (Integer) session.getAttribute("employeeId");
         Task task = taskService.getTaskById(taskId);
+
         Task parentTask = null;
         Employee employee = null;
 
@@ -56,6 +58,7 @@ public class TaskController {
         model.addAttribute("hasChildren", taskService.hasChildren(taskId));
         model.addAttribute("loggedInId", loggedInId);
         model.addAttribute("subtasks", taskService.getTasksByParentId(taskId));
+        model.addAttribute("mainTask", false);
         return "task/details-task";
     }
 

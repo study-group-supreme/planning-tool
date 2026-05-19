@@ -712,4 +712,23 @@ taskService.getTasksByParentId(1);
 assertThat(allTasks.get(1).getId()).isEqualTo(2);
 assertThat(allTasks.get(2).getId()).isEqualTo(3);
     }
+    @Test
+    void removeTaskById_ShouldThrowBadRequestException_WhenDeletingMainTaskBeforeAllSubtasks(){
+        Task task = new Task();
+        task.setId(1);
+        task.setTitle("Main task");
+
+        Task task1 = new Task();
+        task1.setId(2);
+        task1.setParentTaskId(1);
+        task1.setTitle("Subtask");
+        task1.setDone(false);
+
+        List<Task> subtasks = List.of(task1);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(subtasks);
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+
+       assertThrows(BadRequestException.class, () -> taskService.removeTaskById(1));
+        verify(taskRepository, never()).deleteTaskById(1);
+    }
 }
