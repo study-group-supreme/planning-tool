@@ -8,8 +8,8 @@
 <body>
 <div th:replace="fragment/header :: header"></div>
 <div class="member-list">
-<p>Welcome!</p>
-<p th:text="${employeeName}"></p>
+    <p>Welcome!</p>
+    <p th:text="${employeeName}"></p>
     <br>
     <p th:text="${date}"></p>
 </div>
@@ -48,14 +48,13 @@
             <th>Description</th>
             <th>Deadline</th>
         </tr>
-        <tr th:each="project : ${projects}" th:if="${!project.active}">
-            <td>
-                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
-            </td>
-            <td th:text="${project.getDescription()}"></td>
-            <td th:text="${project.getDeadline()}"></td>
-        </tr>
-
+            <tr class="archived" th:each="project : ${projects}" th:if="${!project.active}">
+                <td>
+                    <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+                </td>
+                <td th:text="${project.getDescription()}"></td>
+                <td th:text="${project.getDeadline()}"></td>
+            </tr>
     </table>
 </div>
 
