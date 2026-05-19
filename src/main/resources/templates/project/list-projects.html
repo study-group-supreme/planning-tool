@@ -30,7 +30,25 @@
             <th>Description</th>
             <th>Deadline</th>
         </tr>
-        <tr th:each="project : ${projects}">
+        <tr th:each="project : ${projects}" th:if="${project.active}">
+            <td>
+                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+            </td>
+            <td th:text="${project.getDescription()}"></td>
+            <td th:text="${project.getDeadline()}"></td>
+        </tr>
+
+    </table>
+</div>
+
+<div th:if="!${emptyList}">
+    <table>
+        <tr>
+            <th>Archived Project</th>
+            <th>Description</th>
+            <th>Deadline</th>
+        </tr>
+        <tr th:each="project : ${projects}" th:if="${!project.active}">
             <td>
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
             </td>
