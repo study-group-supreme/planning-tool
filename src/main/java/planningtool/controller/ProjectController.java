@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
@@ -56,11 +58,17 @@ public class ProjectController {
 
     //Needs to have session included and needs a /projects Page
     @PostMapping("/add")
-    public String createProject(@ModelAttribute Project project, HttpSession session) {
-        Integer projectManagerId = (Integer) session.getAttribute("employeeId");
-        project.setProjectCreatorId(projectManagerId);
-        projectService.createProject(project);
-        return "redirect:/projects/add-member/" + project.getId();
+    public String createProject(@ModelAttribute Project project, HttpSession session, RedirectAttributes attributes) {
+        try {
+            Integer projectManagerId = (Integer) session.getAttribute("employeeId");
+            project.setProjectCreatorId(projectManagerId);
+            projectService.createProject(project);
+            return "redirect:/projects/add-member/" + project.getId();
+        }catch (BadRequestException e){
+            attributes.addFlashAttribute("error", e.getMessage());
+
+        }
+        return "redirect:/projects/add";
     }
 
     @GetMapping("/{projectId}")

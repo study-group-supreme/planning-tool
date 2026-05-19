@@ -16,6 +16,7 @@
         <label>Description</label><br>
         <input type="text" th:field="*{description}"/>
     </p>
+    <p th:if="${error != null}" th:text="${error}"></p>
     <p>
         <label>Deadline</label><br>
         <input type="date" th:field="*{deadline}">
