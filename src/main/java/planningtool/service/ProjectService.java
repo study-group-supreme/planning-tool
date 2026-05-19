@@ -15,6 +15,7 @@ import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.repository.TaskRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,13 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final EmployeeRepository employeeRepository;
     private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository, TaskRepository taskRepository) {
+    public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository, TaskRepository taskRepository, TaskService taskService) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
         this.taskRepository = taskRepository;
+        this.taskService = taskService;
     }
 
     // TODO Might need more exception handling
@@ -137,6 +140,19 @@ public class ProjectService {
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Project could not be found", e.getCause());
         }
+    }
+
+    public BigDecimal getTotalEstimatedTimeForProject(int projectId) {
+        List<Task> tasks = projectRepository.findMainTasksByProjectId(projectId);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task task : tasks){
+            BigDecimal taskEstimate = taskService.getEstimatedTime(task.getId());
+            if (taskEstimate != null){
+                total = total.add(taskEstimate);
+            }
+        }
+        return total;
     }
 }
 
