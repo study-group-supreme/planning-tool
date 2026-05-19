@@ -22,7 +22,8 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f9;
-    padding: 40px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 .-details {
@@ -116,7 +117,11 @@ td div {
 }
 
 .navleft {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 .navright {
@@ -127,16 +132,18 @@ td div {
     flex-shrink: 0;
 }
 
-.navbar {
-    width: 100%;
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #4f46e5;
-    position: sticky;
-    top: 0;
-}
+    .navbar {
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #4f46e5;
+        position: sticky;
+        top: 0;
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+
 
 .navbar button {
     background-color: transparent;
