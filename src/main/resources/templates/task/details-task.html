@@ -69,7 +69,7 @@
 </div>
 
 <div th:if="${hasChildren}">
-    <p><em>This task has subtasks. Time entries can only be added to a task if it has no subtasks defined.</em></p>
+    <p><em>This task has subtasks. Any further time entries must be logged in a subtask.</em></p>
 </div>
 <table class="time-entries" th:if="${timeEntries != null and !timeEntries.isEmpty()}">
     <tr>
