@@ -93,7 +93,7 @@ public class ProjectService {
         Employee employee = employeeRepository.findEmployeeById(employeeId);
         if (projects == null || projects.isEmpty()) {
             //Need help with good error message
-            throw new NotFoundException("No projects found connected to " + employee.getName());
+            throw new NotFoundException("You are not connected to any projects ");
 
         }
         return projects;
@@ -109,7 +109,7 @@ public class ProjectService {
         if ((project.getDescription() != null) && (project.getDescription().length() > 1080)){
             throw new BadRequestException("Project description cannot exceed 1080 characters");
         }
-        if (project.getDeadline().isBefore(LocalDate.now())){
+        if (project.getDeadline() != null && (project.getDeadline().isBefore(LocalDate.now()))){
             throw new BadRequestException("Deadline has to be in the future");
         }
         try {
