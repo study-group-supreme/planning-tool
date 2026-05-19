@@ -30,14 +30,28 @@
     </div>
 </div>
 
-<table class="member-list">
-    <tr>
-        <td><strong>Project Members</strong></td>
-    </tr>
-    <tr th:each="member : ${project.getProjectMembers()}">
-        <td th:text="${member.name}"></td>
-    </tr>
-</table>
+<div class="button-row">
+    <table>
+        <tr>
+            <th>okay</th>
+        </tr>
+        <tr>
+            <td>
+                alright
+            </td>
+        </tr>
+    </table>
+    <div class="member-list-wrapper">
+        <table class="member-list">
+            <tr>
+                <th>Project Members</th>
+            </tr>
+            <tr th:each="member : ${project.getProjectMembers()}">
+                <td th:text="${member.name}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 <p th:if="${message != null}" th:text="${message}"></p>
 
 <table class="task-list">
