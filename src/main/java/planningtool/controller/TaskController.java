@@ -8,10 +8,8 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
-import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
-import planningtool.repository.EmployeeRepository;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -128,7 +126,7 @@ public class TaskController {
     }
 // TODO Add error handling and try/catch to this? Sensei, help me!!
     @GetMapping("/{taskId}/edit")
-    public String editTask(@PathVariable int taskId, Model model) {
+    public String showEditTaskForm(@PathVariable int taskId, Model model) {
         try {
             Task updatedTask = taskService.getTaskById(taskId);
             model.addAttribute("task", updatedTask);

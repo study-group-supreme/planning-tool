@@ -14,20 +14,15 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-import org.springframework.web.bind.annotation.RequestParam;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
-import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.service.EmployeeService;
@@ -132,7 +127,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    void editTaskIsDoneStatus_shouldEditIsDoneStatus_AndRedirect() throws Exception {
+    void editTaskIsDoneStatus_shouldShowEditIsDoneStatus_AndRedirectForm() throws Exception {
         Task task = new Task();
         task.setProjectId(1);
         task.setId(1);
@@ -209,7 +204,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    void editTask_ShouldShowEditTaskForm() throws Exception {
+    void showEditTaskForm_ShouldShowShowEditTaskForm() throws Exception {
         Employee testEmployee = new Employee();
         testEmployee.setId(1);
         testEmployee.setName("John Doe");
@@ -232,9 +227,16 @@ public class TaskControllerTest {
                 .andExpect(model().attribute("task", testTask));
 
     }
-
     @Test
-    void editTask_ShouldEditTaskAndRedirect() throws Exception {
+    void showEditTaskForm_ShouldCatchNotFoundException() throws Exception {
+        Mockito.when(taskService.getTaskById(200)).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/tasks/200/edit").sessionAttr("employeeId", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+    @Test
+    void saveEditedTask_ShouldSaveEditedTaskAndRedirect() throws Exception {
 
         mockMvc.perform(post("/tasks/1/edit")
                         .param("title", "Updated title")
@@ -243,17 +245,10 @@ public class TaskControllerTest {
                 .andExpect(redirectedUrl("/tasks/1"));
     }
 
-    @Test
-    void editTask_ShouldCatchNotFoundException() throws Exception {
-        Mockito.when(taskService.getTaskById(200)).thenThrow(NotFoundException.class);
 
-        mockMvc.perform(get("/tasks/200/edit").sessionAttr("employeeId", 1))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
-    }
 
     @Test
-    void editTask_ShouldCatchBadRequestException() throws Exception {
+    void saveEditedTask_ShouldCatchBadRequestExceptionAndRedirect() throws Exception {
         Mockito.when(taskService.editTask(any(Task.class))).thenThrow(BadRequestException.class);
 
         mockMvc.perform(post("/tasks/1/edit")
@@ -264,7 +259,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    void editTask_ShouldDatabaseOperationException() throws Exception {
+    void saveEditedTask_ShouldCatchDatabaseOperationExceptionAndRedirect() throws Exception {
         Mockito.when(taskService.editTask(any(Task.class))).thenThrow(DatabaseOperationException.class);
 
         mockMvc.perform(post("/tasks/1/edit")
@@ -313,7 +308,7 @@ public class TaskControllerTest {
         verify(taskService).removeTimeEntryById(entryId);
     }
     @Test
-    void editTask_CanUpdateParentTaskId() throws Exception {
+    void showEditTask_CanUpdateParentTaskFormId() throws Exception {
        mockMvc.perform(post("/tasks/{taskId}/edit", 1)
                .param("parentTaskId", "5")
                .param("title", "test")

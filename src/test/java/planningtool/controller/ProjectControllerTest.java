@@ -1,6 +1,7 @@
 package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -11,12 +12,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.FlashAttributeResultMatchers;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
+import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -172,6 +177,57 @@ public class ProjectControllerTest {
                 .andExpect(redirectedUrl("/projects/1"))
                 .andExpect(flash().attributeExists("error"));
     }
+
+
+    @Test
+    void showEditProjectForm_ShouldShowEditProjectForm() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        Mockito.when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(get("/projects/1/edit").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("project/edit-project"))
+                .andExpect(model().attribute("project", testProject));
+    }
+    @Test
+    void showEditProjectForm_ShouldCatchNotFoundException() throws Exception {
+        Mockito.when(projectService.getProjectById(250)).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/projects/250/edit"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void saveEditedProject_ShouldSaveProjectAndRedirect() throws Exception {
+
+        mockMvc.perform(post("/projects/1/edit")
+                .param("title", "Updated title"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+    }
+
+    @Test
+    void saveEditedProject_ShouldCatchBadRequestExceptionAndRedirect() throws Exception {
+        Mockito.when(projectService.editProject(any(Project.class))).thenThrow(BadRequestException.class);
+
+        mockMvc.perform(post("/projects/1/edit")
+                .param("title", "New title"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1/edit"));
+    }
+    @Test
+    void saveEditedProjects_ShouldCatchDatabaseOperationException() throws Exception {
+        Mockito.when(projectService.editProject(any(Project.class))).thenThrow(DatabaseOperationException.class);
+
+        mockMvc.perform(post("/projects/1/edit")
+                .param("title", "New title"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+
+    }
+
 
 
     //TODO Test for showing showSpecificProject() should be added
