@@ -239,20 +239,7 @@
     <!--CREATE TASK -->
 
 </table>
-<form class="create-task" th:action="@{/tasks/quick-add}" method="post">
 
-    <input type="hidden" name="projectId" th:value="${project.id}">
-
-    <input type="text" name="title" placeholder="Quick add task…" required>
-
-    <button class="btn" type="submit">Add</button>
-</form>
-<div class="row-alignment">
-    <form class="create-task" th:action="@{/tasks/add}" method="get">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button class="btn" type="submit">Create task</button>
-    </form>
-</div>
 <div class="row-alignment">
     <span>
     <form th:action="@{/projects}" method="get">
