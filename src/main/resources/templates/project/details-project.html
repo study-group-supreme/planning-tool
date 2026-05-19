@@ -75,15 +75,6 @@
                     <button class="mark-not-button" type="submit">Mark not done</button>
                 </form>
             </div>
-
-            <div class="task-actions">
-                <form th:action="@{/tasks/remove}" method="post">
-                    <input type="hidden" name="taskId" th:value="${task.id}">
-                    <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button class="delete-button" type="submit">Delete task</button>
-                </form>
-            </div>
-
             <div>
                 <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
                     <button class="btn" type="submit">Edit Task</button>
