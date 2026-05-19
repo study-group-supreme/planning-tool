@@ -14,7 +14,7 @@
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
 
-    <div class="button-row">
+    <div class="row-alignment">
         <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
             <button class="btn">Edit Project</button>
         </form>
@@ -30,14 +30,44 @@
     </div>
 </div>
 
-<div class="button-row">
+<div class="row-alignment">
     <table>
         <tr>
-            <th>okay</th>
+            <th>Add Tasks</th>
+            <th>Add Members</th>
         </tr>
         <tr>
             <td>
-                alright
+                <form class="create-task" th:action="@{/tasks/quick-add}" method="post">
+
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+
+                    <input type="text" name="title" placeholder="Quick add main task…" required>
+
+                    <button class="btn" type="submit">Add</button>
+                </form>
+                <br>
+                <form class="create-task" th:action="@{/tasks/add}" method="get">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button class="btn" type="submit">Create Full Task</button>
+                </form>
+
+            </td>
+            <td>
+                <form class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}"
+                      method="post">
+                    <input type="hidden" th:value="${projectId}">
+                    <label>Add employee
+                        <select name="employeeId">
+                            <option th:each="employee : ${employees}"
+                                    th:text="${employee.name}"
+                                    th:value="${employee.id}"
+                            ></option>
+
+                        </select>
+                    </label>
+                    <button type="submit">Add</button>
+                </form>
             </td>
         </tr>
     </table>
@@ -217,13 +247,13 @@
 
     <button class="btn" type="submit">Add</button>
 </form>
-<div class="button-row">
+<div class="row-alignment">
     <form class="create-task" th:action="@{/tasks/add}" method="get">
         <input type="hidden" name="projectId" th:value="${project.id}">
         <button class="btn" type="submit">Create task</button>
     </form>
 </div>
-<div class="button-row">
+<div class="row-alignment">
     <span>
     <form th:action="@{/projects}" method="get">
         <button class="btn" type="submit">Back to all projects</button>

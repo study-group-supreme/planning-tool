@@ -67,6 +67,7 @@ public class ProjectController {
     public String showSpecificProject(@PathVariable int projectId, Model model, HttpSession session) {
         Project project = projectService.getProjectById(projectId);
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
+        model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));

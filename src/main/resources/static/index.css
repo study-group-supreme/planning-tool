@@ -58,7 +58,7 @@ body {
 .member-list td{
     text-align: right;
 }
-.button-row{
+.row-alignment{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
