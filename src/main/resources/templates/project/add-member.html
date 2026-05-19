@@ -7,28 +7,43 @@
 </head>
 <body>
 <div th:replace="fragment/header :: header"></div>
-<form class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}" method="post">
-    <input type="hidden" th:value="${projectId}">
-    <label>Add employee
-        <select name="employeeId">
-            <option th:each="employee : ${employees}"
-                    th:text="${employee.name}"
-                    th:value="${employee.id}"
-            ></option>
+<div class="row-alignment">
+    <table>
+        <tr>
+            <th>Employees Not Yet On Project</th>
+        </tr>
+        <tr>
+            <td>
+                <form th:if="${!employees.isEmpty()}" class="member-list" th:action="@{/projects/{projectId}/add-member(projectId = ${projectId})}"
+                      method="post">
+                    <input type="hidden" th:value="${projectId}">
+                    <label>Add employee
+                        <select name="employeeId">
+                            <option th:each="employee : ${employees}"
+                                    th:text="${employee.name}"
+                                    th:value="${employee.id}"
+                            ></option>
 
-        </select>
-    </label>
-    <button type="submit">Add</button>
-</form>
-<table class="member-list">
-    <tr>
-        <td><strong>Project Members</strong></td>
-    </tr>
-    <tr th:each="member : ${projectMembers}">
-        <td th:text="${member.name}"></td>
-    </tr>
-</table>
+                        </select>
+                    </label>
+                    <button type="submit">Add</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div class="member-list-wrapper">
+        <table class="member-list">
+            <tr>
+                <th>Project Members</th>
+            </tr>
+            <tr th:each="member : ${projectMembers}">
+                <td th:text="${member.name}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 <form th:action="@{/projects/{projectId}(projectId = ${projectId})}" method="get">
-        <button class="Back-button" type="submit">Back to project details</button>
-    </form></body>
+    <button class="Back-button" type="submit">Back to project details</button>
+</form>
+</body>
 </html>

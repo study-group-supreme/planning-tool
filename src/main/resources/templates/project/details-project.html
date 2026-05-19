@@ -13,29 +13,78 @@
     <br>
     <p th:text="'Created: ' + ${project.getTimeOfCreation().toString()}"></p>
     <p th:if="${project.getDeadline() != null}" th:text="'Deadline: ' + ${project.getDeadline().toString()}"></p>
-    <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit"
-                class="btn"
-                onclick="return confirm('Are you sure you want to archive this project?')">Archive project</button>
-    </form>
-    <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit"
-                class="btn"
-                onclick="confirm('Are you sure you want to restore this project?')">Restore project</button>
-    </form>
 
+    <div class="row-alignment">
+        <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
+            <button class="btn">Edit Project</button>
+        </form>
+
+        <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
+            <input type="hidden" name="projectId" th:value="${project.id}">
+            <button type="submit"
+                    class="btn"
+                    onclick="return confirm('Are you sure you want to archive this project?')">Archive project</button></form>
+        <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
+            <input type="hidden" name="projectId" th:value="${project.id}">
+            <button type="submit"
+                    class="btn"
+                    onclick="confirm('Are you sure you want to restore this project?')">Restore project</button>
+        </form>
+    </div>
 </div>
 
-<table class="member-list">
-    <tr>
-        <td><strong>Project Members</strong></td>
-    </tr>
-    <tr th:each="member : ${project.getProjectMembers()}">
-        <td th:text="${member.name}"></td>
-    </tr>
-</table>
+<div class="row-alignment">
+    <table>
+        <tr>
+            <th>Add Tasks</th>
+            <th>Add Members</th>
+        </tr>
+        <tr>
+            <td>
+                <form class="create-task" th:action="@{/tasks/quick-add}" method="post">
+
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+
+                    <input type="text" name="title" placeholder="Quick add main task…" required>
+
+                    <button class="btn" type="submit">Add</button>
+                </form>
+                <br>
+                <form class="create-task" th:action="@{/tasks/add}" method="get">
+                    <input type="hidden" name="projectId" th:value="${project.id}">
+                    <button class="btn" type="submit">Create Full Task</button>
+                </form>
+
+            </td>
+            <td>
+                <form th:if="${!employees.isEmpty()}" class="member-list" th:action="@{/projects/{projectId}/add-member-details(projectId = ${projectId})}"
+                      method="post">
+                    <input type="hidden" th:value="${projectId}">
+                    <label>Add employee
+                        <select name="employeeId">
+                            <option th:each="employee : ${employees}"
+                                    th:text="${employee.name}"
+                                    th:value="${employee.id}"
+                            ></option>
+
+                        </select>
+                    </label>
+                    <button type="submit">Add</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div class="member-list-wrapper">
+        <table class="member-list">
+            <tr>
+                <th>Project Members</th>
+            </tr>
+            <tr th:each="member : ${project.getProjectMembers()}">
+                <td th:text="${member.name}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
 <p th:if="${message != null}" th:text="${message}"></p>
 
 <table class="task-list">
@@ -165,21 +214,8 @@
     <!--CREATE TASK -->
 
 </table>
-<form class="create-task" th:action="@{/tasks/quick-add}" method="post">
 
-    <input type="hidden" name="projectId" th:value="${project.id}">
-
-    <input type="text" name="title" placeholder="Quick add task…" required>
-
-    <button class="btn" type="submit">Add</button>
-</form>
-<div class="button-row">
-    <form class="create-task" th:action="@{/tasks/add}" method="get">
-        <input type="hidden" name="projectId" th:value="${project.id}">
-        <button class="btn" type="submit">Create task</button>
-    </form>
-</div>
-<div class="button-row">
+<div class="row-alignment">
     <span>
     <form th:action="@{/projects}" method="get">
         <button class="btn" type="submit">Back to all projects</button>

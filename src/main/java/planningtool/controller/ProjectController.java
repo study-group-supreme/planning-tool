@@ -75,6 +75,7 @@ public class ProjectController {
     public String showSpecificProject(@PathVariable int projectId, Model model, HttpSession session) {
         Project project = projectService.getProjectById(projectId);
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
+        model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
@@ -98,6 +99,14 @@ public class ProjectController {
         Project project = projectService.getProjectById(projectId);
         projectService.addProjectMemberToProject(employee, project);
         return "redirect:/projects/add-member/" + projectId;
+    }
+
+    @PostMapping("/{projectId}/add-member-details")
+    public String addProjectMemberInDetailsPage(@RequestParam int employeeId, @PathVariable int projectId){
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        Project project = projectService.getProjectById(projectId);
+        projectService.addProjectMemberToProject(employee, project);
+        return "redirect:/projects/" + projectId;
     }
 
     @PostMapping("/{projectId}/remove-member")
@@ -126,5 +135,25 @@ public class ProjectController {
         } catch (DatabaseOperationException e) {
             return "redirect:/projects";
         }
+    }
+
+    @GetMapping("/{projectId}/edit")
+    public String showEditProjectForm(@PathVariable int projectId, Model model){
+        try{
+            Project projectToEdit = projectService.getProjectById(projectId);
+            model.addAttribute("project", projectToEdit);
+            model.addAttribute("employeesNotOnProject", projectService.getEmployeesNotOnProject(projectId));
+            model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(projectId));
+            return "project/edit-project";
+        }catch (NotFoundException e){
+            return "redirect:/projects";
+        }
+    }
+
+    @PostMapping("{projectId}/edit")
+    public String saveEditedProject(@PathVariable int projectId, @ModelAttribute Project project){
+        project.setId(projectId);
+        projectService.editProject(project);
+        return "redirect:/projects/" + projectId;
     }
 }

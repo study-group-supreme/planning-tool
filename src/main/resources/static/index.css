@@ -45,18 +45,27 @@ body {
     background: white;
     padding: 25px;
 }
-
-.member-list {
-    border-radius: 12px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 25px;
+.member-list-wrapper{
+    overflow-y: auto;
+    max-height: 200px;
+    width: 20%;
 }
-
-.button-row {
+.member-list{
+    width: 100%;
+}
+.member-list th{
+    top: 0;
+    position: sticky;
+    z-index: 1;
+}
+.member-list th,
+.member-list td{
+    text-align: right;
+}
+.row-alignment{
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     border-radius: 12px;
     margin-bottom: 20px;
     background: white;
