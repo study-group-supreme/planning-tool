@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.FlashAttributeResultMatchers;
 import planningtool.exception.BadRequestException;
+import planningtool.exception.DatabaseOperationException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
@@ -36,7 +38,7 @@ public class ProjectControllerTest {
     //TODO Add ArgumentCaptors to tests
 
     @Test
-    void createProject_shouldShowCreateProjectForm() throws Exception {
+    void createProject_ShouldShowCreateProjectForm() throws Exception {
         mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk()).
                 andExpect(view().name("project/create-project"))
@@ -44,13 +46,25 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void createProject_shouldPostCreateFormAndRedirectToProjects() throws Exception {
+    void createProject_ShouldPostCreateFormAndRedirectToProjects() throws Exception {
         mockMvc.perform(post("/projects/add").sessionAttr("employeeId", 1).
                         param("title", "title")
                         .param("description", "description")
                         .param("deadline", "2028-02-02"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/projects/add-member/*"));
+    }
+
+    @Test
+    void createProject_CatchesBadRequestExceptionWhenBadRequest() throws Exception {
+        when(projectService.createProject(any())).thenThrow(new BadRequestException(""));
+
+        mockMvc.perform(post("/projects/add")
+                        .sessionAttr("employeeId", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/add"))
+                .andExpect(flash().attributeExists("error"));
+
     }
 
     @Test
@@ -125,6 +139,16 @@ public class ProjectControllerTest {
     }
 
     @Test
+    void archiveProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+        doThrow(new DatabaseOperationException("", new Exception())).when(projectService).archiveProject(anyInt());
+
+        mockMvc.perform(post("/projects/archive").param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"))
+                .andExpect(flash().attributeExists("error"));
+    }
+
+    @Test
     void restoreProject_ShouldRestoreProject_AndRedirect() throws Exception {
         Project testProject = new Project();
         testProject.setId(1);
@@ -140,16 +164,15 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void createProject_CatchesBadRequestExceptionWhenBadRequest() throws Exception {
-        when(projectService.createProject(any())).thenThrow(new BadRequestException(""));
+    void restoreProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+        doThrow(new DatabaseOperationException("", new Exception())).when(projectService).restoreProject(anyInt());
 
-        mockMvc.perform(post("/projects/add")
-                        .sessionAttr("employeeId", 1))
+        mockMvc.perform(post("/projects/restore").param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/add"))
+                .andExpect(redirectedUrl("/projects/1"))
                 .andExpect(flash().attributeExists("error"));
-
     }
+
 
     //TODO Test for showing showSpecificProject() should be added
 }
