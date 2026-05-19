@@ -12,6 +12,7 @@ import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
+import planningtool.model.TimeEntry;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
@@ -490,5 +491,81 @@ public class ProjectServiceTest {
 
         verify(projectRepository, never()).findProjectById(anyInt());
     }
+
+    @Test
+    void getLoggedTimeForTask_ParentWithSubTasks_ShouldSumAllEntries(){
+        int parentId = 30;
+
+        Task parent = new Task();
+        parent.setId(parentId);
+
+        Task subtask1 = new Task();
+        subtask1.setId(31);
+
+        Task subtask2 = new Task();
+        subtask2.setId(32);
+
+        TimeEntry parentEntry = new TimeEntry();
+        parentEntry.setTimeSpent(new BigDecimal("1.0"));
+
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setTimeSpent(new BigDecimal("2.0"));
+
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setTimeSpent(new BigDecimal("3.0"));
+
+        when(taskRepository.findTaskById(parentId)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(parentId)).thenReturn(List.of(subtask1, subtask2));
+        when(taskRepository.findTimeEntriesByTaskId(parentId)).thenReturn(List.of(parentEntry));
+        when(taskRepository.findTimeEntriesByTaskId(31)).thenReturn(List.of(entry1));
+        when(taskRepository.findTimeEntriesByTaskId(32)).thenReturn(List.of(entry2));
+
+        BigDecimal result = projectService.getLoggedTimeForTask(parentId);
+
+        assertThat(result).isEqualTo(new BigDecimal("6.0"));
+    }
+
+    @Test
+    void getLoggedTimeForTask_ParentWithoutSubtasks_ShouldSumOwnEntries(){
+        int taskId = 20;
+
+        Task parent = new Task();
+        parent.setId(taskId);
+        parent.setParentTaskId(null);
+
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setTimeSpent(new BigDecimal("1.0"));
+
+        when(taskRepository.findTaskById(taskId)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(taskId)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(taskId)).thenReturn(List.of(entry1));
+
+        BigDecimal result = projectService.getLoggedTimeForTask(taskId);
+
+        assertThat(result).isEqualTo(new BigDecimal("1.0"));
+    }
+
+    @Test
+    void getLoggedTimeForTask_Subtask_ShouldSumOwnEntries(){
+        int taskId = 10;
+
+        Task subtask = new Task();
+        subtask.setId(taskId);
+        subtask.setParentTaskId(1);
+
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setTimeSpent(new BigDecimal("1.5"));
+
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setTimeSpent(new BigDecimal("2.0"));
+
+        when(taskRepository.findTaskById(taskId)).thenReturn(subtask);
+        when(taskRepository.findTimeEntriesByTaskId(taskId)).thenReturn(List.of(entry1, entry2));
+
+        BigDecimal result = projectService.getLoggedTimeForTask(taskId);
+
+        assertThat(result).isEqualTo(new BigDecimal("3.5"));
+    }
+
     // TODO getProjectById() tests should be made
 }
