@@ -47,6 +47,7 @@ public class ProjectController {
             model.addAttribute("emptyList", true);
             model.addAttribute("message", e.getMessage());
             model.addAttribute("employeeName", employeeService.getEmployeeById(employeeId).getName());
+            model.addAttribute("date", LocalDate.now());
             return "project/list-projects";
         }
     }
