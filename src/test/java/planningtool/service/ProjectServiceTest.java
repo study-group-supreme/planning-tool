@@ -11,12 +11,14 @@ import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
+import planningtool.model.Task;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ public class ProjectServiceTest {
     private ProjectRepository projectRepository;
     @Mock
     private EmployeeRepository employeeRepository;
+    @Mock
+    private TaskService taskService;
 
     @InjectMocks
     private ProjectService projectService;
@@ -303,6 +307,31 @@ public class ProjectServiceTest {
                 () -> projectService.restoreProject(1));
 
         verify(projectRepository).restoreProject(1);
+    }
+
+    @Test
+    void getTotalEstimatedTimeForProject_ShouldSumAllMainTaskEntries(){
+        Task t1 = new Task();
+        t1.setId(10);
+
+        Task t2 = new Task();
+        t2.setId(20);
+
+        List<Task> mainTasks = List.of(t1, t2);
+
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(mainTasks);
+
+        when(taskService.getEstimatedTime(10)).thenReturn(new BigDecimal("2.5"));
+        when(taskService.getEstimatedTime(20)).thenReturn(new BigDecimal("3.0"));
+
+        BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
+
+        assertThat(result).isEqualTo(new BigDecimal("5.5"));
+
+        verify(projectRepository).findMainTasksByProjectId(1);
+        verify(taskService).getEstimatedTime(10);
+        verify(taskService).getEstimatedTime(20);
     }
 
 
