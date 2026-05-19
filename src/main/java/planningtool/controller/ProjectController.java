@@ -119,4 +119,24 @@ public class ProjectController {
             return "redirect:/projects";
         }
     }
+
+    @GetMapping("/{projectId}/edit")
+    public String showEditProjectForm(@PathVariable int projectId, Model model){
+        try{
+            Project projectToEdit = projectService.getProjectById(projectId);
+            model.addAttribute("project", projectToEdit);
+            model.addAttribute("employeesNotOnProject", projectService.getEmployeesNotOnProject(projectId));
+            model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(projectId));
+            return "project/edit-project";
+        }catch (NotFoundException e){
+            return "redirect:/projects";
+        }
+    }
+
+    @PostMapping("{projectId}/edit")
+    public String saveEditedProject(@PathVariable int projectId, @ModelAttribute Project project){
+        project.setId(projectId);
+        projectService.editProject(project);
+        return "redirect:/projects/" + projectId;
+    }
 }

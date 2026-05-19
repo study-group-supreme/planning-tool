@@ -105,7 +105,7 @@ public class ProjectService {
         if (project.getTitle().length() > 225) {
             throw new BadRequestException("Task title cannot exceed 225 characters");
         }
-        if ((project.getTitle() != null) && (project.getDescription().length() > 1080)){
+        if ((project.getDescription() != null) && (project.getDescription().length() > 1080)){
             throw new BadRequestException("Project description cannot exceed 1080 characters");
         }
         if (project.getDeadline().isBefore(LocalDate.now())){
