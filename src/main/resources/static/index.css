@@ -188,4 +188,7 @@ progress {
     color: gray;
     font-style: italic;
 }
+.danger{
+ color: #DC143C;
+}
 

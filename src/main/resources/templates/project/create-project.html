@@ -8,6 +8,7 @@
 <body>
 <div></div>
 <form th:action="@{/projects/add}" th:object="${project}" method="post">
+    <p class="danger" th:if="${error != null}" th:text="${error}"></p>
     <p>
         <label>Title</label><br>
         <input type="text" th:field="*{title}"/>
@@ -16,7 +17,6 @@
         <label>Description</label><br>
         <input type="text" th:field="*{description}"/>
     </p>
-    <p th:if="${error != null}" th:text="${error}"></p>
     <p>
         <label>Deadline</label><br>
         <input type="date" th:field="*{deadline}">
