@@ -231,5 +231,18 @@ public class ProjectService {
         }
         return total;
     }
+
+    public BigDecimal getTotalLoggedTimeForProject(int projectId){
+        List<Task> mainTasks = projectRepository.findMainTasksByProjectId(projectId);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for(Task task : mainTasks) {
+            BigDecimal loggedTime = getLoggedTimeForTask(task.getId());
+            if (loggedTime != null){
+                total = total.add(loggedTime);
+            }
+        }
+        return total;
+    }
 }
 
