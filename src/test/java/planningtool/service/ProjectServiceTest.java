@@ -334,6 +334,16 @@ public class ProjectServiceTest {
         verify(taskService).getEstimatedTime(20);
     }
 
+    @Test
+    void getTotalEstimatedTimeForProject_ShouldReturnZero_WhenNoMainTasks(){
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(List.of());
+
+        BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
+
+        assertThat(result).isEqualTo(BigDecimal.ZERO);
+    }
+
 
     // TODO getProjectById() tests should be made
 }
