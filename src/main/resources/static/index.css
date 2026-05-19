@@ -200,4 +200,9 @@ progress {
 .danger{
  color: #DC143C;
 }
-
+.login label, .login input {
+    display: block;
+}
+.login{
+    background: white;
+}
