@@ -145,18 +145,23 @@ public class ProjectController {
         try{
             Project projectToEdit = projectService.getProjectById(projectId);
             model.addAttribute("project", projectToEdit);
-            model.addAttribute("employeesNotOnProject", projectService.getEmployeesNotOnProject(projectId));
-            model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(projectId));
             return "project/edit-project";
         }catch (NotFoundException e){
             return "redirect:/projects";
         }
     }
 
-    @PostMapping("{projectId}/edit")
+    @PostMapping("/{projectId}/edit")
     public String saveEditedProject(@PathVariable int projectId, @ModelAttribute Project project){
-        project.setId(projectId);
-        projectService.editProject(project);
-        return "redirect:/projects/" + projectId;
+        try {
+            project.setId(projectId);
+            projectService.editProject(project);
+            return "redirect:/projects/" + projectId;
+        } catch (BadRequestException e) {
+            return "redirect:/projects/" + projectId + "/edit";
+        } catch (DatabaseOperationException e) {
+            return "redirect:/projects";
+        }
+
     }
 }
