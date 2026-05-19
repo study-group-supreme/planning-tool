@@ -7,8 +7,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.FlashAttributeResultMatchers;
+import planningtool.exception.BadRequestException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
+import planningtool.model.Task;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -133,6 +136,18 @@ public class ProjectControllerTest {
                         .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
+
+    }
+
+    @Test
+    void createProject_CatchesBadRequestExceptionWhenBadRequest() throws Exception {
+        when(projectService.createProject(any())).thenThrow(new BadRequestException(""));
+
+        mockMvc.perform(post("/projects/add")
+                        .sessionAttr("employeeId", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/add"))
+                .andExpect(flash().attributeExists("error"));
 
     }
 
