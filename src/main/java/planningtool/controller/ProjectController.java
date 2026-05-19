@@ -77,8 +77,10 @@ public class ProjectController {
     public String showSpecificProject(@PathVariable int projectId, Model model, HttpSession session) {
         Project project = projectService.getProjectById(projectId);
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
+        BigDecimal totalEstimate = projectService.getTotalEstimatedTimeForProject(projectId);
+        BigDecimal totalLoggedTime = projectService.getTotalLoggedTimeForProject(projectId);
         model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
-        BigDecimal totalEstimate = projectService.getTotalEstimatedTimeForProject(1);
+        model.addAttribute("totalLoggedTime", totalLoggedTime);
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
