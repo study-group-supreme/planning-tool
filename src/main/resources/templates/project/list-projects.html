@@ -7,18 +7,18 @@
 </head>
 <body>
 <div th:replace="fragment/header :: header"></div>
+
 <div class="member-list">
     <p>Welcome!</p>
     <p th:text="${employeeName}"></p>
     <br>
     <p th:text="${date}"></p>
 </div>
+
 <div class="empty-list" th:if="${emptyList}">
     <p th:text="${message}"></p>
-    <p>Welcome</p>
-    <p th:text="${employeeName}"></p>
-    <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>
+
 <div class="row-alignment">
     <button onclick="window.location.href='/projects/add'">Create project</button>
 </div>

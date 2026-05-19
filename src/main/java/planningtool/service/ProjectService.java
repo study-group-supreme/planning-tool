@@ -93,7 +93,7 @@ public class ProjectService {
         Employee employee = employeeRepository.findEmployeeById(employeeId);
         if (projects == null || projects.isEmpty()) {
             //Need help with good error message
-            throw new NotFoundException("No projects found connected to " + employee.getName());
+            throw new NotFoundException("You are not connected to any projects ");
 
         }
         return projects;

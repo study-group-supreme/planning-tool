@@ -46,6 +46,7 @@ public class ProjectController {
         } catch (NotFoundException e) {
             model.addAttribute("emptyList", true);
             model.addAttribute("message", e.getMessage());
+            model.addAttribute("employeeName", employeeService.getEmployeeById(employeeId).getName());
             return "project/list-projects";
         }
     }
