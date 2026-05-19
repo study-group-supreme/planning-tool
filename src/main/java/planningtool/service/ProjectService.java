@@ -15,6 +15,7 @@ import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.repository.TaskRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +159,44 @@ public class ProjectService {
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Project could not be found", e.getCause());
         }
+    }
+
+    public BigDecimal getEstimatedTime(int taskId) {
+        Task task = taskRepository.findTaskById(taskId);
+
+        // Subtask → return its own estimate
+        if (task.getParentTaskId() != null) {
+            return task.getTimeEstimate();
+        }
+
+        // Parent task → check subtasks
+        List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
+
+        if (subtasks.isEmpty()) {
+            return task.getTimeEstimate();
+        }
+
+        // Parent with subtasks → sum subtasks
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task st : subtasks) {
+            if (st.getTimeEstimate() != null) {
+                total = total.add(st.getTimeEstimate());
+            }
+        }
+        return total;
+    }
+
+    public BigDecimal getTotalEstimatedTimeForProject(int projectId) {
+        List<Task> tasks = projectRepository.findMainTasksByProjectId(projectId);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task task : tasks){
+            BigDecimal taskEstimate = getEstimatedTime(task.getId());
+            if (taskEstimate != null){
+                total = total.add(taskEstimate);
+            }
+        }
+        return total;
     }
 }
 

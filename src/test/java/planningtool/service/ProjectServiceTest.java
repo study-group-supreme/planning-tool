@@ -11,12 +11,15 @@ import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
+import planningtool.model.Task;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.exception.BadRequestException;
+import planningtool.repository.TaskRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,8 @@ public class ProjectServiceTest {
     private ProjectRepository projectRepository;
     @Mock
     private EmployeeRepository employeeRepository;
+    @Mock
+    private TaskRepository taskRepository;
 
     @InjectMocks
     private ProjectService projectService;
@@ -303,6 +308,95 @@ public class ProjectServiceTest {
                 () -> projectService.restoreProject(1));
 
         verify(projectRepository).restoreProject(1);
+    }
+
+    @Test
+    void getTotalEstimatedTimeForProject_ShouldSumAllMainTaskEntries(){
+        Task t1 = new Task();
+        t1.setId(10);
+        t1.setTimeEstimate(new BigDecimal("2.5"));
+
+        Task t2 = new Task();
+        t2.setId(20);
+        t2.setTimeEstimate(new BigDecimal("3.0"));
+
+        List<Task> mainTasks = List.of(t1, t2);
+
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(mainTasks);
+
+        // Mock repository calls inside getEstimatedTime()
+        when(taskRepository.findTaskById(10)).thenReturn(t1);
+        when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
+
+        when(taskRepository.findTaskById(20)).thenReturn(t2);
+        when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
+
+
+        BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
+
+        assertThat(result).isEqualTo(new BigDecimal("5.5"));
+    }
+
+    @Test
+    void getTotalEstimatedTimeForProject_ShouldReturnZero_WhenNoMainTasks(){
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(List.of());
+
+        BigDecimal result = projectService.getTotalEstimatedTimeForProject(1);
+
+        assertThat(result).isEqualTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    void getEstimatedTime_SumsSubtaskEstimates_WhenParentHasSubtasks(){
+        Task parent = new Task();
+        parent.setId(1);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("10.0")); // should be ignored
+
+        Task s1 = new Task();
+        s1.setTimeEstimate(new BigDecimal("2.0"));
+
+        Task s2 = new Task();
+        s2.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(1)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(s1, s2));
+
+        BigDecimal result = projectService.getEstimatedTime(1);
+
+        assertThat(result).isEqualByComparingTo("5.5");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsParentEstimate_WhenNoSubTasks(){
+        Task parent = new Task();
+        parent.setId(5);
+        parent.setParentTaskId(null);
+        parent.setTimeEstimate(new BigDecimal("8.0"));
+
+        when(taskRepository.findTaskById(5)).thenReturn(parent);
+        when(taskRepository.findSubtasksByParentId(5)).thenReturn(List.of());
+
+        BigDecimal result = projectService.getEstimatedTime(5);
+
+        assertThat(result).isEqualByComparingTo("8.0");
+    }
+
+    @Test
+    void getEstimatedTime_ReturnsOwnEstimate_WhenTaskIsSubtask(){
+        Task subtask = new Task();
+        subtask.setId(10);
+        subtask.setParentTaskId(1);
+        subtask.setTimeEstimate(new BigDecimal("3.5"));
+
+        when(taskRepository.findTaskById(10)).thenReturn(subtask);
+
+        BigDecimal result = projectService.getEstimatedTime(10);
+
+        assertThat(result).isEqualByComparingTo("3.5");
+        verify(taskRepository, never()).findSubtasksByParentId(anyInt());
     }
 
 

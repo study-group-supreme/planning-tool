@@ -15,6 +15,7 @@ import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -76,10 +77,12 @@ public class ProjectController {
         Project project = projectService.getProjectById(projectId);
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
         model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
+        BigDecimal totalEstimate = projectService.getTotalEstimatedTimeForProject(1);
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         model.addAttribute("currentUserId", currentUserId);
+        model.addAttribute("totalEstimate", totalEstimate);
         return "project/details-project";
     }
 
