@@ -77,6 +77,7 @@ public class ProjectController {
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
         model.addAttribute("project", project);
         model.addAttribute("mainTask", false);
+        model.addAttribute("subtask", taskService.getTotalSubtasks(project.getTasks()));
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         model.addAttribute("currentUserId", currentUserId);
         return "project/details-project";
