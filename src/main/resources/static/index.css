@@ -1,10 +1,10 @@
 .delete-button {
     color: black;
     align-items: center;
-    background-color: red;
+    background-color: #FF3131;
 }
 .delete-button:hover {
-    background-color: darkred;
+    background-color: #DC143C;
     cursor: pointer;
 }
 
@@ -13,7 +13,7 @@
     background-color: lightgreen;
 }
 .mark-done-button:hover {
-    background-color: darkgreen;
+    background-color: limegreen;
     cursor: pointer;
 }
 
@@ -162,7 +162,7 @@ td div {
 .task-list td:nth-child(1) { width: 25%; }
 .task-list td:nth-child(2) { width: 25%; }
 .btn:hover{
-    background-color: gray;
+    background-color: lightgray;
     cursor: pointer;
 }
 progress{
