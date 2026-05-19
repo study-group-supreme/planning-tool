@@ -11,6 +11,7 @@ import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
+import planningtool.model.TimeEntry;
 import planningtool.repository.EmployeeRepository;
 import planningtool.repository.ProjectRepository;
 import planningtool.repository.TaskRepository;
@@ -194,6 +195,38 @@ public class ProjectService {
             BigDecimal taskEstimate = getEstimatedTime(task.getId());
             if (taskEstimate != null){
                 total = total.add(taskEstimate);
+            }
+        }
+        return total;
+    }
+
+    public BigDecimal getLoggedTimeForTask(int taskId){
+        Task task = taskRepository.findTaskById(taskId);
+
+        // Always include the parent tasks own time entries
+        BigDecimal total = sumTimeEntriesForTask(taskId);
+
+        // It's a parent task --> sum all subtasks
+        List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
+
+        // if no subtasks, return the tasks own sum
+        if(subtasks.isEmpty()){
+            return total;
+        }
+
+        for (Task subtask : subtasks){
+            total = total.add(sumTimeEntriesForTask(subtask.getId()));
+        }
+
+        return total;
+    }
+
+    private BigDecimal sumTimeEntriesForTask(int taskId){
+        List<TimeEntry> entries = taskRepository.findTimeEntriesByTaskId(taskId);
+        BigDecimal total = BigDecimal.ZERO;
+        for (TimeEntry entry : entries){
+            if (entry.getTimeSpent() != null){
+                total = total.add(entry.getTimeSpent());
             }
         }
         return total;

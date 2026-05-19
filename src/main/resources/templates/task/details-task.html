@@ -30,6 +30,11 @@
     </p>
 
     <p>
+        <strong>Total Logged Time:</strong>
+        <span th:text="${totalLoggedTime != null ? totalLoggedTime + ' hours' : 'No time logged'}"></span>
+    </p>
+
+    <p>
         <strong>High Priority:</strong>
         <span th:text="${task.highPriority ? 'Yes' : 'No'}"></span>
     </p>
