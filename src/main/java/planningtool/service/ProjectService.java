@@ -283,7 +283,7 @@ public class ProjectService {
     public BigDecimal calculateCurrentCostOfProject(int projectId){
         BigDecimal totalCost = BigDecimal.ZERO;
         for(Task task : projectRepository.findTasksByProjectId(projectId)){
-            for(TimeEntry timeEntry : task.getTimeEntries()){
+            for(TimeEntry timeEntry : taskRepository.findTimeEntriesByTaskId(task.getId())){
                 BigDecimal costOfTimeEntry = employeeRepository.findPricePerHourByEmployeeId(timeEntry.getEmployeeId()).multiply(timeEntry.getTimeSpent());
                 totalCost = totalCost.add(costOfTimeEntry);
             }

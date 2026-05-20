@@ -89,6 +89,7 @@ public class ProjectController {
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         model.addAttribute("currentUserId", currentUserId);
         model.addAttribute("totalEstimate", totalEstimate);
+        model.addAttribute("currentCost", projectService.calculateCurrentCostOfProject(projectId));
         return "project/details-project";
     }
 
