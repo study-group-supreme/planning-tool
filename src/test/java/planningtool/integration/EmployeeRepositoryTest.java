@@ -55,7 +55,7 @@ public class EmployeeRepositoryTest {
     }
 
     @Test
-    void findPricePerHourByEmployeeId_ShouldReturnPricePerHourForSpecifikEmployee(){
+    void findPricePerHourByEmployeeId_ShouldReturnPricePerHourForSpecificEmployee(){
         BigDecimal pricePerHour = employeeRepository.findPricePerHourByEmployeeId(1);
 
         assertThat(pricePerHour).isEqualTo(new BigDecimal("1000.00"));
