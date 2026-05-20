@@ -567,5 +567,33 @@ public class ProjectServiceTest {
         assertThat(result).isEqualTo(new BigDecimal("3.5"));
     }
 
+    @Test
+    void getTotalLoggedTimeForProject_ShouldSumAllMainTaskEntries(){
+        Task task1 = new Task();
+        task1.setId(10);
+        Task task2 = new Task();
+        task2.setId(20);
+
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setTimeSpent(new BigDecimal("2.5"));
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setTimeSpent(new BigDecimal("3.0"));
+
+        List<Task> mainTasks = List.of(task1, task2);
+        when(projectRepository.findMainTasksByProjectId(1)).thenReturn(mainTasks);
+
+        // Mock repository calls inside getLoggedTimeForTask()
+        when(taskRepository.findTaskById(10)).thenReturn(task1);
+        when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(10)).thenReturn(List.of(entry1));
+
+        when(taskRepository.findTaskById(20)).thenReturn(task2);
+        when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(20)).thenReturn(List.of(entry2));
+
+        BigDecimal result = projectService.getTotalLoggedTimeForProject(1);
+        assertThat(result).isEqualTo(new BigDecimal("5.5"));
+    }
+
     // TODO getProjectById() tests should be made
 }

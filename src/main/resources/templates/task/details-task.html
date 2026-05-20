@@ -17,7 +17,7 @@
 
     <p>
         <strong>Parent Task:</strong>
-        <span th:if="${parentTask != null}" th:text="${parentTask.title}"></span>
+        <a th:if="${parentTask != null}" th:href="@{/tasks/{id}(id=${parentTask.id})}" th:text="${parentTask.title}"></a>
         <span th:if="${parentTask == null}">None</span>
     </p>
 
@@ -69,7 +69,7 @@
 </div>
 
 <div th:if="${hasChildren}">
-    <p><em>This task has subtasks. Time entries can only be added to a task if it has no subtasks defined.</em></p>
+    <p><em>This task has subtasks. Any further time entries must be logged in a subtask.</em></p>
 </div>
 <table class="time-entries" th:if="${timeEntries != null and !timeEntries.isEmpty()}">
     <tr>
