@@ -175,8 +175,13 @@ public class ProjectController {
 
     @GetMapping("/history")
     public String showAllProjects(Model model) {
-            List<Project> allProjects = projectService.getAllProjects();
-            model.addAttribute("allProject", allProjects);
- return "project/list-project-history";
+        List<Project> allProjects = projectService.getAllProjects();
+        Map<Integer, BigDecimal> loggedTimeMap = new HashMap<>();
+        for (Project p : allProjects) {
+            loggedTimeMap.put(p.getId(), projectService.getTotalLoggedTimeForProject(p.getId()));
+        }
+        model.addAttribute("allProject", allProjects);
+        model.addAttribute("loggedTime", loggedTimeMap);
+        return "project/list-project-history";
     }
 }

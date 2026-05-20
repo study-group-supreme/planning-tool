@@ -5,7 +5,7 @@
         <button type="button"
                 onclick="window.location.href='/projects'"
                 th:if="${session.employeeId != null}"
-                >All projects</button>
+                >All my projects</button>
         <div th:unless="${hideCreateProject}" >
         <button type="button"
                 onclick="window.location.href='/projects/add'"
