@@ -12,6 +12,11 @@
                 th:if="${session.employeeId != null}"
                 >Create project</button>
         </div>
+        <button type="button"
+                onclick="window.location.href='/projects/history'"
+        th:if="${session.employeeId != null}">
+            All projects history
+        </button>
     </div>
     <div class="navright">
         <button type="button"

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All projects</title>
+    <link rel="stylesheet" th:href="@{/index.css}">
+</head>
+<body>
+<div th:replace="fragment/header :: header"></div>
+<br>
+<form th:action="@{/projects/history}" th:object="${allProject}">
+    <table>
+        <tr>
+            <th> All active projects </th>
+            <th>Date of creation</th>
+        </tr>
+        <tr th:each="project : ${allProject}" th:if="${project.isActive()}">
+            <td>
+            <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+            </td>
+            <td th:text="${project.getTimeOfCreation()}"></td>
+        </tr>
+
+
+    </table>
+
+    <table>
+        <tr>
+            <th>All archived projects</th>
+            <th>Date of creation</th>
+        </tr>
+        <tr th:each="project : ${allProject}" th:if="${!project.isActive()}">
+            <td>
+                <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
+            </td>
+            <td th:text="${project.getTimeOfCreation()}"></td>
+        </tr>
+
+
+    </table>
+
+</form>
+</body>
+</html>

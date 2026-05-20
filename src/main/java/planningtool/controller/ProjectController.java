@@ -70,7 +70,7 @@ public class ProjectController {
             project.setProjectCreatorId(projectManagerId);
             projectService.createProject(project);
             return "redirect:/projects/add-member/" + project.getId();
-        }catch (BadRequestException e){
+        } catch (BadRequestException e) {
             attributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/projects/add";
         }
@@ -111,7 +111,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/add-member-details")
-    public String addProjectMemberInDetailsPage(@RequestParam int employeeId, @PathVariable int projectId){
+    public String addProjectMemberInDetailsPage(@RequestParam int employeeId, @PathVariable int projectId) {
         Employee employee = employeeService.getEmployeeById(employeeId);
         Project project = projectService.getProjectById(projectId);
         projectService.addProjectMemberToProject(employee, project);
@@ -149,18 +149,18 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/edit")
-    public String showEditProjectForm(@PathVariable int projectId, Model model){
-        try{
+    public String showEditProjectForm(@PathVariable int projectId, Model model) {
+        try {
             Project projectToEdit = projectService.getProjectById(projectId);
             model.addAttribute("project", projectToEdit);
             return "project/edit-project";
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return "redirect:/projects";
         }
     }
 
     @PostMapping("/{projectId}/edit")
-    public String saveEditedProject(@PathVariable int projectId, @ModelAttribute Project project){
+    public String saveEditedProject(@PathVariable int projectId, @ModelAttribute Project project) {
         try {
             project.setId(projectId);
             projectService.editProject(project);
@@ -171,5 +171,12 @@ public class ProjectController {
             return "redirect:/projects";
         }
 
+    }
+
+    @GetMapping("/history")
+    public String showAllProjects(Model model) {
+            List<Project> allProjects = projectService.getAllProjects();
+            model.addAttribute("allProject", allProjects);
+ return "project/list-project-history";
     }
 }
