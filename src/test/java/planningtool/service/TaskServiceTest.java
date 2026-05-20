@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
+import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
@@ -32,6 +34,9 @@ public class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private ProjectService projectService;
 
     @InjectMocks
     private TaskService taskService;
@@ -153,6 +158,19 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setAssignedMemberId(null);
         assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
+    void createTask_ThrowsBadRequestException_IfAssignedMemberIsNotOnProject(){
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setAssignedMemberId(2);
+
+        when(projectService.getProjectMemberIdsByProjectId(1)).thenReturn(List.of(1));
+
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+
         verify(taskRepository, never()).insertTask(any());
     }
 
