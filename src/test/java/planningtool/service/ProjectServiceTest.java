@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -350,7 +351,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void getEstimatedTime_SumsSubtaskEstimates_WhenParentHasSubtasks(){
+    void getEstimatedTime_ForTask_SumsSubtaskEstimates_WhenParentHasSubtasks(){
         Task parent = new Task();
         parent.setId(1);
         parent.setParentTaskId(null);
@@ -365,13 +366,13 @@ public class ProjectServiceTest {
         when(taskRepository.findTaskById(1)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(s1, s2));
 
-        BigDecimal result = projectService.getEstimatedTime(1);
+        BigDecimal result = projectService.getEstimatedTimeForTask(1);
 
         assertThat(result).isEqualByComparingTo("5.5");
     }
 
     @Test
-    void getEstimatedTime_ReturnsParentEstimate_WhenNoSubTasks(){
+    void getEstimatedTime_ForTask_ReturnsParentEstimate_WhenNoSubTasks(){
         Task parent = new Task();
         parent.setId(5);
         parent.setParentTaskId(null);
@@ -380,13 +381,13 @@ public class ProjectServiceTest {
         when(taskRepository.findTaskById(5)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(5)).thenReturn(List.of());
 
-        BigDecimal result = projectService.getEstimatedTime(5);
+        BigDecimal result = projectService.getEstimatedTimeForTask(5);
 
         assertThat(result).isEqualByComparingTo("8.0");
     }
 
     @Test
-    void getEstimatedTime_ReturnsOwnEstimate_WhenTaskIsSubtask(){
+    void getEstimatedTime_ForTask_ReturnsOwnEstimate_WhenTaskIsSubtask(){
         Task subtask = new Task();
         subtask.setId(10);
         subtask.setParentTaskId(1);
@@ -394,7 +395,7 @@ public class ProjectServiceTest {
 
         when(taskRepository.findTaskById(10)).thenReturn(subtask);
 
-        BigDecimal result = projectService.getEstimatedTime(10);
+        BigDecimal result = projectService.getEstimatedTimeForTask(10);
 
         assertThat(result).isEqualByComparingTo("3.5");
         verify(taskRepository, never()).findSubtasksByParentId(anyInt());
@@ -594,6 +595,83 @@ public class ProjectServiceTest {
         BigDecimal result = projectService.getTotalLoggedTimeForProject(1);
         assertThat(result).isEqualTo(new BigDecimal("5.5"));
     }
+
+    @Test
+    void getProjectTimeSummaries_ReturnsCorrectNestedMapForMultipleProjects() {
+        // Two projects
+        Project p1 = new Project();
+        p1.setId(1);
+
+        Project p2 = new Project();
+        p2.setId(2);
+
+        List<Project> projects = List.of(p1, p2);
+
+        // Project 1 setup
+        Task t1 = new Task();
+        t1.setId(10);
+        t1.setTimeEstimate(new BigDecimal("5.5"));
+
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(List.of(t1));
+
+        TimeEntry e1 = new TimeEntry();
+        e1.setTimeSpent(new BigDecimal("10.0"));
+
+        when(taskRepository.findTaskById(10)).thenReturn(t1);
+        when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(10)).thenReturn(List.of(e1));
+
+        // Project 2 setup
+        Task t2 = new Task();
+        t2.setId(20);
+        t2.setTimeEstimate(new BigDecimal("3.0"));
+
+        when(projectRepository.findMainTasksByProjectId(2))
+                .thenReturn(List.of(t2));
+
+        TimeEntry e2 = new TimeEntry();
+        e2.setTimeSpent(new BigDecimal("7.5"));
+
+        when(taskRepository.findTaskById(20)).thenReturn(t2);
+        when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(20)).thenReturn(List.of(e2));
+
+        // Act
+        Map<Integer, Map<String, BigDecimal>> result =
+                projectService.getProjectTimeSummaries(projects);
+
+        // Assert
+        assertThat(result).containsKeys(1, 2);
+
+        assertThat(result.get(1).get("estimate")).isEqualByComparingTo("5.5");
+        assertThat(result.get(1).get("logged")).isEqualByComparingTo("10.0");
+
+        assertThat(result.get(2).get("estimate")).isEqualByComparingTo("3.0");
+        assertThat(result.get(2).get("logged")).isEqualByComparingTo("7.5");
+    }
+
+    @Test
+    void calculateEstimatedPriceForTask_ShouldCalculatePriceOfTask_UsingTaskId(){
+        Task task = new Task();
+        task.setId(1);
+        task.setAssignedMemberId(1);
+        task.setTimeEstimate(new BigDecimal(8));
+
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setRoleId(1);
+
+        when(employeeRepository.findPricePerHourByEmployeeId(1)).thenReturn(new BigDecimal(500));
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+
+        BigDecimal result = projectService.calculateEstimatedPriceForTask(1);
+
+        assertThat(result).isEqualTo(new BigDecimal(4000));
+    }
+    // TODO Make exception handling and test for exception scenario
+
+    // TODO add similar tests to EstimatedTime as logged-time tests
 
     // TODO getProjectById() tests should be made
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
+import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
@@ -45,7 +46,6 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task) {
-
         // If this task is a subtask
         if (task.getParentTaskId() != null) {
             Task parent = taskRepository.findTaskById(task.getParentTaskId());
@@ -66,8 +66,9 @@ public class TaskService {
             task.setHighPriority(false);
         }
         task.setDone(false);
-
-        // Previous validation rules
+        if(task.getAssignedMemberId() == null || !projectService.getProjectMemberIdsByProjectId(task.getProjectId()).contains((Integer) task.getAssignedMemberId())){
+            throw new BadRequestException("A member of the project has to be assigned to the task");
+        }
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
         }

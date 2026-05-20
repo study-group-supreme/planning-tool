@@ -6,10 +6,12 @@
                 onclick="window.location.href='/projects'"
                 th:if="${session.employeeId != null}"
                 >All projects</button>
+        <div th:unless="${hideCreateProject}" >
         <button type="button"
                 onclick="window.location.href='/projects/add'"
                 th:if="${session.employeeId != null}"
                 >Create project</button>
+        </div>
     </div>
     <div class="navright">
         <button type="button"

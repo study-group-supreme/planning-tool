@@ -34,6 +34,11 @@
         <span th:text="${totalLoggedTime != null ? totalLoggedTime + ' hours' : 'No time logged'}"></span>
     </p>
 
+    <p th:if="${estimatedCost != null}">
+        <strong>Estimated Cost:</strong>
+        <span th:text="${estimatedCost}"></span>
+    </p>
+
     <p>
         <strong>High Priority:</strong>
         <span th:text="${task.highPriority ? 'Yes' : 'No'}"></span>

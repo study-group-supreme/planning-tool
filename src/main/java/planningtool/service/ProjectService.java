@@ -19,7 +19,9 @@ import planningtool.repository.TaskRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProjectService {
@@ -80,10 +82,18 @@ public class ProjectService {
         return projectRepository.findMainTasksByProjectId(id);
     }
 
-    public List<Employee> getProjectMembersByProjectId(int id) {
-        return projectRepository.findProjectMembersByProjectId(id);
+    public List<Employee> getProjectMembersByProjectId(int projectId) {
+        return projectRepository.findProjectMembersByProjectId(projectId);
     }
 
+    public List<Integer> getProjectMemberIdsByProjectId(int projectId){
+        List<Employee> projectMembers = getProjectMembersByProjectId(projectId);
+        List<Integer> projectMemberIds = new ArrayList<>();
+        for(Employee employee : projectMembers){
+            projectMemberIds.add(employee.getId());
+        }
+        return projectMemberIds;
+    }
 
     public List<Employee> getEmployeesNotOnProject(int projectId) {
         return employeeRepository.findEmployeesNotOnProject(projectId);
@@ -162,7 +172,8 @@ public class ProjectService {
         }
     }
 
-    public BigDecimal getEstimatedTime(int taskId) {
+    @Transactional
+    public BigDecimal getEstimatedTimeForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
 
         // Subtask → return its own estimate
@@ -184,6 +195,7 @@ public class ProjectService {
                 total = total.add(st.getTimeEstimate());
             }
         }
+        taskRepository.updateTimeEstimateForTask(taskId, total);
         return total;
     }
 
@@ -192,7 +204,7 @@ public class ProjectService {
 
         BigDecimal total = BigDecimal.ZERO;
         for (Task task : tasks){
-            BigDecimal taskEstimate = getEstimatedTime(task.getId());
+            BigDecimal taskEstimate = getEstimatedTimeForTask(task.getId());
             if (taskEstimate != null){
                 total = total.add(taskEstimate);
             }
@@ -243,6 +255,30 @@ public class ProjectService {
             }
         }
         return total;
+    }
+
+
+    // Nested Map:
+    // Outer map <Integer, ... > the keys represent the projectId
+    // The inner map <String, BigDecimal> the keys are strings, "estimate", "logged"
+    public Map<Integer, Map<String, BigDecimal>> getProjectTimeSummaries(List<Project> projects){
+        Map<Integer, Map<String, BigDecimal>> result = new HashMap<>();
+
+        for (Project project : projects){
+            Map<String, BigDecimal> values = new HashMap<>();
+            values.put("estimate", getTotalEstimatedTimeForProject(project.getId()));
+            values.put("logged", getTotalLoggedTimeForProject(project.getId()));
+            result.put(project.getId(), values);
+        }
+        return result;
+    }
+
+    @Transactional
+    public BigDecimal calculateEstimatedPriceForTask(int taskId){
+        Task task = taskRepository.findTaskById(taskId);
+        Integer employeeId = task.getAssignedMemberId();
+
+        return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
     }
 }
 
