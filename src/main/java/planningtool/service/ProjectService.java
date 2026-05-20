@@ -82,10 +82,18 @@ public class ProjectService {
         return projectRepository.findMainTasksByProjectId(id);
     }
 
-    public List<Employee> getProjectMembersByProjectId(int id) {
-        return projectRepository.findProjectMembersByProjectId(id);
+    public List<Employee> getProjectMembersByProjectId(int projectId) {
+        return projectRepository.findProjectMembersByProjectId(projectId);
     }
 
+    public List<Integer> getProjectMemberIdsByProjectId(int projectId){
+        List<Employee> projectMembers = getProjectMembersByProjectId(projectId);
+        List<Integer> projectMemberIds = new ArrayList<>();
+        for(Employee employee : projectMembers){
+            projectMemberIds.add(employee.getId());
+        }
+        return projectMemberIds;
+    }
 
     public List<Employee> getEmployeesNotOnProject(int projectId) {
         return employeeRepository.findEmployeesNotOnProject(projectId);
