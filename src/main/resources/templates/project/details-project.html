@@ -107,10 +107,10 @@
             Task status
         </th>
         <th>
-            Progression status
+            Task details
         </th>
         <th>
-            Task details
+            Progression status
         </th>
     </tr>
     <tr th:if="${task.getParentTaskId()== null}" th:each="task : ${project.getTasks()}">
@@ -146,6 +146,9 @@
             </div>
         </td>
         <td>
+            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+        </td>
+        <td>
             <div th:if="${!mainTask and progressMap.get(task)[1] > 0}">
 
                 <progress
@@ -157,9 +160,6 @@
     </span>
 
             </div>
-        </td>
-        <td>
-            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
         </td>
     </tr>
 </table>
@@ -223,6 +223,9 @@
         </td>
     </tr>
     <!--CREATE TASK -->
+
+</table>
+<table class="task-list">
 
 </table>
 
