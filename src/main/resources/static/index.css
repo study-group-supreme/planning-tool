@@ -183,12 +183,24 @@ td div {
     cursor: pointer;
 }
 
-.task-list td:nth-child(1) {
-    width: 25%;
+.task-list td:nth-child(1),
+.task-list th:nth-child(1) {
+    width: 300px;
 }
 
-.task-list td:nth-child(2) {
-    width: 25%;
+.task-list td:nth-child(2),
+.task-list th:nth-child(2) {
+    width: 300px;
+}
+
+.task-list td:nth-child(3),
+.task-list th:nth-child(3) {
+    width: 200px;
+}
+
+.task-list td:nth-child(4),
+.task-list th:nth-child(4) {
+    width: 200px;
 }
 
 .btn:hover {

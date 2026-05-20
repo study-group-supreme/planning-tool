@@ -135,13 +135,13 @@
             Task status
         </th>
         <th>
-            Progression status
-        </th>
-        <th>
             Task details
         </th>
+        <th>
+            Progression status
+        </th>
     </tr>
-    <tr th:if="${task.getParentTaskId()== null}" th:each="task : ${project.getTasks()}">
+    <tr th:if="${task.getParentTaskId()== null && !task.isDone()}" th:each="task : ${project.getTasks()}">
         <td>
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
@@ -174,6 +174,11 @@
             </div>
         </td>
         <td>
+            <form th:action="@{/tasks/{id}(id=${task.id})}" method="get">
+                <button type="submit" class="btn">Details</button>
+            </form>
+        </td>
+        <td>
             <div th:if="${!mainTask and progressMap.get(task)[1] > 0}">
 
                 <progress
@@ -185,9 +190,6 @@
     </span>
 
             </div>
-        </td>
-        <td>
-            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
         </td>
     </tr>
 </table>
@@ -209,7 +211,7 @@
             Parent task
         </th>
     </tr>
-    <tr th:if="${task.getParentTaskId()!= null}" th:each="task : ${project.getTasks()}">
+    <tr th:if="${task.getParentTaskId()!= null && !task.isDone()}" th:each="task : ${project.getTasks()}">
         <td>
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
@@ -240,7 +242,9 @@
             </div>
         </td>
         <td>
-            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+            <form th:action="@{/tasks/{id}(id=${task.id})}" method="get">
+                <button type="submit" class="btn">Details</button>
+            </form>
         </td>
         <td th:if="${task.getParentTaskId()} != null">
             <span th:each="subTask : ${project.getTasks()}">
@@ -251,6 +255,66 @@
         </td>
     </tr>
     <!--CREATE TASK -->
+
+</table>
+<table class="task-list">
+    <tr>
+        <th>
+            Completed tasks
+        </th>
+        <th>
+            Task status
+        </th>
+        <th>
+            Task details
+        </th>
+        <th>
+            Parent task
+        </th>
+    </tr>
+    <tr th:each="task : ${project.getTasks()}" th:if="${task.isDone()}">
+        <td>
+            <span th:text="${task.title}"></span>
+            <span th:if="${task.isHighPriority()}">&#10071;</span>
+        </td>
+        <td>
+            <div class="task-actions">
+                <div th:if="${!task.done}">
+                    <form th:action="@{/tasks/mark-done}" method="post">
+                        <input type="hidden" name="taskId" th:value="${task.id}">
+                        <input type="hidden" name="projectId" th:value="${project.id}">
+                        <button class="mark-done-button" type="submit">Mark done</button>
+                    </form>
+                </div>
+
+                <div th:if="${task.done}">
+                    <span th:if="${task.isDone()}">&#10004;</span>
+                    <form th:action="@{/tasks/mark-done}" method="post">
+                        <input type="hidden" name="projectId" th:value="${project.id}">
+                        <input type="hidden" name="taskId" th:value="${task.id}">
+                        <button class="mark-not-button" type="submit">Mark not done</button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                <form th:if="${!task.done}" th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                    <button class="btn" type="submit">Edit Task</button>
+                </form>
+            </div>
+        </td>
+        <td>
+            <form th:action="@{/tasks/{id}(id=${task.id})}" method="get">
+                <button type="submit" class="btn">Details</button>
+            </form>
+        </td>
+        <td th:if="${task.getParentTaskId()} != null">
+            <span th:each="subTask : ${project.getTasks()}">
+                <span th:if="${task.getParentTaskId()} == ${subTask.getId()}">
+                    <span th:text="${subTask.title}"></span>
+                </span>
+            </span>
+        </td>
+    </tr>
 
 </table>
 
