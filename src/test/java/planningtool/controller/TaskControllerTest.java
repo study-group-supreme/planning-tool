@@ -154,6 +154,7 @@ public class TaskControllerTest {
         mockMvc.perform(post("/tasks/quick-add")
                         .param("title", "test")
                         .param("projectId", "1")
+                        .param("member_id", "1")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
