@@ -19,7 +19,9 @@ import planningtool.repository.TaskRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProjectService {
@@ -243,6 +245,22 @@ public class ProjectService {
             }
         }
         return total;
+    }
+
+
+    // Nested Map:
+    // Outer map <Integer, ... > the keys represent the projectId
+    // The inner map <String, BigDecimal> the keys are strings, "estimate", "logged"
+    public Map<Integer, Map<String, BigDecimal>> getProjectTimeSummaries(List<Project> projects){
+        Map<Integer, Map<String, BigDecimal>> result = new HashMap<>();
+
+        for (Project project : projects){
+            Map<String, BigDecimal> values = new HashMap<>();
+            values.put("estimate", getTotalEstimatedTimeForProject(project.getId()));
+            values.put("logged", getTotalLoggedTimeForProject(project.getId()));
+            result.put(project.getId(), values);
+        }
+        return result;
     }
 }
 
