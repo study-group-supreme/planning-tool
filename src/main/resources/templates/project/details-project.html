@@ -18,7 +18,7 @@
 
     <div class="row-alignment">
         <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
-            <button class="btn">Edit Project</button>
+            <button th:unless="${isArchived}" class="btn">Edit Project</button>
         </form>
 
         <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
@@ -46,7 +46,7 @@
     </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">
-        <button type="submit"
+        <button th:unless="${isArchived}"  type="submit"
                 class="btn"
                 onclick="return confirm('Are you sure you want to archive this project?')">Archive project
         </button>
@@ -70,7 +70,7 @@
         <tr>
             <td>
                 <h4>Create Draft Task</h4>
-                <form class="create-task" th:action="@{/tasks/quick-add}" method="post">
+                <form th:unless="${isArchived}" class="create-task" th:action="@{/tasks/quick-add}" method="post">
 
                     <input type="hidden" name="projectId" th:value="${project.id}">
 
@@ -84,13 +84,13 @@
                             ></option>
                         </select>
                     </label>
-                    <button class="btn" type="submit">Create</button>
+                    <button th:unless="${isArchived}" class="btn" type="submit">Create</button>
                 </form>
                 <br>
                 <h4>Create Full Task</h4>
                 <form class="create-task" th:action="@{/tasks/add}" method="get">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button class="btn" type="submit">Create</button>
+                    <button th:unless="${isArchived}" class="btn" type="submit">Create</button>
                 </form>
 
             </td>
@@ -108,7 +108,7 @@
 
                         </select>
                     </label>
-                    <button type="submit">Add</button>
+                    <button th:unless="${isArchived}" type="submit">Add</button>
                 </form>
             </td>
         </tr>
@@ -153,7 +153,7 @@
                 <form th:action="@{/tasks/mark-done}" method="post">
                     <input type="hidden" name="taskId" th:value="${task.id}">
                     <input type="hidden" name="projectId" th:value="${project.id}">
-                    <button class="mark-done-button" type="submit">
+                    <button th:unless="${isArchived}" class="mark-done-button" type="submit">
                         Mark done
                     </button>
                 </form>
@@ -164,12 +164,12 @@
                 <form th:action="@{/tasks/mark-done}" method="post">
                     <input type="hidden" name="projectId" th:value="${project.id}">
                     <input type="hidden" name="taskId" th:value="${task.id}">
-                    <button class="mark-not-button" type="submit">Mark not done</button>
+                    <button th:unless="${isArchived}" class="mark-not-button" type="submit">Mark not done</button>
                 </form>
             </div>
             <div>
                 <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
-                    <button class="btn" type="submit">Edit Task</button>
+                    <button th:unless="${isArchived}" class="btn" type="submit">Edit Task</button>
                 </form>
             </div>
         </td>
@@ -220,7 +220,7 @@
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="taskId" th:value="${task.id}">
                         <input type="hidden" name="projectId" th:value="${project.id}">
-                        <button class="mark-done-button" type="submit">Mark done</button>
+                        <button th:unless="${isArchived}" class="mark-done-button" type="submit">Mark done</button>
                     </form>
                 </div>
 
@@ -229,13 +229,13 @@
                     <form th:action="@{/tasks/mark-done}" method="post">
                         <input type="hidden" name="projectId" th:value="${project.id}">
                         <input type="hidden" name="taskId" th:value="${task.id}">
-                        <button class="mark-not-button" type="submit">Mark not done</button>
+                        <button th:unless="${isArchived}" class="mark-not-button" type="submit">Mark not done</button>
                     </form>
                 </div>
             </div>
             <div>
                 <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
-                    <button class="btn" type="submit">Edit Task</button>
+                    <button th:unless="${isArchived}" class="btn" type="submit">Edit Task</button>
                 </form>
             </div>
         </td>
@@ -265,7 +265,7 @@
         <form th:action="@{/projects/{projectId}/remove-member(projectId=${project.id})}" method="post">
             <input type="hidden" th:value="${project.id}">
             <input name="employeeId" type="hidden" th:value="${currentUserId}">
-            <button class="leave-button" type="submit"
+            <button th:unless="${isArchived}" class="leave-button" type="submit"
                     onclick="return confirm('Are you sure, you want to leave this project?')">
                 Leave project
             </button>

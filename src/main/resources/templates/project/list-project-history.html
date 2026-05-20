@@ -35,9 +35,9 @@
             <th>Total logged time</th>
         </tr>
         <tr th:each="project : ${allProject}" th:if="${!project.isActive()}">
-            <tda>
+            <td>
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
-            </tda>
+            </td>
             <td th:text="${project.getTimeOfCreation()}"></td>
             <td th:text="${loggedTime[project.id]} + ' hours'" ></td>
         </tr>
