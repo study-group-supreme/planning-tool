@@ -8,6 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,5 +52,12 @@ public class EmployeeRepositoryTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getName()).isEqualTo("Andreas Jensen");
         assertThat(result.get(1).getName()).isEqualTo("August Skipper");
+    }
+
+    @Test
+    void findPricePerHourByEmployeeId_ShouldReturnPricePerHourForSpecifikEmployee(){
+        BigDecimal pricePerHour = employeeRepository.findPricePerHourByEmployeeId(1);
+
+        assertThat(pricePerHour).isEqualTo(new BigDecimal("1000.00"));
     }
 }
