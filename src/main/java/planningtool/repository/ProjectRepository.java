@@ -158,6 +158,12 @@ public class ProjectRepository {
                 """;
         jdbc.update(sql, true, projectId);
     }
+    public List<Project> findAllProjects(){
+        String sql = """
+                SELECT * FROM project
+                """;
+        return jdbc.query(sql, projectRowMapper);
+    }
 
 }
 

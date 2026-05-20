@@ -5,13 +5,18 @@
         <button type="button"
                 onclick="window.location.href='/projects'"
                 th:if="${session.employeeId != null}"
-                >All projects</button>
+                >All my projects</button>
         <div th:unless="${hideCreateProject}" >
         <button type="button"
                 onclick="window.location.href='/projects/add'"
                 th:if="${session.employeeId != null}"
                 >Create project</button>
         </div>
+        <button type="button"
+                onclick="window.location.href='/projects/history'"
+        th:if="${session.employeeId != null}">
+            All projects history
+        </button>
     </div>
     <div class="navright">
         <button type="button"
