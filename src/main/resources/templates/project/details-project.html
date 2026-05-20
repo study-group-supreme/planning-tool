@@ -146,7 +146,9 @@
             </div>
         </td>
         <td>
-            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+            <form th:action="@{/tasks/{id}(id=${task.id})}" method="get">
+                <button type="submit" class="btn">Details</button>
+            </form>
         </td>
         <td>
             <div th:if="${!mainTask and progressMap.get(task)[1] > 0}">
@@ -212,7 +214,9 @@
             </div>
         </td>
         <td>
-            <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}"></a>
+            <form th:action="@{/tasks/{id}(id=${task.id})}" method="get">
+                <button type="submit" class="btn">Details</button>
+            </form>
         </td>
         <td th:if="${task.getParentTaskId()} != null">
             <span th:each="subTask : ${project.getTasks()}">
