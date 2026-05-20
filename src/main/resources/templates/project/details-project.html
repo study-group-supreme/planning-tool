@@ -113,7 +113,7 @@
             Progression status
         </th>
     </tr>
-    <tr th:if="${task.getParentTaskId()== null}" th:each="task : ${project.getTasks()}">
+    <tr th:if="${task.getParentTaskId()== null && !task.isDone()}" th:each="task : ${project.getTasks()}">
         <td>
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
@@ -183,7 +183,7 @@
             Parent task
         </th>
     </tr>
-    <tr th:if="${task.getParentTaskId()!= null}" th:each="task : ${project.getTasks()}">
+    <tr th:if="${task.getParentTaskId()!= null && !task.isDone()}" th:each="task : ${project.getTasks()}">
         <td>
             <span th:text="${task.title}"></span>
             <span th:if="${task.isHighPriority()}">&#10071;</span>
@@ -230,6 +230,20 @@
 
 </table>
 <table class="task-list">
+    <tr>
+        <th>
+            Completed tasks
+        </th>
+        <th>
+            Task status
+        </th>
+        <th>
+            Task details
+        </th>
+        <th>
+            Parent task
+        </th>
+    </tr>
 
 </table>
 
