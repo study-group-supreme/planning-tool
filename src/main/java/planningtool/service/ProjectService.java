@@ -172,7 +172,7 @@ public class ProjectService {
         }
     }
 
-    public BigDecimal getEstimatedTime(int taskId) {
+    public BigDecimal getEstimatedTimeForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
 
         // Subtask → return its own estimate
@@ -202,7 +202,7 @@ public class ProjectService {
 
         BigDecimal total = BigDecimal.ZERO;
         for (Task task : tasks){
-            BigDecimal taskEstimate = getEstimatedTime(task.getId());
+            BigDecimal taskEstimate = getEstimatedTimeForTask(task.getId());
             if (taskEstimate != null){
                 total = total.add(taskEstimate);
             }

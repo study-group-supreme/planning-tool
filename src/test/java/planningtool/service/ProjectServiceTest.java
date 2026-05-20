@@ -21,7 +21,6 @@ import planningtool.repository.TaskRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -352,7 +351,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    void getEstimatedTime_SumsSubtaskEstimates_WhenParentHasSubtasks(){
+    void getEstimatedTime_ForTask_SumsSubtaskEstimates_WhenParentHasSubtasks(){
         Task parent = new Task();
         parent.setId(1);
         parent.setParentTaskId(null);
@@ -367,13 +366,13 @@ public class ProjectServiceTest {
         when(taskRepository.findTaskById(1)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of(s1, s2));
 
-        BigDecimal result = projectService.getEstimatedTime(1);
+        BigDecimal result = projectService.getEstimatedTimeForTask(1);
 
         assertThat(result).isEqualByComparingTo("5.5");
     }
 
     @Test
-    void getEstimatedTime_ReturnsParentEstimate_WhenNoSubTasks(){
+    void getEstimatedTime_ForTask_ReturnsParentEstimate_WhenNoSubTasks(){
         Task parent = new Task();
         parent.setId(5);
         parent.setParentTaskId(null);
@@ -382,13 +381,13 @@ public class ProjectServiceTest {
         when(taskRepository.findTaskById(5)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(5)).thenReturn(List.of());
 
-        BigDecimal result = projectService.getEstimatedTime(5);
+        BigDecimal result = projectService.getEstimatedTimeForTask(5);
 
         assertThat(result).isEqualByComparingTo("8.0");
     }
 
     @Test
-    void getEstimatedTime_ReturnsOwnEstimate_WhenTaskIsSubtask(){
+    void getEstimatedTime_ForTask_ReturnsOwnEstimate_WhenTaskIsSubtask(){
         Task subtask = new Task();
         subtask.setId(10);
         subtask.setParentTaskId(1);
@@ -396,7 +395,7 @@ public class ProjectServiceTest {
 
         when(taskRepository.findTaskById(10)).thenReturn(subtask);
 
-        BigDecimal result = projectService.getEstimatedTime(10);
+        BigDecimal result = projectService.getEstimatedTimeForTask(10);
 
         assertThat(result).isEqualByComparingTo("3.5");
         verify(taskRepository, never()).findSubtasksByParentId(anyInt());

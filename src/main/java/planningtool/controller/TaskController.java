@@ -48,7 +48,7 @@ public class TaskController {
         }
 
         model.addAttribute("task", task);
-        model.addAttribute("totalEstimatedTime", projectService.getEstimatedTime(taskId));
+        model.addAttribute("totalEstimatedTime", projectService.getEstimatedTimeForTask(taskId));
         model.addAttribute("totalLoggedTime", projectService.getLoggedTimeForTask(taskId));
         model.addAttribute("timeEntries", taskService.getTimeEntriesByTaskId(taskId));
         model.addAttribute("projectMembers", projectService.getProjectMembersByProjectId(task.getProjectId()));
