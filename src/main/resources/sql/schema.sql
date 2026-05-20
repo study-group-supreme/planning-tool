@@ -38,7 +38,7 @@ create table task
     id                 int primary key AUTO_INCREMENT,
     project_id         int          NOT NULL,
     parent_task_id     int,
-    assigned_member_id int,
+    assigned_member_id int          NOT NULL,
     title              varchar(225) NOT NULL,
     description        varchar(1080),
     time_estimate      decimal(6, 2),

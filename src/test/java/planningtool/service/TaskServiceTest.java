@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
+import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
@@ -32,6 +34,9 @@ public class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private ProjectService projectService;
 
     @InjectMocks
     private TaskService taskService;
@@ -89,10 +94,13 @@ public class TaskServiceTest {
         task.setId(3);
         task.setProjectId(2);
         task.setParentTaskId(null);
+        task.setAssignedMemberId(1);
         task.setTitle("Sweep floors");
         task.setDescription("Lunch room");
         task.setHighPriority(false);
         task.setTimeEstimate(new BigDecimal("0.25"));
+
+        when(projectService.getProjectMemberIdsByProjectId(2)).thenReturn(List.of(1));
 
         when(taskRepository.insertTask(task)).thenReturn(task);
         Task createdTask = taskService.createTask(task);
@@ -148,9 +156,33 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_ThrowsBadRequestException_IfAssignedMemberIsNull(){
+        Task task = new Task();
+        task.setAssignedMemberId(null);
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
+    void createTask_ThrowsBadRequestException_IfAssignedMemberIsNotOnProject(){
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setAssignedMemberId(2);
+
+        when(projectService.getProjectMemberIdsByProjectId(1)).thenReturn(List.of(1));
+
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
     void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails(){
         Task task = new Task();
         task.setTitle("Title");
+        task.setAssignedMemberId(1);
+
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
 
         when(taskRepository.insertTask(task))
                 .thenThrow(new DataIntegrityViolationException("constraint"));
@@ -170,11 +202,15 @@ public class TaskServiceTest {
         // Subtasks are not allowed when their parent is already a subtask
         Task parent = new Task();
         parent.setId(10);
+        parent.setAssignedMemberId(1);
         parent.setParentTaskId(null); // Makes it a main task
 
         Task subtask = new Task();
+        subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
         subtask.setParentTaskId(10);
+
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
 
         when(taskRepository.findTaskById(10)).thenReturn(parent);
         when(taskRepository.insertTask(subtask)).thenReturn(subtask);
@@ -211,12 +247,16 @@ public class TaskServiceTest {
         parent.setId(1);
         parent.setProjectId(1);
         parent.setParentTaskId(null);
+        parent.setAssignedMemberId(1);
         parent.setTimeEstimate(new BigDecimal("5.0"));
 
         Task subtask = new Task();
         subtask.setProjectId(1);
         subtask.setParentTaskId(1);
+        subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
+
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
 
         when(taskRepository.findTaskById(1)).thenReturn(parent);
         when(taskRepository.insertTask(subtask)).thenReturn(subtask);
