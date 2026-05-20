@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Task</title>
-    <link rel="stylesheet" th:href="@{/index.css}">
+    <link rel="stylesheet" th:href="@{/createandeditforms.css}">
 </head>
 <body>
 <div th:replace="fragment/header :: header"></div>
 <form th:action="@{/tasks/{taskId}/edit(taskId=${task.id})}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{projectId}">
+    <br>
     <label>
         Title: <input type="text" th:field="*{title}" maxlength="225" required>
     </label>
@@ -46,12 +47,12 @@
     <br>
     <input type="hidden" th:field="*{done}">
     <br>
+    <div class="button-row">
     <button type="submit">Save changes</button>
+    <a th:action="@{/tasks/{taskId}(taskId=${task.id})}" method="get">
+        <button type="submit">Cancel</button>
+    </a>
+    </div>
 </form>
-<form th:action="@{/tasks/{taskId}(taskId=${task.id})}" method="get">
-    <button type="submit">Cancel</button>
-</form>
-
-
 </body>
 </html>
