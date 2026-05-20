@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.Employee;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -51,6 +53,18 @@ public class EmployeeRepository {
                 ORDER BY employee.id
                 """;
         return jdbc.query(sql, employeeRowMapper, projectId);
+    }
+
+    public BigDecimal findPricePerHourByEmployeeId(int employeeId){
+        String sql = """
+                SELECT price_per_hour
+                FROM role
+                JOIN employee
+                ON role.id = employee.role_id
+                WHERE employee.id = ?
+                """;
+
+        return jdbc.queryForObject(sql, BigDecimal.class, employeeId);
     }
 
 }
