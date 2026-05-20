@@ -78,7 +78,8 @@ public class ProjectService {
             throw new NotFoundException("No project found");
         }
     }
-    public List<Task> getMainTasksByProjectId(int id){
+
+    public List<Task> getMainTasksByProjectId(int id) {
         return projectRepository.findMainTasksByProjectId(id);
     }
 
@@ -86,10 +87,10 @@ public class ProjectService {
         return projectRepository.findProjectMembersByProjectId(projectId);
     }
 
-    public List<Integer> getProjectMemberIdsByProjectId(int projectId){
+    public List<Integer> getProjectMemberIdsByProjectId(int projectId) {
         List<Employee> projectMembers = getProjectMembersByProjectId(projectId);
         List<Integer> projectMemberIds = new ArrayList<>();
-        for(Employee employee : projectMembers){
+        for (Employee employee : projectMembers) {
             projectMemberIds.add(employee.getId());
         }
         return projectMemberIds;
@@ -117,10 +118,10 @@ public class ProjectService {
         if (project.getTitle().length() > 225) {
             throw new BadRequestException("Task title cannot exceed 225 characters");
         }
-        if ((project.getDescription() != null) && (project.getDescription().length() > 1080)){
+        if ((project.getDescription() != null) && (project.getDescription().length() > 1080)) {
             throw new BadRequestException("Project description cannot exceed 1080 characters");
         }
-        if (project.getDeadline() != null && (project.getDeadline().isBefore(LocalDate.now()))){
+        if (project.getDeadline() != null && (project.getDeadline().isBefore(LocalDate.now()))) {
             throw new BadRequestException("Deadline has to be in the future");
         }
         try {
@@ -203,16 +204,16 @@ public class ProjectService {
         List<Task> tasks = projectRepository.findMainTasksByProjectId(projectId);
 
         BigDecimal total = BigDecimal.ZERO;
-        for (Task task : tasks){
+        for (Task task : tasks) {
             BigDecimal taskEstimate = getEstimatedTimeForTask(task.getId());
-            if (taskEstimate != null){
+            if (taskEstimate != null) {
                 total = total.add(taskEstimate);
             }
         }
         return total;
     }
 
-    public BigDecimal getLoggedTimeForTask(int taskId){
+    public BigDecimal getLoggedTimeForTask(int taskId) {
         // Always include the parent tasks own time entries
         BigDecimal total = sumTimeEntriesForTask(taskId);
 
@@ -220,35 +221,35 @@ public class ProjectService {
         List<Task> subtasks = taskRepository.findSubtasksByParentId(taskId);
 
         // if no subtasks, return the tasks own sum
-        if(subtasks.isEmpty()){
+        if (subtasks.isEmpty()) {
             return total;
         }
 
-        for (Task subtask : subtasks){
+        for (Task subtask : subtasks) {
             total = total.add(sumTimeEntriesForTask(subtask.getId()));
         }
 
         return total;
     }
 
-    private BigDecimal sumTimeEntriesForTask(int taskId){
+    public BigDecimal sumTimeEntriesForTask(int taskId){
         List<TimeEntry> entries = taskRepository.findTimeEntriesByTaskId(taskId);
         BigDecimal total = BigDecimal.ZERO;
-        for (TimeEntry entry : entries){
-            if (entry.getTimeSpent() != null){
+        for (TimeEntry entry : entries) {
+            if (entry.getTimeSpent() != null) {
                 total = total.add(entry.getTimeSpent());
             }
         }
         return total;
     }
 
-    public BigDecimal getTotalLoggedTimeForProject(int projectId){
+    public BigDecimal getTotalLoggedTimeForProject(int projectId) {
         List<Task> mainTasks = projectRepository.findMainTasksByProjectId(projectId);
 
         BigDecimal total = BigDecimal.ZERO;
-        for(Task task : mainTasks) {
+        for (Task task : mainTasks) {
             BigDecimal loggedTime = getLoggedTimeForTask(task.getId());
-            if (loggedTime != null){
+            if (loggedTime != null) {
                 total = total.add(loggedTime);
             }
         }
@@ -259,10 +260,10 @@ public class ProjectService {
     // Nested Map:
     // Outer map <Integer, ... > the keys represent the projectId
     // The inner map <String, BigDecimal> the keys are strings, "estimate", "logged"
-    public Map<Integer, Map<String, BigDecimal>> getProjectTimeSummaries(List<Project> projects){
+    public Map<Integer, Map<String, BigDecimal>> getProjectTimeSummaries(List<Project> projects) {
         Map<Integer, Map<String, BigDecimal>> result = new HashMap<>();
 
-        for (Project project : projects){
+        for (Project project : projects) {
             Map<String, BigDecimal> values = new HashMap<>();
             values.put("estimate", getTotalEstimatedTimeForProject(project.getId()));
             values.put("logged", getTotalLoggedTimeForProject(project.getId()));
@@ -272,11 +273,14 @@ public class ProjectService {
     }
 
     @Transactional
-    public BigDecimal calculateEstimatedPriceForTask(int taskId){
+    public BigDecimal calculateEstimatedPriceForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
         Integer employeeId = task.getAssignedMemberId();
 
         return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
+    }
+    public List<Project> getAllProjects(){
+        return projectRepository.findAllProjects();
     }
 
     @Transactional
