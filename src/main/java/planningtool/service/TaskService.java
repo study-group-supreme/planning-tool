@@ -49,7 +49,6 @@ public class TaskService {
         // If this task is a subtask
         if (task.getParentTaskId() != null) {
             Task parent = taskRepository.findTaskById(task.getParentTaskId());
-
             // Prevent subtasks of subtasks
             if (parent.getParentTaskId() != null){
                 throw new BadRequestException("Subtasks cannot have their own subtasks");
@@ -83,7 +82,15 @@ public class TaskService {
         }
 
         try {
-            return taskRepository.insertTask(task);
+            Task created = taskRepository.insertTask(task);
+
+            // update parents time estimate in DB if this is a subtask
+            if (task.getParentTaskId() != null){
+                BigDecimal newEstimate = projectService.getEstimatedTimeForTask((task.getParentTaskId()));
+                taskRepository.updateTimeEstimateForTask(task.getParentTaskId(), newEstimate);
+            }
+
+            return created;
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseOperationException("Task creation failed", e);
         }
@@ -143,6 +150,14 @@ public class TaskService {
             throw new BadRequestException("Time estimate cannot exceed 9999.99 hours");
         }
 
+        // parent tasks with subtasks cannot have their own estimate, so it should be updated
+        if (task.getParentTaskId() == null){
+            List<Task> subtasks = taskRepository.findSubtasksByParentId(task.getId());
+            if (!subtasks.isEmpty()){
+                task.setTimeEstimate(null);
+            }
+        }
+
         try {
             taskRepository.updateTask(task);
             return taskRepository.findTaskById(task.getId());
@@ -163,6 +178,12 @@ public class TaskService {
             }
         }
         taskRepository.deleteTaskById(id);
+
+        // If this was a subtask, update the parent's estimate
+        if (task.getParentTaskId() != null){
+            BigDecimal newEstimate = projectService.getEstimatedTimeForTask(task.getParentTaskId());
+            taskRepository.updateTimeEstimateForTask(task.getParentTaskId(), newEstimate);
+        }
     }
 
     //Properly need some validation later
