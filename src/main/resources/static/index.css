@@ -219,11 +219,11 @@ progress {
     justify-content: space-between;
     align-items: center;
     background-color: #4f46e5;
-    position: fixed;
+    position: sticky;
     top: 0;
     margin-left: -16px;
     margin-right: -16px;
-    height: 30px;
+    height: 35px;
     width: 1440px;
 
 }
