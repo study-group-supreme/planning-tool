@@ -56,6 +56,7 @@ public class ProjectController {
     public String createProject(Model model) {
         model.addAttribute("project", new Project());
         model.addAttribute("employee", employeeService.getAllEmployees());
+        model.addAttribute("hideCreateProject", true);
         return "project/create-project";
     }
 
