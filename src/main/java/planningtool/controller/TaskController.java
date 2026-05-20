@@ -67,7 +67,6 @@ public class TaskController {
         task.setProjectId(projectId);
         model.addAttribute("members", projectService.getProjectMembersByProjectId(projectId));
         model.addAttribute("task", task);
-        model.addAttribute("project", projectService.getProjectById(projectId));
         return "task/create-task";
     }
 
