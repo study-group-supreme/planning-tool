@@ -80,11 +80,12 @@ public class TaskController {
     public String quickSaveTask(
             @RequestParam int projectId,
             @RequestParam String title,
-            HttpSession session) {
+            @RequestParam int member_id) {
 
         Task task = new Task();
         task.setProjectId(projectId);
         task.setTitle(title);
+        task.setAssignedMemberId(member_id);
 
         taskService.createTask(task);
 
