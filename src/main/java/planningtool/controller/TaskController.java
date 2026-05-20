@@ -58,6 +58,7 @@ public class TaskController {
         model.addAttribute("loggedInId", loggedInId);
         model.addAttribute("subtasks", taskService.getTasksByParentId(taskId));
         model.addAttribute("mainTask", false);
+        model.addAttribute("estimatedCost", projectService.calculateEstimatedPriceForTask(taskId));
         return "task/details-task";
     }
 
@@ -196,10 +197,8 @@ public class TaskController {
     @PostMapping("/{taskId}/time-entry/{entryId}/remove")
     public String removeTimeEntry(
             @PathVariable int taskId,
-            @PathVariable int entryId,
-            HttpSession session
+            @PathVariable int entryId
     ) {
-        Integer employeeId = (Integer) session.getAttribute("employeeId");
         taskService.removeTimeEntryById(entryId);
         return "redirect:/tasks/" + taskId;
     }

@@ -652,6 +652,26 @@ public class ProjectServiceTest {
     }
 
     @Test
+    void calculateEstimatedPriceForTask_ShouldCalculatePriceOfTask_UsingTaskId(){
+        Task task = new Task();
+        task.setId(1);
+        task.setAssignedMemberId(1);
+        task.setTimeEstimate(new BigDecimal(8));
+
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setRoleId(1);
+
+        when(employeeRepository.findPricePerHourByEmployeeId(1)).thenReturn(new BigDecimal(500));
+        when(taskRepository.findTaskById(1)).thenReturn(task);
+
+        BigDecimal result = projectService.calculateEstimatedPriceForTask(1);
+
+        assertThat(result).isEqualTo(new BigDecimal(4000));
+    }
+    // TODO Make exception handling and test for exception scenario
+
+    @Test
     void sumTimeEntriesForTask_ShouldReturnSumOfAllEntries(){
         int taskId = 10;
 
