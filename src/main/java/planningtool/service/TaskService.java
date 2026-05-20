@@ -66,8 +66,9 @@ public class TaskService {
             task.setHighPriority(false);
         }
         task.setDone(false);
-
-        // Previous validation rules
+        if(task.getAssignedMemberId() == null){
+            throw new BadRequestException("A member of the project has to be assigned to the task");
+        }
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
         }

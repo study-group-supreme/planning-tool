@@ -89,6 +89,7 @@ public class TaskServiceTest {
         task.setId(3);
         task.setProjectId(2);
         task.setParentTaskId(null);
+        task.setAssignedMemberId(1);
         task.setTitle("Sweep floors");
         task.setDescription("Lunch room");
         task.setHighPriority(false);
@@ -148,9 +149,18 @@ public class TaskServiceTest {
     }
 
     @Test
+    void createTask_ThrowsBadRequestException_IfAssignedMemberIsNull(){
+        Task task = new Task();
+        task.setAssignedMemberId(null);
+        assertThrows(BadRequestException.class, () -> taskService.createTask(task));
+        verify(taskRepository, never()).insertTask(any());
+    }
+
+    @Test
     void createTask_ThrowsDatabaseOperationException_WhenRepositoryFails(){
         Task task = new Task();
         task.setTitle("Title");
+        task.setAssignedMemberId(1);
 
         when(taskRepository.insertTask(task))
                 .thenThrow(new DataIntegrityViolationException("constraint"));
@@ -170,9 +180,11 @@ public class TaskServiceTest {
         // Subtasks are not allowed when their parent is already a subtask
         Task parent = new Task();
         parent.setId(10);
+        parent.setAssignedMemberId(1);
         parent.setParentTaskId(null); // Makes it a main task
 
         Task subtask = new Task();
+        subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
         subtask.setParentTaskId(10);
 
@@ -211,11 +223,13 @@ public class TaskServiceTest {
         parent.setId(1);
         parent.setProjectId(1);
         parent.setParentTaskId(null);
+        parent.setAssignedMemberId(1);
         parent.setTimeEstimate(new BigDecimal("5.0"));
 
         Task subtask = new Task();
         subtask.setProjectId(1);
         subtask.setParentTaskId(1);
+        subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
 
         when(taskRepository.findTaskById(1)).thenReturn(parent);
