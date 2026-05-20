@@ -231,7 +231,7 @@ public class ProjectService {
         return total;
     }
 
-    private BigDecimal sumTimeEntriesForTask(int taskId){
+    public BigDecimal sumTimeEntriesForTask(int taskId){
         List<TimeEntry> entries = taskRepository.findTimeEntriesByTaskId(taskId);
         BigDecimal total = BigDecimal.ZERO;
         for (TimeEntry entry : entries){
