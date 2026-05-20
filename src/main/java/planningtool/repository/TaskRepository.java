@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.TimeEntry;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.util.List;
@@ -160,6 +161,14 @@ public class TaskRepository {
                 SELECT * FROM TASK ORDER BY id
                 """;
         return jdbc.query(sql, taskRowMapper);
+    }
+
+    public void updateTimeEstimateForTask(int taskId, BigDecimal timeEstimate){
+        String sql = """
+                UPDATE task SET time_estimate = ? WHERE id = ?
+                """;
+
+        jdbc.update(sql, timeEstimate, taskId);
     }
 
 }

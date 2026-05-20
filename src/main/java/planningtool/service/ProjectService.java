@@ -172,6 +172,7 @@ public class ProjectService {
         }
     }
 
+    @Transactional
     public BigDecimal getEstimatedTimeForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
 
@@ -194,6 +195,7 @@ public class ProjectService {
                 total = total.add(st.getTimeEstimate());
             }
         }
+        taskRepository.updateTimeEstimateForTask(taskId, total);
         return total;
     }
 
