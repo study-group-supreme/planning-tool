@@ -673,6 +673,15 @@ public class ProjectServiceTest {
         verify(taskRepository).findTimeEntriesByTaskId(taskId);
     }
 
+    @Test
+    void sumTimeEntriesForTask_ShouldReturnZero_WhenNoEntries(){
+        when(taskRepository.findTimeEntriesByTaskId(99)).thenReturn(List.of());
+
+        BigDecimal result = projectService.sumTimeEntriesForTask(99);
+
+        assertThat(result).isEqualByComparingTo("0");
+    }
+
     // TODO add similar tests to EstimatedTime as logged-time tests
 
     // TODO getProjectById() tests should be made
