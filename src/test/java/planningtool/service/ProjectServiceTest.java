@@ -21,6 +21,7 @@ import planningtool.repository.TaskRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -649,6 +650,27 @@ public class ProjectServiceTest {
 
         assertThat(result.get(2).get("estimate")).isEqualByComparingTo("3.0");
         assertThat(result.get(2).get("logged")).isEqualByComparingTo("7.5");
+    }
+
+    @Test
+    void sumTimeEntriesForTask_ShouldReturnSumOfAllEntries(){
+        int taskId = 10;
+
+        TimeEntry entry1 = new TimeEntry();
+        entry1.setTimeSpent(new BigDecimal("1.5"));
+
+        TimeEntry entry2 = new TimeEntry();
+        entry2.setTimeSpent(new BigDecimal("2.0"));
+
+        TimeEntry entry3 = new TimeEntry();
+        entry3.setTimeSpent(new BigDecimal("0.5"));
+
+        when(taskRepository.findTimeEntriesByTaskId(taskId)).thenReturn(List.of(entry1, entry2, entry3));
+
+        BigDecimal result = projectService.sumTimeEntriesForTask(taskId);
+
+        assertThat(result).isEqualByComparingTo("4.0");
+        verify(taskRepository).findTimeEntriesByTaskId(taskId);
     }
 
     // TODO add similar tests to EstimatedTime as logged-time tests
