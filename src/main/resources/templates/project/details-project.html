@@ -273,7 +273,7 @@
                 </div>
             </div>
             <div>
-                <form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
+                <form th:if="${!task.done}" th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
                     <button class="btn" type="submit">Edit Task</button>
                 </form>
             </div>

@@ -59,7 +59,7 @@
 </div>
 
 <h2>Time Entries</h2>
-<div th:if="${!hasChildren}">
+<div th:if="${!hasChildren && !task.done}">
     <h3>Add Time Entry</h3>
     <form th:action="@{|/tasks/${task.id}/time-entry|}" method="post">
         <label>Hours spent</label>
