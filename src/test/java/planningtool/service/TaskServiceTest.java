@@ -737,5 +737,21 @@ assertThat(allTasks.get(2).getId()).isEqualTo(3);
         verify(taskRepository).updateTimeEstimateForTask(10, new BigDecimal("7.5"));
     }
 
+    @Test
+    void removeTaskById_WhenDeletingMainTask_ShouldNotRecalculateParentEstimate(){
+        Task mainTask = new Task();
+        mainTask.setId(1);
+        mainTask.setParentTaskId(null); // main task
+
+        when(taskRepository.findTaskById(1)).thenReturn(mainTask);
+        when(taskRepository.findSubtasksByParentId(1)).thenReturn(List.of()); // no subtasks
+
+        taskService.removeTaskById(1);
+
+        verify(taskRepository).deleteTaskById(1);
+        verify(projectService, never()).getEstimatedTimeForTask(anyInt());
+        verify(taskRepository, never()).updateTimeEstimateForTask(anyInt(), any());
+    }
+
 
 }
