@@ -3,7 +3,7 @@ form{
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    width: fit-content;
+    width: 500px;
     margin: 0 auto;
 }
 .fakenavbar{
@@ -108,4 +108,13 @@ table{
 th{
     text-align: left;
     padding: 15px;
+}
+label{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 500px;
+    margin: 0 auto;
+    text-align: left;
 }

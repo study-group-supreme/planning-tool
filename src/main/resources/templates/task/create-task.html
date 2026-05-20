@@ -34,6 +34,7 @@
         High Priority: <input type="checkbox" th:field="*{highPriority}">
     </label>
     <input type="hidden" th:field="*{done}" th:value="false">
+    <br>
 <div class="button-row" >
     <button class="btn" type="submit">Add Task</button>
     <button type="button" th:onclick="|window.location.href='/projects/' + ${task.projectId}|">Cancel</button>
