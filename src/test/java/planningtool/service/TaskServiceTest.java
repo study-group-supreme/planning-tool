@@ -100,6 +100,8 @@ public class TaskServiceTest {
         task.setHighPriority(false);
         task.setTimeEstimate(new BigDecimal("0.25"));
 
+        when(projectService.getProjectMemberIdsByProjectId(2)).thenReturn(List.of(1));
+
         when(taskRepository.insertTask(task)).thenReturn(task);
         Task createdTask = taskService.createTask(task);
         assertEquals(3, createdTask.getId());
@@ -180,6 +182,8 @@ public class TaskServiceTest {
         task.setTitle("Title");
         task.setAssignedMemberId(1);
 
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
+
         when(taskRepository.insertTask(task))
                 .thenThrow(new DataIntegrityViolationException("constraint"));
 
@@ -205,6 +209,8 @@ public class TaskServiceTest {
         subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
         subtask.setParentTaskId(10);
+
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
 
         when(taskRepository.findTaskById(10)).thenReturn(parent);
         when(taskRepository.insertTask(subtask)).thenReturn(subtask);
@@ -249,6 +255,8 @@ public class TaskServiceTest {
         subtask.setParentTaskId(1);
         subtask.setAssignedMemberId(1);
         subtask.setTitle("Subtask");
+
+        when(projectService.getProjectMemberIdsByProjectId(anyInt())).thenReturn(List.of(1));
 
         when(taskRepository.findTaskById(1)).thenReturn(parent);
         when(taskRepository.insertTask(subtask)).thenReturn(subtask);
