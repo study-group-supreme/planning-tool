@@ -39,6 +39,8 @@ public class ProjectController {
         int employeeId = (Integer) session.getAttribute("employeeId");
         try {
             List<Project> employeeProjects = projectService.getProjectsByEmployeeId(employeeId);
+            Map<Integer, Map<String, BigDecimal>> summary = projectService.getProjectTimeSummaries(employeeProjects);
+            model.addAttribute("summary", summary);
             model.addAttribute("projects", employeeProjects);
             model.addAttribute("employeeName", employeeService.getEmployeeById(employeeId).getName());
             model.addAttribute("date", LocalDate.now());
