@@ -213,8 +213,6 @@ public class ProjectService {
     }
 
     public BigDecimal getLoggedTimeForTask(int taskId){
-        Task task = taskRepository.findTaskById(taskId);
-
         // Always include the parent tasks own time entries
         BigDecimal total = sumTimeEntriesForTask(taskId);
 
@@ -279,6 +277,18 @@ public class ProjectService {
         Integer employeeId = task.getAssignedMemberId();
 
         return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
+    }
+
+    @Transactional
+    public BigDecimal calculateCurrentCostOfProject(int projectId){
+        BigDecimal totalCost = BigDecimal.ZERO;
+        for(Task task : projectRepository.findTasksByProjectId(projectId)){
+            for(TimeEntry timeEntry : task.getTimeEntries()){
+                BigDecimal costOfTimeEntry = employeeRepository.findPricePerHourByEmployeeId(timeEntry.getEmployeeId()).multiply(timeEntry.getTimeSpent());
+                totalCost = totalCost.add(costOfTimeEntry);
+            }
+        }
+        return totalCost;
     }
 }
 

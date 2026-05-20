@@ -671,6 +671,41 @@ public class ProjectServiceTest {
     }
     // TODO Make exception handling and test for exception scenario
 
+    @Test
+    void calculateCurrentCostOfProject_ShouldReturnCorrectPrice(){
+        TimeEntry timeEntry1ForEmployee1 = new TimeEntry();
+        timeEntry1ForEmployee1.setEmployeeId(1);
+        timeEntry1ForEmployee1.setTimeSpent(new BigDecimal(2));
+
+        TimeEntry timeEntry2ForEmployee1 = new TimeEntry();
+        timeEntry2ForEmployee1.setEmployeeId(1);
+        timeEntry2ForEmployee1.setTimeSpent(new BigDecimal(3));
+
+        TimeEntry timeEntry1ForEmployee2 = new TimeEntry();
+        timeEntry1ForEmployee2.setEmployeeId(2);
+        timeEntry1ForEmployee2.setTimeSpent(new BigDecimal(4));
+
+        TimeEntry timeEntry2ForEmployee2 = new TimeEntry();
+        timeEntry2ForEmployee2.setEmployeeId(2);
+        timeEntry2ForEmployee2.setTimeSpent(new BigDecimal(2));
+
+        Task task1 = new Task();
+        task1.setTimeEntries(List.of(timeEntry1ForEmployee1, timeEntry2ForEmployee2));
+
+        Task task2 = new Task();
+        task2.setTimeEntries(List.of(timeEntry2ForEmployee1, timeEntry1ForEmployee2));
+
+        int projectId = 1;
+
+        when(projectRepository.findTasksByProjectId(1)).thenReturn(List.of(task1, task2));
+        when(employeeRepository.findPricePerHourByEmployeeId(1)).thenReturn(new BigDecimal("500.00"));
+        when(employeeRepository.findPricePerHourByEmployeeId(2)).thenReturn(new BigDecimal("1000.00"));
+
+        BigDecimal result = projectService.calculateCurrentCostOfProject(projectId);
+
+        assertThat(result).isEqualTo(new BigDecimal("8500.00"));
+    }
+
     // TODO add similar tests to EstimatedTime as logged-time tests
 
     // TODO getProjectById() tests should be made
