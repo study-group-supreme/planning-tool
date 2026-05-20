@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Task</title>
-    <link rel="stylesheet" th:href="@{/index.css}">
+    <link rel="stylesheet" th:href="@{/forms.css}">
 </head>
 <body>
+<div th:replace="fragment/header :: header"></div>
 <form th:action="@{/tasks/add}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{projectId}">
     <input type="hidden" th:field="*{parentTaskId}">
+    <p>
+        <strong>Create new task</strong>
+    </p>
     <label>
         Title: <input type="text" th:field="*{title}" maxlength="225" required>
     </label>
-    <br>
     <label>
         Description: <textarea th:field="*{description}" maxlength="1080"></textarea>
     </label>
-    <br>
     <label>
         Assign member: <select th:field="*{assignedMemberId}">
         <option th:each="member : ${members}"
@@ -25,17 +27,17 @@
         </option>
     </select>
     </label>
-    <br>
     <label>
         Estimated Time: <input type="number" th:field="*{timeEstimate}" min="1">
     </label>
-    <br>
     <label>
         High Priority: <input type="checkbox" th:field="*{highPriority}">
     </label>
     <input type="hidden" th:field="*{done}" th:value="false">
-    <br>
-    <button type="submit">Add Task</button>
+<div class="button-row" >
+    <button class="btn" type="submit">Add Task</button>
+    <button type="button" th:onclick="|window.location.href='/projects/' + ${task.projectId}|">Cancel</button>
+</div>
 </form>
 </body>
 </html>
