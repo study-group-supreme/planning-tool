@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -594,6 +595,63 @@ public class ProjectServiceTest {
         BigDecimal result = projectService.getTotalLoggedTimeForProject(1);
         assertThat(result).isEqualTo(new BigDecimal("5.5"));
     }
+
+    @Test
+    void getProjectTimeSummaries_ReturnsCorrectNestedMapForMultipleProjects() {
+        // Two projects
+        Project p1 = new Project();
+        p1.setId(1);
+
+        Project p2 = new Project();
+        p2.setId(2);
+
+        List<Project> projects = List.of(p1, p2);
+
+        // Project 1 setup
+        Task t1 = new Task();
+        t1.setId(10);
+        t1.setTimeEstimate(new BigDecimal("5.5"));
+
+        when(projectRepository.findMainTasksByProjectId(1))
+                .thenReturn(List.of(t1));
+
+        TimeEntry e1 = new TimeEntry();
+        e1.setTimeSpent(new BigDecimal("10.0"));
+
+        when(taskRepository.findTaskById(10)).thenReturn(t1);
+        when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(10)).thenReturn(List.of(e1));
+
+        // Project 2 setup
+        Task t2 = new Task();
+        t2.setId(20);
+        t2.setTimeEstimate(new BigDecimal("3.0"));
+
+        when(projectRepository.findMainTasksByProjectId(2))
+                .thenReturn(List.of(t2));
+
+        TimeEntry e2 = new TimeEntry();
+        e2.setTimeSpent(new BigDecimal("7.5"));
+
+        when(taskRepository.findTaskById(20)).thenReturn(t2);
+        when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
+        when(taskRepository.findTimeEntriesByTaskId(20)).thenReturn(List.of(e2));
+
+        // Act
+        Map<Integer, Map<String, BigDecimal>> result =
+                projectService.getProjectTimeSummaries(projects);
+
+        // Assert
+        assertThat(result).containsKeys(1, 2);
+
+        assertThat(result.get(1).get("estimate")).isEqualByComparingTo("5.5");
+        assertThat(result.get(1).get("logged")).isEqualByComparingTo("10.0");
+
+        assertThat(result.get(2).get("estimate")).isEqualByComparingTo("3.0");
+        assertThat(result.get(2).get("logged")).isEqualByComparingTo("7.5");
+    }
+
+    // TODO add similar tests to EstimatedTime as logged-time tests
 
     // TODO getProjectById() tests should be made
 }
