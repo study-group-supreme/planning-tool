@@ -720,4 +720,22 @@ assertThat(allTasks.get(2).getId()).isEqualTo(3);
        assertThrows(BadRequestException.class, () -> taskService.removeTaskById(1));
         verify(taskRepository, never()).deleteTaskById(1);
     }
+
+    @Test
+    void removeTaskById_WhenDeletingSubtask_ShouldRecalculateParentEstimate(){
+        Task subtask = new Task();
+        subtask.setId(5);
+        subtask.setParentTaskId(10); // parent exists
+
+        when(taskRepository.findTaskById(5)).thenReturn(subtask);
+        when(projectService.getEstimatedTimeForTask(10)).thenReturn(new BigDecimal("7.5"));
+
+        taskService.removeTaskById(5);
+
+        verify(taskRepository).deleteTaskById(5);
+        verify(projectService).getEstimatedTimeForTask(10);
+        verify(taskRepository).updateTimeEstimateForTask(10, new BigDecimal("7.5"));
+    }
+
+
 }
