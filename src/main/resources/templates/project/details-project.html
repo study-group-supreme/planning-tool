@@ -20,21 +20,6 @@
         <form th:action="@{/projects/{projectId}/edit(projectId=${project.id})}">
             <button th:unless="${isArchived}" class="btn">Edit Project</button>
         </form>
-
-        <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
-            <input type="hidden" name="projectId" th:value="${project.id}">
-            <button type="submit"
-                    class="btn"
-                    onclick="return confirm('Are you sure you want to archive this project?')">Archive project
-            </button>
-        </form>
-        <form th:if="${!project.active}" th:action="@{/projects/restore}" method="post">
-            <input type="hidden" name="projectId" th:value="${project.id}">
-            <button type="submit"
-                    class="btn"
-                    onclick="confirm('Are you sure you want to restore this project?')">Restore project
-            </button>
-        </form>
     </div>
     <p>
         <strong>Total Estimated Time:</strong>
@@ -43,6 +28,10 @@
     <p>
         <strong>Total Logged Time:</strong>
         <span th:text="${totalLoggedTime != null ? totalLoggedTime + ' hours' : 'No time logged'}"></span>
+    </p>
+    <p th:if="${currentCost != null}">
+        <strong>Current Cost of Project</strong>
+        <span th:text="${currentCost}"></span>
     </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">

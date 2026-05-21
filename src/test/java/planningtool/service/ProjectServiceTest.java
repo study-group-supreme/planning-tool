@@ -497,9 +497,6 @@ public class ProjectServiceTest {
     void getLoggedTimeForTask_ParentWithSubTasks_ShouldSumAllEntries(){
         int parentId = 30;
 
-        Task parent = new Task();
-        parent.setId(parentId);
-
         Task subtask1 = new Task();
         subtask1.setId(31);
 
@@ -515,7 +512,6 @@ public class ProjectServiceTest {
         TimeEntry entry2 = new TimeEntry();
         entry2.setTimeSpent(new BigDecimal("3.0"));
 
-        when(taskRepository.findTaskById(parentId)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(parentId)).thenReturn(List.of(subtask1, subtask2));
         when(taskRepository.findTimeEntriesByTaskId(parentId)).thenReturn(List.of(parentEntry));
         when(taskRepository.findTimeEntriesByTaskId(31)).thenReturn(List.of(entry1));
@@ -530,14 +526,9 @@ public class ProjectServiceTest {
     void getLoggedTimeForTask_ParentWithoutSubtasks_ShouldSumOwnEntries(){
         int taskId = 20;
 
-        Task parent = new Task();
-        parent.setId(taskId);
-        parent.setParentTaskId(null);
-
         TimeEntry entry1 = new TimeEntry();
         entry1.setTimeSpent(new BigDecimal("1.0"));
 
-        when(taskRepository.findTaskById(taskId)).thenReturn(parent);
         when(taskRepository.findSubtasksByParentId(taskId)).thenReturn(List.of());
         when(taskRepository.findTimeEntriesByTaskId(taskId)).thenReturn(List.of(entry1));
 
@@ -550,9 +541,6 @@ public class ProjectServiceTest {
     void getLoggedTimeForTask_Subtask_ShouldSumOwnEntries(){
         int taskId = 10;
 
-        Task subtask = new Task();
-        subtask.setId(taskId);
-        subtask.setParentTaskId(1);
 
         TimeEntry entry1 = new TimeEntry();
         entry1.setTimeSpent(new BigDecimal("1.5"));
@@ -560,7 +548,6 @@ public class ProjectServiceTest {
         TimeEntry entry2 = new TimeEntry();
         entry2.setTimeSpent(new BigDecimal("2.0"));
 
-        when(taskRepository.findTaskById(taskId)).thenReturn(subtask);
         when(taskRepository.findTimeEntriesByTaskId(taskId)).thenReturn(List.of(entry1, entry2));
 
         BigDecimal result = projectService.getLoggedTimeForTask(taskId);
@@ -584,11 +571,9 @@ public class ProjectServiceTest {
         when(projectRepository.findMainTasksByProjectId(1)).thenReturn(mainTasks);
 
         // Mock repository calls inside getLoggedTimeForTask()
-        when(taskRepository.findTaskById(10)).thenReturn(task1);
         when(taskRepository.findSubtasksByParentId(10)).thenReturn(List.of());
         when(taskRepository.findTimeEntriesByTaskId(10)).thenReturn(List.of(entry1));
 
-        when(taskRepository.findTaskById(20)).thenReturn(task2);
         when(taskRepository.findSubtasksByParentId(20)).thenReturn(List.of());
         when(taskRepository.findTimeEntriesByTaskId(20)).thenReturn(List.of(entry2));
 
@@ -699,6 +684,44 @@ public class ProjectServiceTest {
         BigDecimal result = projectService.sumTimeEntriesForTask(99);
 
         assertThat(result).isEqualByComparingTo("0");
+    }
+
+    @Test
+    void calculateCurrentCostOfProject_ShouldReturnCorrectPrice(){
+        TimeEntry timeEntry1ForEmployee1 = new TimeEntry();
+        timeEntry1ForEmployee1.setEmployeeId(1);
+        timeEntry1ForEmployee1.setTimeSpent(new BigDecimal(2));
+
+        TimeEntry timeEntry2ForEmployee1 = new TimeEntry();
+        timeEntry2ForEmployee1.setEmployeeId(1);
+        timeEntry2ForEmployee1.setTimeSpent(new BigDecimal(3));
+
+        TimeEntry timeEntry1ForEmployee2 = new TimeEntry();
+        timeEntry1ForEmployee2.setEmployeeId(2);
+        timeEntry1ForEmployee2.setTimeSpent(new BigDecimal(4));
+
+        TimeEntry timeEntry2ForEmployee2 = new TimeEntry();
+        timeEntry2ForEmployee2.setEmployeeId(2);
+        timeEntry2ForEmployee2.setTimeSpent(new BigDecimal(2));
+
+        Task task1 = new Task();
+        task1.setId(1);
+        task1.setTimeEntries(List.of(timeEntry1ForEmployee1, timeEntry2ForEmployee2));
+
+        Task task2 = new Task();
+        task2.setId(2);
+        task2.setTimeEntries(List.of(timeEntry2ForEmployee1, timeEntry1ForEmployee2));
+
+        int projectId = 1;
+        when(taskRepository.findTimeEntriesByTaskId(1)).thenReturn(List.of(timeEntry1ForEmployee1, timeEntry2ForEmployee2));
+        when(taskRepository.findTimeEntriesByTaskId(2)).thenReturn(List.of(timeEntry2ForEmployee1, timeEntry1ForEmployee2));
+        when(projectRepository.findTasksByProjectId(1)).thenReturn(List.of(task1, task2));
+        when(employeeRepository.findPricePerHourByEmployeeId(1)).thenReturn(new BigDecimal("500.00"));
+        when(employeeRepository.findPricePerHourByEmployeeId(2)).thenReturn(new BigDecimal("1000.00"));
+
+        BigDecimal result = projectService.calculateCurrentCostOfProject(projectId);
+
+        assertThat(result).isEqualTo(new BigDecimal("8500.00"));
     }
 
     // TODO add similar tests to EstimatedTime as logged-time tests
