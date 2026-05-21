@@ -29,8 +29,12 @@
         <strong>Total Logged Time:</strong>
         <span th:text="${totalLoggedTime != null ? totalLoggedTime + ' hours' : 'No time logged'}"></span>
     </p>
+    <p th:if="${estimatedCost != null}">
+        <strong>Estimated Cost of Project:</strong>
+        <span th:text="${estimatedCost}"></span>
+    </p>
     <p th:if="${currentCost != null}">
-        <strong>Current Cost of Project</strong>
+        <strong>Current Cost of Project:</strong>
         <span th:text="${currentCost}"></span>
     </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">

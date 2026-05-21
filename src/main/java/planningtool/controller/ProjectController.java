@@ -80,7 +80,7 @@ public class ProjectController {
     public String showSpecificProject(@PathVariable int projectId, Model model, HttpSession session) {
         Project project = projectService.getProjectById(projectId);
         Integer currentUserId = (Integer) session.getAttribute("employeeId");
-        BigDecimal totalEstimate = projectService.getTotalEstimatedTimeForProject(projectId);
+        BigDecimal totalEstimatedTime = projectService.getTotalEstimatedTimeForProject(projectId);
         BigDecimal totalLoggedTime = projectService.getTotalLoggedTimeForProject(projectId);
         model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
         model.addAttribute("totalLoggedTime", totalLoggedTime);
@@ -88,9 +88,10 @@ public class ProjectController {
         model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         model.addAttribute("currentUserId", currentUserId);
-        model.addAttribute("totalEstimate", totalEstimate);
+        model.addAttribute("totalEstimate", totalEstimatedTime);
         model.addAttribute("isArchived", !project.isActive());
         model.addAttribute("currentCost", projectService.calculateCurrentCostOfProject(projectId));
+        model.addAttribute("estimatedCost", projectService.calculateEstimatedPriceForProject(projectId));
         return "project/details-project";
     }
 
