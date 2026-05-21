@@ -279,8 +279,19 @@ public class ProjectService {
 
         return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
     }
+
     public List<Project> getAllProjects(){
         return projectRepository.findAllProjects();
+    }
+
+    @Transactional
+    public BigDecimal calculateEstimatedPriceForProject(int projectId){
+        BigDecimal estimatedCost = BigDecimal.ZERO;
+        for (Task task : projectRepository.findTasksByProjectId(projectId)){
+            BigDecimal costOfTask = employeeRepository.findPricePerHourByEmployeeId(task.getAssignedMemberId()).multiply(task.getTimeEstimate());
+            estimatedCost = estimatedCost.add(costOfTask);
+        }
+        return estimatedCost;
     }
 
     @Transactional

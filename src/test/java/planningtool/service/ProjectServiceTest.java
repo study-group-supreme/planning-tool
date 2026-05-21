@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
@@ -722,6 +723,26 @@ public class ProjectServiceTest {
         BigDecimal result = projectService.calculateCurrentCostOfProject(projectId);
 
         assertThat(result).isEqualTo(new BigDecimal("8500.00"));
+    }
+
+    @Test
+    void calculateEstimatedPriceForProject(){
+        Task task1 = new Task();
+        task1.setTimeEstimate(new BigDecimal(3));
+        task1.setAssignedMemberId(1);
+
+        Task task2 = new Task();
+        task2.setTimeEstimate(new BigDecimal(2));
+        task2.setAssignedMemberId(2);
+
+        int projectId = 1;
+
+        when(projectRepository.findTasksByProjectId(1)).thenReturn(List.of(task1, task2));
+        when(employeeRepository.findPricePerHourByEmployeeId(1)).thenReturn(new BigDecimal("500.00"));
+        when(employeeRepository.findPricePerHourByEmployeeId(2)).thenReturn(new BigDecimal("1000.00"));
+
+        BigDecimal result = projectService.calculateEstimatedPriceForProject(projectId);
+        assertThat(result).isEqualTo(new BigDecimal("3500.00"));
     }
 
     // TODO add similar tests to EstimatedTime as logged-time tests
