@@ -232,7 +232,7 @@ public class ProjectService {
         return total;
     }
 
-    public BigDecimal sumTimeEntriesForTask(int taskId){
+    public BigDecimal sumTimeEntriesForTask(int taskId) {
         List<TimeEntry> entries = taskRepository.findTimeEntriesByTaskId(taskId);
         BigDecimal total = BigDecimal.ZERO;
         for (TimeEntry entry : entries) {
@@ -280,25 +280,27 @@ public class ProjectService {
         return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
     }
 
-    public List<Project> getAllProjects(){
+    public List<Project> getAllProjects() {
         return projectRepository.findAllProjects();
     }
 
     @Transactional
-    public BigDecimal calculateEstimatedPriceForProject(int projectId){
+    public BigDecimal calculateEstimatedPriceForProject(int projectId) {
         BigDecimal estimatedCost = BigDecimal.ZERO;
-        for (Task task : projectRepository.findTasksByProjectId(projectId)){
-            BigDecimal costOfTask = employeeRepository.findPricePerHourByEmployeeId(task.getAssignedMemberId()).multiply(task.getTimeEstimate());
-            estimatedCost = estimatedCost.add(costOfTask);
+        for (Task task : projectRepository.findTasksByProjectId(projectId)) {
+            if (!taskRepository.taskHasChildren(task.getId())) {
+                BigDecimal costOfTask = employeeRepository.findPricePerHourByEmployeeId(task.getAssignedMemberId()).multiply(task.getTimeEstimate());
+                estimatedCost = estimatedCost.add(costOfTask);
+            }
         }
         return estimatedCost;
     }
 
     @Transactional
-    public BigDecimal calculateCurrentCostOfProject(int projectId){
+    public BigDecimal calculateCurrentCostOfProject(int projectId) {
         BigDecimal totalCost = BigDecimal.ZERO;
-        for(Task task : projectRepository.findTasksByProjectId(projectId)){
-            for(TimeEntry timeEntry : taskRepository.findTimeEntriesByTaskId(task.getId())){
+        for (Task task : projectRepository.findTasksByProjectId(projectId)) {
+            for (TimeEntry timeEntry : taskRepository.findTimeEntriesByTaskId(task.getId())) {
                 BigDecimal costOfTimeEntry = employeeRepository.findPricePerHourByEmployeeId(timeEntry.getEmployeeId()).multiply(timeEntry.getTimeSpent());
                 totalCost = totalCost.add(costOfTimeEntry);
             }
