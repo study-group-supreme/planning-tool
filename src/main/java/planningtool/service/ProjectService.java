@@ -288,7 +288,7 @@ public class ProjectService {
     public BigDecimal calculateEstimatedPriceForProject(int projectId) {
         BigDecimal estimatedCost = BigDecimal.ZERO;
         for (Task task : projectRepository.findTasksByProjectId(projectId)) {
-            if (!taskRepository.taskHasChildren(task.getId())) {
+            if (!taskRepository.taskHasChildren(task.getId()) && task.getTimeEstimate() != null) {
                 BigDecimal costOfTask = employeeRepository.findPricePerHourByEmployeeId(task.getAssignedMemberId()).multiply(task.getTimeEstimate());
                 estimatedCost = estimatedCost.add(costOfTask);
             }

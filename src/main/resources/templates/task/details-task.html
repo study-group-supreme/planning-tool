@@ -127,6 +127,15 @@
     </p>
     <form th:if="${!task.done}" th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
         <input type="text" name="title" placeholder="Quick add subtask..." required>
+        <label> Assign member
+            <select name="member_id">
+                <option
+                        th:each="member : ${projectMembers}"
+                        th:text="${member.name}"
+                        th:value="${member.id}"
+                ></option>
+            </select>
+        </label>
         <button type="submit">Add</button>
     </form>
 
