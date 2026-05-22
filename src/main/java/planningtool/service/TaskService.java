@@ -51,11 +51,11 @@ public class TaskService {
             Task parent = taskRepository.findTaskById(task.getParentTaskId());
 
             // Prevent subtasks of subtasks
-            if (parent.getParentTaskId() != null){
+            if (parent.getParentTaskId() != null) {
                 throw new BadRequestException("Subtasks cannot have their own subtasks");
             }
             // Clear the parent time estimate if this is the first subtask
-            if (parent.getTimeEstimate() != null){
+            if (parent.getTimeEstimate() != null) {
                 parent.setTimeEstimate(null);
                 taskRepository.updateTask(parent);
             }
@@ -66,7 +66,7 @@ public class TaskService {
             task.setHighPriority(false);
         }
         task.setDone(false);
-        if(task.getAssignedMemberId() == null || !projectService.getProjectMemberIdsByProjectId(task.getProjectId()).contains((Integer) task.getAssignedMemberId())){
+        if (task.getAssignedMemberId() == null || !projectService.getProjectMemberIdsByProjectId(task.getProjectId()).contains((Integer) task.getAssignedMemberId())) {
             throw new BadRequestException("A member of the project has to be assigned to the task");
         }
         if (task.getTitle() == null || task.getTitle().isBlank()) {
@@ -176,6 +176,11 @@ public class TaskService {
                 t.setDone(newStatus);
                 taskRepository.updateIsDoneInTaskById(t);
             }
+        } else if (task.getParentTaskId() != null && newStatus == false) {
+            Task parentTask = taskRepository.findTaskById(task.getParentTaskId());
+            parentTask.setDone(false);
+            taskRepository.updateIsDoneInTaskById(parentTask);
+
         }
         task.setDone(newStatus);
         return taskRepository.updateIsDoneInTaskById(task);
