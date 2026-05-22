@@ -173,7 +173,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void archiveProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+    void archiveProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
         doThrow(new DatabaseOperationException("", new Exception())).when(projectService).archiveProject(anyInt());
@@ -202,7 +202,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void restoreProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+    void restoreProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
         doThrow(new DatabaseOperationException("", new Exception())).when(projectService).restoreProject(anyInt());
@@ -242,7 +242,7 @@ public class ProjectControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "Updated title").sessionAttr("employeeId", 1))
+                        .param("title", "Updated title").sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
     }
@@ -254,7 +254,7 @@ public class ProjectControllerTest {
         Mockito.when(projectService.editProject(any(Project.class))).thenThrow(BadRequestException.class);
 
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "New title").sessionAttr("employeeId", 1))
+                        .param("title", "New title").sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1/edit"));
     }
@@ -266,7 +266,7 @@ public class ProjectControllerTest {
         Mockito.when(projectService.editProject(any(Project.class))).thenThrow(DatabaseOperationException.class);
 
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "New title").sessionAttr("employeeId", 1))
+                        .param("title", "New title").sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
 
@@ -274,6 +274,8 @@ public class ProjectControllerTest {
 
     @Test
     void showAllProjects_ShouldShowAllProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Project testProject = new Project();
         testProject.setId(1);
         testProject.setTimeOfCreation(LocalDate.of(2026, 5, 22));
@@ -283,7 +285,7 @@ public class ProjectControllerTest {
         when(projectService.getAllProjects()).thenReturn(myProjects);
         when(projectService.getTotalLoggedTimeForProject(1)).thenReturn(new BigDecimal("5.0"));
 
-        mockMvc.perform(get("/projects/history"))
+        mockMvc.perform(get("/projects/history").session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/list-project-history"))
                 .andExpect(model().attributeExists("allProjects"))
