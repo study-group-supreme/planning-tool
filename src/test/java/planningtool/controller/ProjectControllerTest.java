@@ -20,6 +20,7 @@ import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,19 @@ public class ProjectControllerTest {
     EmployeeService employeeService;
 
     //TODO Add ArgumentCaptors to tests
+
+
+    @Test
+    void showListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        Employee employee = new Employee();
+        employee.setName("Test");
+        when(employeeService.getEmployeeById(1)).thenReturn(employee);
+        mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("project/list-projects"));
+    }
 
     @Test
     void createProject_ShouldShowCreateProjectForm() throws Exception {
@@ -72,17 +86,27 @@ public class ProjectControllerTest {
 
     }
 
+    //TODO Test for showing showSpecificProject() should be added
     @Test
-    void showListOfProjectsByEmployeeId_ShouldReturnListOfProjectsByEmployeeId() throws Exception {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("employeeId", 1);
-        Employee employee = new Employee();
-        employee.setName("Test");
-        when(employeeService.getEmployeeById(1)).thenReturn(employee);
-        mockMvc.perform(get("/projects").sessionAttr("employeeId", 1))
+    void showSpecificProject_ShouldShowSpecificProject() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setActive(true);
+        testProject.setTimeOfCreation(LocalDate.of(2026, 5, 22));
+
+        when(projectService.getProjectById(1)).thenReturn(testProject);
+
+        mockMvc.perform(get("/projects/1")
+                        .sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
-                .andExpect(view().name("project/list-projects"));
+                .andExpect(view().name("project/details-project"))
+                .andExpect(model().attributeExists("project"))
+                .andExpect(model().attributeExists("mainTask"))
+                .andExpect(model().attributeExists("isArchived"))
+                .andExpect(model().attributeExists("progressMap"));
+
     }
+
 
     @Test
     void addProjectMember_ShouldAddProjectMember() throws Exception {
@@ -126,8 +150,6 @@ public class ProjectControllerTest {
     }
 
 
-//TODO Test for showing showSpecificProject() should be added
-
     @Test
     void archiveProject_ShouldArchiveProject_AndRedirect() throws Exception {
         Project testProject = new Project();
@@ -144,7 +166,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void archiveProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+    void archiveProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception {
         doThrow(new DatabaseOperationException("", new Exception())).when(projectService).archiveProject(anyInt());
 
         mockMvc.perform(post("/projects/archive").param("projectId", "1"))
@@ -169,7 +191,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void restoreProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception{
+    void restoreProject_CatchesDatabaseOperationException_AddRedirectAttribute() throws Exception {
         doThrow(new DatabaseOperationException("", new Exception())).when(projectService).restoreProject(anyInt());
 
         mockMvc.perform(post("/projects/restore").param("projectId", "1"))
@@ -190,6 +212,7 @@ public class ProjectControllerTest {
                 .andExpect(view().name("project/edit-project"))
                 .andExpect(model().attribute("project", testProject));
     }
+
     @Test
     void showEditProjectForm_ShouldCatchNotFoundException() throws Exception {
         Mockito.when(projectService.getProjectById(250)).thenThrow(NotFoundException.class);
@@ -203,7 +226,7 @@ public class ProjectControllerTest {
     void saveEditedProject_ShouldSaveProjectAndRedirect() throws Exception {
 
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "Updated title"))
+                        .param("title", "Updated title"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
     }
@@ -213,22 +236,22 @@ public class ProjectControllerTest {
         Mockito.when(projectService.editProject(any(Project.class))).thenThrow(BadRequestException.class);
 
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "New title"))
+                        .param("title", "New title"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1/edit"));
     }
+
     @Test
     void saveEditedProjects_ShouldCatchDatabaseOperationException() throws Exception {
         Mockito.when(projectService.editProject(any(Project.class))).thenThrow(DatabaseOperationException.class);
 
         mockMvc.perform(post("/projects/1/edit")
-                .param("title", "New title"))
+                        .param("title", "New title"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
 
     }
 
 
-
-    //TODO Test for showing showSpecificProject() should be added
+    //TODO Test for showAllProjects()
 }
