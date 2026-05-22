@@ -57,14 +57,14 @@
             <span th:if="${assignedEmployee == null}">Unassigned</span>
     </p>
 </div>
-<div>
+<div th:if="${isProjectActive}">
     <form th:if="${!task.done}" th:action="@{/tasks/{id}/edit(id=${task.id})}" method="get">
         <button type="submit">Edit Task</button>
     </form>
 </div>
 
 <h2>Time Entries</h2>
-<div th:if="${!hasChildren && !task.done}">
+<div th:if="${!hasChildren && !task.done} and ${isProjectActive}">
     <h3>Add Time Entry</h3>
     <form th:action="@{|/tasks/${task.id}/time-entry|}" method="post">
         <label>Hours spent</label>
@@ -93,7 +93,7 @@
         <td th:text="${entry.timeSpent}"></td>
         <td th:text="${entry.timeOfCreation}"></td>
         <td>
-            <div th:if="${entry.employeeId == loggedInId && !task.done}">
+            <div th:if="${entry.employeeId == loggedInId && !task.done} and ${isProjectActive}">
                 <form th:action="@{|/tasks/${task.id}/time-entry/${entry.id}/remove|}" method="post">
                     <button type="submit"
                             class="delete-button"
@@ -125,7 +125,7 @@
     <p th:if="${subtasks == null or subtasks.isEmpty()}">
         No subtasks yet.
     </p>
-    <form th:if="${!task.done}" th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
+    <form th:if="${!task.done} and ${isProjectActive}" th:action="@{/tasks/{id}/quick-add-subtask(id=${task.id})}" method="post">
         <input type="text" name="title" placeholder="Quick add subtask..." required>
         <label> Assign member
             <select name="member_id">
@@ -139,11 +139,11 @@
         <button type="submit">Add</button>
     </form>
 
-    <form th:if="${!task.done}" th:action="@{/tasks/{id}/add-subtask(id=${task.id})}" method="get">
+    <form th:if="${!task.done} and ${isProjectActive}" th:action="@{/tasks/{id}/add-subtask(id=${task.id})}" method="get">
         <button type="submit">Create subtask</button>
     </form>
 </div>
-<div th:if="${!mainTask && !hasChildren}" class="task-actions">
+<div th:if="${!mainTask && !hasChildren} and ${isProjectActive}" class="task-actions">
     <form th:action="@{/tasks/remove}" method="post">
         <input type="hidden" name="taskId" th:value="${task.id}">
         <input type="hidden" name="projectId" th:value="${task.projectId}">
@@ -154,7 +154,7 @@
 </div>
 <div th:if="${mainTask}">
 
-    <form th:action="@{/tasks/remove}" method="post">
+    <form th:if="${isProjectActive}" th:action="@{/tasks/remove}" method="post">
         <input type="hidden" name="taskId" th:value="${task.id}">
         <input type="hidden" name="projectId" th:value="${task.projectId}">
         <button class="delete-button" type="submit"
