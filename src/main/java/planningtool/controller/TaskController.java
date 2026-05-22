@@ -129,7 +129,7 @@ public class TaskController {
 
         return "redirect:/tasks/"+taskId;
     }
-// TODO Add error handling and try/catch to this? Sensei, help me!!
+    // TODO We need to display an error message, right now it just redirects to prevent whitelabel
     @GetMapping("/{taskId}/edit")
     public String showEditTaskForm(@PathVariable int taskId, Model model) {
         try {
