@@ -113,7 +113,8 @@ public class TaskController {
     @PostMapping("/{taskId}/quick-add-subtask")
     public String quickAddSubtask(
             @PathVariable int taskId,
-            @RequestParam String title
+            @RequestParam String title,
+            @RequestParam int member_id
     ){
         Task parent = taskService.getTaskById(taskId);
 
@@ -122,6 +123,7 @@ public class TaskController {
         subTask.setProjectId(parent.getProjectId());
         subTask.setParentTaskId(parent.getId());
         subTask.setTitle(title);
+        subTask.setAssignedMemberId(member_id);
 
         taskService.createTask(subTask);
 
