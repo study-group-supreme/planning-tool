@@ -219,6 +219,8 @@ public class ProjectControllerTest {
     }
     @Test
     void saveEditedProjects_ShouldCatchDatabaseOperationException() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Mockito.when(projectService.editProject(any(Project.class))).thenThrow(DatabaseOperationException.class);
 
         mockMvc.perform(post("/projects/1/edit")
