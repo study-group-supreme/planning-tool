@@ -37,8 +37,8 @@
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
             </td>
             <td th:text="${project.getDescription()}"></td>
-            <td th:text="${summary[project.id]['estimate']}"></td>
-            <td th:text="${summary[project.id]['logged']}"></td>
+            <td th:text="${summary[project.id]['estimate']} + ' hours'"></td>
+            <td th:text="${summary[project.id]['logged']} + ' hours'"></td>
             <td th:text="${project.getDeadline()}"></td>
         </tr>
 
