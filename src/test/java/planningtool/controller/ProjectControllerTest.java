@@ -20,6 +20,7 @@ import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,6 @@ public class ProjectControllerTest {
 
     }
 
-    //TODO Test for showing showSpecificProject() should be added
     @Test
     void showSpecificProject_ShouldShowSpecificProject() throws Exception {
         Project testProject = new Project();
@@ -101,7 +101,6 @@ public class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("project/details-project"))
                 .andExpect(model().attributeExists("project"))
-                .andExpect(model().attributeExists("mainTask"))
                 .andExpect(model().attributeExists("isArchived"))
                 .andExpect(model().attributeExists("progressMap"));
 
@@ -252,6 +251,21 @@ public class ProjectControllerTest {
 
     }
 
+    @Test
+    void showAllProjects_ShouldShowAllProjects() throws Exception {
+        Project testProject = new Project();
+        testProject.setId(1);
+        testProject.setTimeOfCreation(LocalDate.of(2026, 5, 22));
+        List<Project> myProjects = new ArrayList<>();
+        myProjects.add(testProject);
 
-    //TODO Test for showAllProjects()
+        when(projectService.getAllProjects()).thenReturn(myProjects);
+        when(projectService.getTotalLoggedTimeForProject(1)).thenReturn(new BigDecimal("5.0"));
+
+        mockMvc.perform(get("/projects/history"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("project/list-project-history"))
+                .andExpect(model().attributeExists("allProjects"))
+                .andExpect(model().attributeExists("loggedTime"));
+    }
 }

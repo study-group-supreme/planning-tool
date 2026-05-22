@@ -10,7 +10,6 @@ import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.model.Project;
-import planningtool.model.Task;
 import planningtool.service.EmployeeService;
 import planningtool.service.ProjectService;
 import planningtool.service.TaskService;
@@ -85,7 +84,6 @@ public class ProjectController {
         model.addAttribute("employees", projectService.getEmployeesNotOnProject(projectId));
         model.addAttribute("totalLoggedTime", totalLoggedTime);
         model.addAttribute("project", project);
-        model.addAttribute("mainTask", false);
         model.addAttribute("progressMap", taskService.getMainTaskProgress(projectId));
         model.addAttribute("currentUserId", currentUserId);
         model.addAttribute("totalEstimate", totalEstimatedTime);
@@ -183,7 +181,7 @@ public class ProjectController {
         for (Project p : allProjects) {
             loggedTimeMap.put(p.getId(), projectService.getTotalLoggedTimeForProject(p.getId()));
         }
-        model.addAttribute("allProject", allProjects);
+        model.addAttribute("allProjects", allProjects);
         model.addAttribute("loggedTime", loggedTimeMap);
         return "project/list-project-history";
     }
