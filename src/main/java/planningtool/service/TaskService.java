@@ -166,7 +166,6 @@ public class TaskService {
     }
 
     //Properly need some validation later
-    // TODO Make an else-if block here so that main tasks automatically get set to active when their subtasks are
     public Task editTaskIsDoneStatus(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
         boolean newStatus = !task.isDone();
