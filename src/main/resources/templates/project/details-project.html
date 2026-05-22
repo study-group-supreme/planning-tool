@@ -172,14 +172,14 @@
             </form>
         </td>
         <td>
-            <div th:if="${!mainTask and progressMap.get(task)[1] > 0}">
+            <div th:if="${task.parentTaskId == null and progressMap.get(task.id)[1] > 0}">
 
                 <progress
-                        th:value="${progressMap.get(task)[0]}"
-                        th:max="${progressMap.get(task)[1]}">
+                        th:value="${progressMap.get(task.id)[0]}"
+                        th:max="${progressMap.get(task.id)[1]}">
                 </progress>
 
-                <span th:text="${progressMap.get(task)[1] > 0 ? (progressMap.get(task)[0] * 100 / progressMap.get(task)[1]) + '%': '0%'}">
+                <span th:text="${progressMap.get(task.id)[1] > 0 ? (progressMap.get(task.id)[0] * 100 / progressMap.get(task.id)[1]) + '%': '0%'}">
     </span>
 
             </div>
