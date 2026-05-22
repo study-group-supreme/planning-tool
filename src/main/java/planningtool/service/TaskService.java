@@ -240,13 +240,13 @@ public class TaskService {
         return taskRepository.findSubtasksByParentId(parentId);
     }
 
-    public Map<Task, int[]> getMainTaskProgress(int projectId) {
-        Map<Task, int[]> map = new HashMap<>();
+    public Map<Integer, int[]> getMainTaskProgress(int projectId) {
+        Map<Integer, int[]> map = new HashMap<>();
         List<Task> tasks = projectService.getProjectById(projectId).getTasks();
         for (Task t : tasks) {
             if (t.getParentTaskId() == null) { // main task
                 List<Task> subtasks = getTasksByParentId(t.getId());
-                map.put(t, new int[]{
+                map.put(t.getId(), new int[]{
                         getDoneSubtasks(subtasks),
                         getTotalSubtasks(subtasks)
                 });
