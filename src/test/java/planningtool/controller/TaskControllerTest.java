@@ -5,6 +5,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -53,6 +54,8 @@ public class TaskControllerTest {
 
     @Test
     void showSpecificTask_ReturnsDetailsPage() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Task task = new Task();
         task.setId(10);
         task.setTitle("Brew Coffee");
@@ -83,7 +86,7 @@ public class TaskControllerTest {
         Mockito.when(taskService.getTimeEntriesByTaskId(10)).thenReturn(List.of(entry));
         Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(projectMembers);
 
-        mockMvc.perform(get("/tasks/10"))
+        mockMvc.perform(get("/tasks/10").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("task/details-task"))
                 .andExpect(model().attributeExists("task"))
@@ -110,12 +113,14 @@ public class TaskControllerTest {
 
     @Test
     void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Task task = new Task();
         task.setId(1);
         task.setProjectId(1);
 
 
-        mockMvc.perform(post("/tasks/remove")
+        mockMvc.perform(post("/tasks/remove").sessionAttr("employeeId", 1)
                         .param("taskId", "1")
                         .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
@@ -128,13 +133,15 @@ public class TaskControllerTest {
 
     @Test
     void editTaskIsDoneStatus_shouldShowEditIsDoneStatus_AndRedirectForm() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Task task = new Task();
         task.setProjectId(1);
         task.setId(1);
         task.setDone(false);
 
 
-        mockMvc.perform(post("/tasks/mark-done")
+        mockMvc.perform(post("/tasks/mark-done").sessionAttr("employeeId", 1)
                         .param("taskId", "1")
                         .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
@@ -147,11 +154,13 @@ public class TaskControllerTest {
 
     @Test
     void quickSaveTask_ShouldCreateTask() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Task task = new Task();
         task.setProjectId(1);
         task.setId(1);
 
-        mockMvc.perform(post("/tasks/quick-add")
+        mockMvc.perform(post("/tasks/quick-add").sessionAttr("employeeId", 1)
                         .param("title", "test")
                         .param("projectId", "1")
                         .param("member_id", "1")
@@ -192,8 +201,10 @@ public class TaskControllerTest {
 
     @Test
     void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
 
-        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1"))
+        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1").sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
 
@@ -238,8 +249,9 @@ public class TaskControllerTest {
     }
     @Test
     void saveEditedTask_ShouldSaveEditedTaskAndRedirect() throws Exception {
-
-        mockMvc.perform(post("/tasks/1/edit")
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        mockMvc.perform(post("/tasks/1/edit").sessionAttr("employeeId", 1)
                         .param("title", "Updated title")
                         .param("projectId", "1"))
                 .andExpect(status().is3xxRedirection())
@@ -250,9 +262,11 @@ public class TaskControllerTest {
 
     @Test
     void saveEditedTask_ShouldCatchBadRequestExceptionAndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Mockito.when(taskService.editTask(any(Task.class))).thenThrow(BadRequestException.class);
 
-        mockMvc.perform(post("/tasks/1/edit")
+        mockMvc.perform(post("/tasks/1/edit").sessionAttr("employeeId", 1)
                         .param("title", "New title")
                         .param("projectId", "2"))
                 .andExpect(status().is3xxRedirection())
@@ -261,9 +275,11 @@ public class TaskControllerTest {
 
     @Test
     void saveEditedTask_ShouldCatchDatabaseOperationExceptionAndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         Mockito.when(taskService.editTask(any(Task.class))).thenThrow(DatabaseOperationException.class);
 
-        mockMvc.perform(post("/tasks/1/edit")
+        mockMvc.perform(post("/tasks/1/edit").sessionAttr("employeeId", 1)
                         .param("title", "New title")
                         .param("projectId", "2"))
                 .andExpect(status().is3xxRedirection())
@@ -298,11 +314,13 @@ public class TaskControllerTest {
 
     @Test
     void removeTimeEntry_ShouldCallServiceAndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
         int taskId = 7;
         int entryId = 3;
 
         mockMvc.perform(post("/tasks/{taskId}/time-entry/{entryId}/remove", taskId, entryId)
-                        .sessionAttr("employeeId", 10))
+                        .sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/tasks/" + taskId));
 
@@ -310,7 +328,9 @@ public class TaskControllerTest {
     }
     @Test
     void showEditTask_CanUpdateParentTaskFormId() throws Exception {
-       mockMvc.perform(post("/tasks/{taskId}/edit", 1)
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+       mockMvc.perform(post("/tasks/{taskId}/edit", 1).sessionAttr("employeeId", 1)
                .param("parentTaskId", "5")
                .param("title", "test")
                .param("projectId", "1"));
