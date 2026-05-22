@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <title th:text="${status} + ' - ' + ${error}">404 - Not Found</title></head>
 <body>
+<div>
+    <h1 th:text="${status} + ' - ' + ${error}"></h1>
 
+    <div>
+        <p><strong>Error: </strong> <span th:text="${error}"></span></p>
+        <p><strong>Message: </strong> <span th:text="${message}"></span></p>
+    </div>
+
+    <p>The ressource you were looking for cannot be found.</p>
+
+    <div>
+        <button type="button" onclick="window.location.href='/projects'">Back To Projects</button>
+    </div>
+</div>
 </body>
 </html>
