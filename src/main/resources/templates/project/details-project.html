@@ -31,11 +31,11 @@
     </p>
     <p th:if="${estimatedCost != null}">
         <strong>Estimated Cost of Project:</strong>
-        <span th:text="${estimatedCost}"></span>
+        <span th:text="${#numbers.formatDecimal(estimatedCost,1, 'COMMA' ,2, 'POINT')}+ ' kr'"></span>
     </p>
     <p th:if="${currentCost != null}">
         <strong>Current Cost of Project:</strong>
-        <span th:text="${currentCost}"></span>
+        <span th:text="${#numbers.formatDecimal(currentCost, 1, 'COMMA',2, 'POINT')}+' kr'"></span>
     </p>
     <form th:if="${project.active}" th:action="@{/projects/archive}" method="post">
         <input type="hidden" name="projectId" th:value="${project.id}">
