@@ -24,6 +24,7 @@ import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
+import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.service.EmployeeService;
@@ -78,8 +79,13 @@ public class TaskControllerTest {
         entry.setTimeSpent(new BigDecimal("0.5"));
         entry.setTimeOfCreation(LocalDateTime.of(2026, 5, 10, 12, 0));
 
+        Project project = new Project();
+        project.setId(1);
+        project.setActive(true);
+
         List<Employee> projectMembers = List.of(assigned);
 
+        Mockito.when(projectService.getProjectById(1)).thenReturn(project);
         Mockito.when(taskService.getTaskById(10)).thenReturn(task);
         Mockito.when(taskService.getTaskById(5)).thenReturn(parent);
         Mockito.when(employeeService.getEmployeeById(3)).thenReturn(assigned);

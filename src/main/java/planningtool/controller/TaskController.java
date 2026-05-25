@@ -59,6 +59,7 @@ public class TaskController {
         model.addAttribute("subtasks", taskService.getTasksByParentId(taskId));
         model.addAttribute("mainTask", false);
         model.addAttribute("estimatedCost", projectService.calculateEstimatedPriceForTask(taskId));
+        model.addAttribute("isProjectActive", projectService.getProjectById(task.getProjectId()).isActive());
         return "task/details-task";
     }
 
