@@ -2,6 +2,7 @@ package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,8 +52,6 @@ public class TaskControllerTest {
 
     @MockitoBean
     private EmployeeService employeeService;
-
-    //TODO Add ArgumentCaptors to tests
 
     @Test
     void showSpecificTask_ReturnsDetailsPage() throws Exception {
@@ -118,44 +118,41 @@ public class TaskControllerTest {
     }
 
     @Test
-    void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("employeeId", 1);
-        Task task = new Task();
-        task.setId(1);
-        task.setProjectId(1);
+    void showAddTaskForm_ShouldShowCreateTaskForm() throws Exception {
 
+        Employee testEmployee = new Employee();
+        testEmployee.setId(1);
+        testEmployee.setName("John Doe");
+        testEmployee.setEmail("random@email.com");
 
-        mockMvc.perform(post("/tasks/remove").sessionAttr("employeeId", 1)
-                        .param("taskId", "1")
-                        .param("projectId", "1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/1"));
+        List<Employee> testList = new ArrayList<>();
+        testList.add(testEmployee);
 
-        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
-        verify(taskService).removeTaskById(captor.capture());
-        assertThat(captor.getValue()).isEqualTo(1);
+        Task testTask = new Task();
+        testTask.setProjectId(1);
+
+        Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(testList);
+
+        mockMvc.perform(get("/tasks/add?projectId=1").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/create-task"))
+                .andExpect(model().attribute("members", testList))
+                .andExpect(model().attribute("task", testTask));
     }
 
     @Test
-    void editTaskIsDoneStatus_shouldShowEditIsDoneStatus_AndRedirectForm() throws Exception {
+    void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employeeId", 1);
-        Task task = new Task();
-        task.setProjectId(1);
-        task.setId(1);
-        task.setDone(false);
 
-
-        mockMvc.perform(post("/tasks/mark-done").sessionAttr("employeeId", 1)
-                        .param("taskId", "1")
-                        .param("projectId", "1"))
+        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1").sessionAttr("employeeId", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects/1"));
-        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
 
-        verify(taskService).editTaskIsDoneStatus(captor.capture());
-        assertThat(captor.getValue()).isEqualTo(1);
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskService).createTask(captor.capture());
+        assertThat(captor.getValue().getTitle()).isEqualTo("Brew coffee");
+        assertThat(captor.getValue().getProjectId()).isEqualTo(1);
     }
 
     @Test
@@ -182,43 +179,34 @@ public class TaskControllerTest {
     }
 
     @Test
-    void showAddTaskForm_ShouldShowCreateTaskForm() throws Exception {
+    void showAddSubtaskForm_ShouldShowAddSubtaskForm() throws Exception {
+        Task testParent = new Task();
+        testParent.setId(1);
+        testParent.setProjectId(2);
 
-        Employee testEmployee = new Employee();
-        testEmployee.setId(1);
-        testEmployee.setName("John Doe");
-        testEmployee.setEmail("random@email.com");
+        Mockito.when(taskService.getTaskById(1)).thenReturn(testParent);
+        Mockito.when(projectService.getProjectMembersByProjectId(testParent.getProjectId())).thenReturn(List.of());
 
-        List<Employee> testList = new ArrayList<>();
-        testList.add(testEmployee);
-
-        Task testTask = new Task();
-        testTask.setProjectId(1);
-
-        Mockito.when(projectService.getProjectMembersByProjectId(1)).thenReturn(testList);
-
-        mockMvc.perform(get("/tasks/add?projectId=1").sessionAttr("employeeId", 1))
+        mockMvc.perform(get("/tasks/1/add-subtask").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("task/create-task"))
-                .andExpect(model().attribute("members", testList))
-                .andExpect(model().attribute("task", testTask));
-
+                .andExpect(model().attributeExists("task"))
+                .andExpect(model().attribute("members", List.of()));
     }
 
     @Test
-    void saveTask_ShouldCreateTaskAndRedirect() throws Exception {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("employeeId", 1);
+    void quickAddSubtask_ShouldAddSubtaskAndRedirect() throws Exception {
+        Task testTask = new Task();
+        testTask.setId(1);
+        testTask.setProjectId(2);
 
-        mockMvc.perform(post(("/tasks/add")).param("title", "Brew coffee").param("projectId", "1").sessionAttr("employeeId", 1))
+        Mockito.when(taskService.getTaskById(1)).thenReturn(testTask);
+
+        mockMvc.perform(post("/tasks/1/quick-add-subtask").sessionAttr("employeeId", 1)
+                        .param("title", "testTask")
+                        .param("member_id","1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/1"));
-
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskService).createTask(captor.capture());
-        assertThat(captor.getValue().getTitle()).isEqualTo("Brew coffee");
-        assertThat(captor.getValue().getProjectId()).isEqualTo(1);
-
+                .andExpect(redirectedUrl("/tasks/1"));
     }
 
     @Test
@@ -243,8 +231,23 @@ public class TaskControllerTest {
                 .andExpect(view().name("task/edit-task"))
                 .andExpect(model().attribute("members", testList))
                 .andExpect(model().attribute("task", testTask));
-
     }
+
+    @Test
+    void showEditTaskForm_CanUpdateParentTaskFormId() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        mockMvc.perform(post("/tasks/{taskId}/edit", 1).sessionAttr("employeeId", 1)
+                .param("parentTaskId", "5")
+                .param("title", "test")
+                .param("projectId", "1"));
+        ArgumentCaptor<Task> taskArgumentCaptor = ArgumentCaptor.forClass(Task.class);
+
+        verify(taskService).editTask(taskArgumentCaptor.capture());
+        Task capturedTask = taskArgumentCaptor.getValue();
+        assertEquals(5, capturedTask.getParentTaskId());
+    }
+
     @Test
     void showEditTaskForm_ShouldCatchNotFoundException() throws Exception {
         Mockito.when(taskService.getTaskById(200)).thenThrow(NotFoundException.class);
@@ -253,6 +256,7 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
+
     @Test
     void saveEditedTask_ShouldSaveEditedTaskAndRedirect() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -263,8 +267,6 @@ public class TaskControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/tasks/1"));
     }
-
-
 
     @Test
     void saveEditedTask_ShouldCatchBadRequestExceptionAndRedirect() throws Exception {
@@ -292,8 +294,45 @@ public class TaskControllerTest {
                 .andExpect(redirectedUrl("/projects"));
     }
 
+    @Test
+    void removeTask_ShouldRemoveTaskByTaskId_AndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        Task task = new Task();
+        task.setId(1);
+        task.setProjectId(1);
 
-    //TODO showAddTaskForm() tests should be added - DONE
+        mockMvc.perform(post("/tasks/remove").sessionAttr("employeeId", 1)
+                        .param("taskId", "1")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+        verify(taskService).removeTaskById(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(1);
+    }
+
+    @Test
+    void editTaskIsDoneStatus_shouldShowEditIsDoneStatus_AndRedirectForm() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employeeId", 1);
+        Task task = new Task();
+        task.setProjectId(1);
+        task.setId(1);
+        task.setDone(false);
+
+        mockMvc.perform(post("/tasks/mark-done").sessionAttr("employeeId", 1)
+                        .param("taskId", "1")
+                        .param("projectId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/1"));
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(taskService).editTaskIsDoneStatus(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(1);
+    }
+
     @Test
     void submitTimeEntry_ShouldCreateEntryAndRedirect() throws Exception {
         int taskId = 5;
@@ -312,12 +351,6 @@ public class TaskControllerTest {
         assertEquals(3, sent.getEmployeeId());
     }
 
-    //TODO showAddTaskForm() tests should be added
-    //TODO saveTask() tests should be made
-    //TODO quickSaveTask() tests should be made
-    //TODO removeTask() tests should be made
-    //TODO editTaskIsDoneSTatus() tests should be made
-
     @Test
     void removeTimeEntry_ShouldCallServiceAndRedirect() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -331,20 +364,5 @@ public class TaskControllerTest {
                 .andExpect(redirectedUrl("/tasks/" + taskId));
 
         verify(taskService).removeTimeEntryById(entryId);
-    }
-    @Test
-    void showEditTask_CanUpdateParentTaskFormId() throws Exception {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("employeeId", 1);
-       mockMvc.perform(post("/tasks/{taskId}/edit", 1).sessionAttr("employeeId", 1)
-               .param("parentTaskId", "5")
-               .param("title", "test")
-               .param("projectId", "1"));
-       ArgumentCaptor<Task> taskArgumentCaptor = ArgumentCaptor.forClass(Task.class);
-
-verify(taskService).editTask(taskArgumentCaptor.capture());
-Task capturedTask = taskArgumentCaptor.getValue();
-assertEquals(5, capturedTask.getParentTaskId());
-
     }
 }

@@ -9,14 +9,14 @@
 <div th:replace="fragment/header :: header"></div>
 <br>
 <div class="row-alignment">
-<form th:action="@{/projects/history}" th:object="${allProject}">
+<form th:action="@{/projects/history}" th:object="${allProjects}">
     <table>
         <tr>
             <th> All active projects </th>
             <th>Date of creation</th>
             <th>Total logged time</th>
         </tr>
-        <tr th:each="project : ${allProject}" th:if="${project.isActive()}">
+        <tr th:each="project : ${allProjects}" th:if="${project.isActive()}">
             <td>
             <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
             </td>
@@ -34,7 +34,7 @@
             <th>Date of creation</th>
             <th>Total logged time</th>
         </tr>
-        <tr th:each="project : ${allProject}" th:if="${!project.isActive()}">
+        <tr th:each="project : ${allProjects}" th:if="${!project.isActive()}">
             <td>
                 <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.getTitle()}"></a>
             </td>
