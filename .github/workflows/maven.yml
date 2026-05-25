@@ -23,4 +23,5 @@ jobs:
       - name: Build with Maven
         env:
           SPRING_PROFILES_ACTIVE: test
+
         run: mvn -B clean verify -DskipTests
