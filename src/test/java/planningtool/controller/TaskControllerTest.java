@@ -2,6 +2,7 @@ package planningtool.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -174,6 +176,23 @@ public class TaskControllerTest {
         assertEquals("test", createdTask.getTitle());
     }
     // TODO showAddSubtaskForm() test goes here!!
+    @Test
+    void showAddSubtaskForm_ShouldShowAddSubtaskForm() throws Exception {
+        Task testParent = new Task();
+        testParent.setId(1);
+        testParent.setProjectId(2);
+
+        Mockito.when(taskService.getTaskById(1)).thenReturn(testParent);
+        Mockito.when(projectService.getProjectMembersByProjectId(testParent.getProjectId())).thenReturn(List.of());
+
+        mockMvc.perform(get("/tasks/1/add-subtask").sessionAttr("employeeId", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("task/create-task"))
+                .andExpect(model().attributeExists("task"))
+                .andExpect(model().attribute("members", List.of()));
+
+
+    }
 
     // TODO quickAddSubtask() test goes here!!
 
