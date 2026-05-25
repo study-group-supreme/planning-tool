@@ -22,8 +22,6 @@ jobs:
 
       - name: Build with Maven
         env:
-          PROD_DATABASE_URL: ${{secrets.PROD_DATABASE_URL}}
-          PROD_USERNAME: ${{sectrets.PROD_USERNAME}}
-          PROD_PASSWORD: ${{secrets.PROD_PASSWORD}}
+          SPRING_PROFILES_ACTIVE: test
 
         run: mvn -B clean verify -DskipTests
