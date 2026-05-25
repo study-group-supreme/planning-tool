@@ -52,10 +52,6 @@ public class TaskControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
-    //TODO Add ArgumentCaptors to tests
-    //TODO showAddSubtaskForm() should be made
-    //TODO quickAddSubtask() should be made
-
     @Test
     void showSpecificTask_ReturnsDetailsPage() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -175,7 +171,7 @@ public class TaskControllerTest {
         Task createdTask = captor.getValue();
         assertEquals("test", createdTask.getTitle());
     }
-    // TODO showAddSubtaskForm() test goes here!!
+
     @Test
     void showAddSubtaskForm_ShouldShowAddSubtaskForm() throws Exception {
         Task testParent = new Task();
@@ -190,11 +186,22 @@ public class TaskControllerTest {
                 .andExpect(view().name("task/create-task"))
                 .andExpect(model().attributeExists("task"))
                 .andExpect(model().attribute("members", List.of()));
-
-
     }
 
-    // TODO quickAddSubtask() test goes here!!
+    @Test
+    void quickAddSubtask_ShouldAddSubtaskAndRedirect() throws Exception {
+        Task testTask = new Task();
+        testTask.setId(1);
+        testTask.setProjectId(2);
+
+        Mockito.when(taskService.getTaskById(1)).thenReturn(testTask);
+
+        mockMvc.perform(post("/tasks/1/quick-add-subtask").sessionAttr("employeeId", 1)
+                        .param("title", "testTask")
+                        .param("member_id","1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tasks/1"));
+    }
 
     @Test
     void showEditTaskForm_ShouldShowShowEditTaskForm() throws Exception {
@@ -219,6 +226,7 @@ public class TaskControllerTest {
                 .andExpect(model().attribute("members", testList))
                 .andExpect(model().attribute("task", testTask));
     }
+
     @Test
     void showEditTaskForm_CanUpdateParentTaskFormId() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -232,7 +240,6 @@ public class TaskControllerTest {
         verify(taskService).editTask(taskArgumentCaptor.capture());
         Task capturedTask = taskArgumentCaptor.getValue();
         assertEquals(5, capturedTask.getParentTaskId());
-
     }
 
     @Test
