@@ -1,5 +1,7 @@
 # 🛠️ Planning Tool
 
+[Alpha Solutions Project Tool Azure Deployment Link](calculationapp-ejbvb2bfdzhgc6gj.polandcentral-01.azurewebsites.net)
+
 ## 📖 Project Description
 Planning Tool is a project calculation tool for the business **Alpha Solutions**.  
 The purpose of the tool is to calculate estimated prices for customers ordering tech stack solutions from Alpha Solutions.
