@@ -54,7 +54,7 @@ public class ProjectController {
     }
 
     @GetMapping("/add")
-    public String createProject(Model model) {
+    public String showAddProjectForm(Model model) {
         model.addAttribute("project", new Project());
         model.addAttribute("employee", employeeService.getAllEmployees());
         model.addAttribute("hideCreateProject", true);
@@ -63,7 +63,7 @@ public class ProjectController {
 
     //Needs to have session included and needs a /projects Page
     @PostMapping("/add")
-    public String createProject(@ModelAttribute Project project, HttpSession session, RedirectAttributes attributes) {
+    public String showAddProjectForm(@ModelAttribute Project project, HttpSession session, RedirectAttributes attributes) {
         try {
             Integer projectManagerId = (Integer) session.getAttribute("employeeId");
             project.setProjectCreatorId(projectManagerId);

@@ -58,7 +58,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void createProject_ShouldShowCreateProjectForm() throws Exception {
+    void createProject_ShouldShowShowAddProjectFormForm() throws Exception {
         mockMvc.perform(get("/projects/add").sessionAttr("employeeId", 1))
                 .andExpect(status().isOk()).
                 andExpect(view().name("project/create-project"))
@@ -66,7 +66,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void createProject_ShouldPostCreateFormAndRedirectToProjects() throws Exception {
+    void createProject_ShouldPostShowAddFormAndRedirectToProjectsForm() throws Exception {
         mockMvc.perform(post("/projects/add").sessionAttr("employeeId", 1).
                         param("title", "title")
                         .param("description", "description")
@@ -76,7 +76,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void createProject_CatchesBadRequestExceptionWhenBadRequest() throws Exception {
+    void showAddProject_Form_CatchesBadRequestExceptionWhenBadRequest() throws Exception {
         when(projectService.createProject(any())).thenThrow(new BadRequestException(""));
 
         mockMvc.perform(post("/projects/add")
