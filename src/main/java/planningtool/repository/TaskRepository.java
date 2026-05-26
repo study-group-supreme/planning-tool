@@ -83,7 +83,7 @@ public class TaskRepository {
 
     public TimeEntry insertTimeEntry(TimeEntry timeEntry) {
         String sql = """
-                INSERT INTO time_entry(employee_id, task_id, time_spent) 
+                INSERT INTO time_entry(employee_id, task_id, time_spent)
                 VALUES (?,?,?)
                 """;
 

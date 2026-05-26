@@ -118,7 +118,7 @@ public class ProjectRepository {
                 FROM project
                 JOIN project_member
                 ON project_member.project_id = project.id
-                WHERE project_member.employee_id = ? 
+                WHERE project_member.employee_id = ?
                 """;
         return jdbc.query(sql, projectRowMapper, employeeId);
     }
@@ -126,7 +126,7 @@ public class ProjectRepository {
     public void insertProjectMember(Employee employee, Project project) {
         String sql = """
                 INSERT INTO project_member (employee_id, project_id)
-                VALUES(?, ?) 
+                VALUES(?, ?)
                 """;
         jdbc.update(sql, employee.getId(), project.getId());
     }
