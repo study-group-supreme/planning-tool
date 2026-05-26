@@ -7,12 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.TimeEntry;
-
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.util.List;
-
 
 @Repository
 public class TaskRepository {
@@ -74,7 +72,6 @@ public class TaskRepository {
         task.setId(keyholder.getKey().intValue());
         return task;
     }
-
 
     public Task findTaskById(int taskId) {
         String sql = """
@@ -170,5 +167,4 @@ public class TaskRepository {
 
         jdbc.update(sql, timeEstimate, taskId);
     }
-
 }
