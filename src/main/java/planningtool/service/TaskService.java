@@ -80,7 +80,6 @@ public class TaskService {
 
         try {
             Task created = taskRepository.insertTask(task);
-
             // update parents time estimate in DB if this is a subtask
             if (task.getParentTaskId() != null){
                 BigDecimal newEstimate = projectService.getEstimatedTimeForTask((task.getParentTaskId()));
@@ -99,7 +98,6 @@ public class TaskService {
             throw new BadRequestException("Invalid task id");
         }
 
-
         BigDecimal timeSpent = timeEntry.getTimeSpent();
         if (timeSpent == null || timeSpent.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Time spent must be a positive number");
@@ -115,7 +113,6 @@ public class TaskService {
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Database error while loading task", e);
         }
-
 
         try {
             return taskRepository.insertTimeEntry(timeEntry);
@@ -133,7 +130,6 @@ public class TaskService {
     }
 
     public Task editTask(Task task) {
-
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
         }
@@ -154,7 +150,6 @@ public class TaskService {
                 task.setTimeEstimate(null);
             }
         }
-
         try {
             taskRepository.updateTask(task);
             return taskRepository.findTaskById(task.getId());
@@ -162,7 +157,6 @@ public class TaskService {
             throw new DatabaseOperationException(e.getMessage(), e.getCause());
         }
     }
-
 
     public void removeTaskById(int id) {
         Task task = taskRepository.findTaskById(id);
@@ -193,15 +187,13 @@ public class TaskService {
                 t.setDone(newStatus);
                 taskRepository.updateIsDoneInTaskById(t);
             }
-        } else if (task.getParentTaskId() != null && newStatus == false) {
+        } else if (task.getParentTaskId() != null && !newStatus) {
             Task parentTask = taskRepository.findTaskById(task.getParentTaskId());
             parentTask.setDone(false);
             taskRepository.updateIsDoneInTaskById(parentTask);
-
         }
         task.setDone(newStatus);
         return taskRepository.updateIsDoneInTaskById(task);
-
     }
 
     public List<TimeEntry> getTimeEntriesByTaskId(int taskId) {
@@ -211,7 +203,7 @@ public class TaskService {
     public int getDoneSubtasks(List<Task> tasks) {
         int count = 0;
         for (Task t : tasks) {
-            if (t.isDone() == true && t.getParentTaskId() != null) {
+            if (t.isDone() && t.getParentTaskId() != null) {
                 count++;
             }
         }
@@ -227,7 +219,6 @@ public class TaskService {
         }
         return count;
     }
-
 
     public boolean hasChildren(int taskId) {
         return taskRepository.taskHasChildren(taskId);
@@ -253,5 +244,4 @@ public class TaskService {
         }
         return map;
     }
-
 }
