@@ -1,19 +1,16 @@
 package planningtool.service;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.NotFoundException;
 import planningtool.model.Employee;
 import planningtool.repository.EmployeeRepository;
-
 import java.util.List;
 
 @Service
-
 public class EmployeeService {
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;

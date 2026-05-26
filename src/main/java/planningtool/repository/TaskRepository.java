@@ -7,12 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import planningtool.model.TimeEntry;
-
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.util.List;
-
 
 @Repository
 public class TaskRepository {
@@ -75,7 +73,6 @@ public class TaskRepository {
         return task;
     }
 
-
     public Task findTaskById(int taskId) {
         String sql = """
                 SELECT *
@@ -86,7 +83,7 @@ public class TaskRepository {
 
     public TimeEntry insertTimeEntry(TimeEntry timeEntry) {
         String sql = """
-                INSERT INTO time_entry(employee_id, task_id, time_spent) 
+                INSERT INTO time_entry(employee_id, task_id, time_spent)
                 VALUES (?,?,?)
                 """;
 
@@ -170,5 +167,4 @@ public class TaskRepository {
 
         jdbc.update(sql, timeEstimate, taskId);
     }
-
 }

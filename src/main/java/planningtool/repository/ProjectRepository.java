@@ -8,25 +8,21 @@ import org.springframework.stereotype.Repository;
 import planningtool.model.Employee;
 import planningtool.model.Project;
 import planningtool.model.Task;
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-
 public class ProjectRepository {
-    private JdbcTemplate jdbc;
-    private TaskRepository taskRepository;
-    private EmployeeRepository employeeRepository;
+    private final JdbcTemplate jdbc;
+    private final TaskRepository taskRepository;
+    private final EmployeeRepository employeeRepository;
 
     public ProjectRepository(JdbcTemplate jdbc, TaskRepository taskRepository, EmployeeRepository employeeRepository) {
         this.jdbc = jdbc;
         this.taskRepository = taskRepository;
         this.employeeRepository = employeeRepository;
     }
-
 
     private final RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project p = new Project();
@@ -45,8 +41,6 @@ public class ProjectRepository {
         return p;
     });
 
-
-    // TODO Consider if this method should be moved to the EmployeeRepository
     public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
                 SELECT employee.id, employee.name, employee.role_id, employee.email, employee.password
@@ -70,6 +64,7 @@ public class ProjectRepository {
                 """;
         return jdbc.query(sql, taskRepository.getTaskRowMapper(), id);
     }
+
     public List<Task> findMainTasksByProjectId(int id) {
         String sql = """
                 SELECT task.id, task.title, task.description, task.time_estimate, task.is_high_priority,
@@ -123,7 +118,7 @@ public class ProjectRepository {
                 FROM project
                 JOIN project_member
                 ON project_member.project_id = project.id
-                WHERE project_member.employee_id = ? 
+                WHERE project_member.employee_id = ?
                 """;
         return jdbc.query(sql, projectRowMapper, employeeId);
     }
@@ -131,7 +126,7 @@ public class ProjectRepository {
     public void insertProjectMember(Employee employee, Project project) {
         String sql = """
                 INSERT INTO project_member (employee_id, project_id)
-                VALUES(?, ?) 
+                VALUES(?, ?)
                 """;
         jdbc.update(sql, employee.getId(), project.getId());
     }
@@ -158,12 +153,12 @@ public class ProjectRepository {
                 """;
         jdbc.update(sql, true, projectId);
     }
-    public List<Project> findAllProjects(){
+
+    public List<Project> findAllProjects() {
         String sql = """
                 SELECT * FROM project
                 """;
         return jdbc.query(sql, projectRowMapper);
     }
-
 }
 

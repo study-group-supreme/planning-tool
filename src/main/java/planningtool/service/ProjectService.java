@@ -70,15 +70,6 @@ public class ProjectService {
         }
     }
 
-
-    public List<Task> getTasksByProjectId(int id) {
-        try {
-            return projectRepository.findTasksByProjectId(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("No project found");
-        }
-    }
-
     public List<Task> getMainTasksByProjectId(int id) {
         return projectRepository.findMainTasksByProjectId(id);
     }
