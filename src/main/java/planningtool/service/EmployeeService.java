@@ -1,6 +1,5 @@
 package planningtool.service;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import planningtool.exception.BadRequestException;

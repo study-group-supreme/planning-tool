@@ -8,13 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import planningtool.exception.BadRequestException;
 import planningtool.exception.DatabaseOperationException;
 import planningtool.exception.NotFoundException;
-import planningtool.model.Employee;
-import planningtool.model.Project;
 import planningtool.model.Task;
 import planningtool.model.TimeEntry;
 import planningtool.repository.TaskRepository;
 
-import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
