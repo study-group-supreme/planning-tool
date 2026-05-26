@@ -1,6 +1,6 @@
 # 🛠️ Planning Tool
 
-[Alpha Solutions Project Tool Azure Deployment Link](calculationapp-ejbvb2bfdzhgc6gj.polandcentral-01.azurewebsites.net)
+[Alpha Solutions Project Tool Azure Deployment Link](https://calculationapp-ejbvb2bfdzhgc6gj.polandcentral-01.azurewebsites.net)
 
 ## 📖 Project Description
 Planning Tool is a project calculation tool for the business **Alpha Solutions**.  
