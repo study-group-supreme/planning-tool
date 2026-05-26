@@ -10,14 +10,6 @@ public class TimeEntry {
     private LocalDateTime timeOfCreation;
     private BigDecimal timeSpent;
 
-    public TimeEntry(int id, int employeeId, int taskId, LocalDateTime timeOfCreation, BigDecimal timeSpent) {
-        this.id = id;
-        this.employeeId = employeeId;
-        this.taskId = taskId;
-        this.timeOfCreation = timeOfCreation;
-        this.timeSpent = timeSpent;
-    }
-
     public TimeEntry() {
 
     }
