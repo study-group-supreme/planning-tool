@@ -47,6 +47,7 @@ public class TaskController {
             employee = employeeService.getEmployeeById((task.getAssignedMemberId()));
         }
 
+
         model.addAttribute("task", task);
         model.addAttribute("totalEstimatedTime", projectService.getEstimatedTimeForTask(taskId));
         model.addAttribute("totalLoggedTime", projectService.getLoggedTimeForTask(taskId));
@@ -183,8 +184,7 @@ public class TaskController {
     public String submitTimeEntry(
             @PathVariable int taskId,
             @RequestParam BigDecimal timeSpent,
-            HttpSession session,
-            Model model
+            HttpSession session
     ) {
         Integer employeeId = (Integer) session.getAttribute("employeeId");
 

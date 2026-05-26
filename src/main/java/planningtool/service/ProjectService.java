@@ -168,6 +168,11 @@ public class ProjectService {
     public BigDecimal getEstimatedTimeForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
 
+        if (task.getTimeEstimate() == null){
+            return null;
+        }
+
+
         // Subtask → return its own estimate
         if (task.getParentTaskId() != null) {
             return task.getTimeEstimate();
@@ -267,6 +272,10 @@ public class ProjectService {
     public BigDecimal calculateEstimatedPriceForTask(int taskId) {
         Task task = taskRepository.findTaskById(taskId);
         Integer employeeId = task.getAssignedMemberId();
+
+        if(task.getTimeEstimate() == null){
+            return null;
+        }
 
         return task.getTimeEstimate().multiply(employeeRepository.findPricePerHourByEmployeeId(employeeId));
     }
