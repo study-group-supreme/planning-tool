@@ -41,6 +41,7 @@ public class ProjectRepository {
         return p;
     });
 
+    //TODO Consider if this method should be moved to the EmployeeRepository
     public List<Employee> findProjectMembersByProjectId(int id) {
         String sql = """
                 SELECT employee.id, employee.name, employee.role_id, employee.email, employee.password

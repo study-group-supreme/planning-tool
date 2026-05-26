@@ -275,6 +275,7 @@ public class ProjectService {
         return projectRepository.findAllProjects();
     }
 
+    //TODO Should use findByMainTasksByProjectId() instead of checking for children
     @Transactional
     public BigDecimal calculateEstimatedPriceForProject(int projectId) {
         BigDecimal estimatedCost = BigDecimal.ZERO;

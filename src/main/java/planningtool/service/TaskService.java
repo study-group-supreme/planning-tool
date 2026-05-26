@@ -41,6 +41,7 @@ public class TaskService {
         }
     }
 
+    //TODO Minimize repetition of validation (also used in edit task)
     @Transactional
     public Task createTask(Task task) {
         // If this task is a subtask
@@ -129,6 +130,7 @@ public class TaskService {
         }
     }
 
+    //TODO Minimize repetition of validation (also used in create task)
     public Task editTask(Task task) {
         if (task.getTitle() == null || task.getTitle().isBlank()) {
             throw new BadRequestException("Title cannot be empty");
